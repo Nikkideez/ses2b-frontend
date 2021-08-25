@@ -113,6 +113,19 @@
   margin-left: 0.5rem;
 }
 
+.error404{
+  margin: 0 auto;
+  padding: 5%;
+}
+
+
+.giff{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;
