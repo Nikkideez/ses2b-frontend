@@ -126,6 +126,19 @@ export default function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleLogout = () => {
+    fetch("/api/logout", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({})
+    }).then((res) => {
+        router.push("/")
+    }).catch((error) => {
+      console.log("System Error")
+    })
+  };
 
   const page = "Dashboard";
   return (
@@ -154,11 +167,13 @@ export default function Dashboard(props) {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <Link href="/">
-              <Button className={classes.button} >
+            {/* <Link href="/"> */}
+              <Button className={classes.button}
+              
+                onClick={handleLogout}>
                 Logout
               </Button>
-            </Link>
+            {/* </Link> */}
           </div>
         </Toolbar>
       </AppBar>
