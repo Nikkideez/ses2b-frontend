@@ -9,7 +9,6 @@ import Footer from '../components/Footer';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { green } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
-
 export default function Home() {
   return (
     <div className={styles.container}>

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { sidebarOpenState } from '../States.js';
+import { sidebarOpenState, currentUserState, stuState, isStudentState } from '../States.js';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
-import Link from '@material-ui/core/Link';
+import Link from 'next/Link';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
@@ -20,11 +20,14 @@ import MainItemsList  from './SidebarListItemsV2';
 import List from '@material-ui/core/List';
 import Container from '@material-ui/core/Container';
 import Logo from '../../src/Images/Logo.png';
+import WhiteLogo from '../../src/Images/Logo white.png';
 import Image from 'next/image';
 import styles from '../../styles/Home.module.css';
 import { ArrowLeft } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import tempAvatar from '../../src/Images/Moyaicon.png';
+import axios from 'axios';
+import { red } from '@material-ui/core/colors';
 
 
 
@@ -35,6 +38,8 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    backgroundColor: '#0000',
+    color: '#000'
   },
   toolbar: {
     boxShadow: "0px 1px 4px 1px rgba(0,0,0,0.25)",
@@ -68,6 +73,7 @@ const useStyles = makeStyles((theme) => ({
     //flexGrow: 1,
   },
   drawerPaper: {
+    backgroundColor: theme.palette.primary.main,
     boxShadow: "0px 1px 4px 1px rgba(0,0,0,0.05)",
     position: 'relative',
     whiteSpace: 'nowrap',
@@ -84,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       width: theme.spacing(9),
     },
-    color : "#806f6e",
+    color : theme.palette.primary.main,
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
@@ -98,6 +104,11 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     color: "#4259d4",
+  },
+  buttonT2:{
+    color: "#ffffff",
+    marginLeft: 20,
+    backgroundColor: "#4259d4",
   },
   toolbarButtonContainer: {
     marginLeft: 'auto'
@@ -113,11 +124,37 @@ const useStyles = makeStyles((theme) => ({
 // Above was all the styling for the components
 // The bottom section will contain all the code and logic needed
 // to make the sidebar function properly
-
-
 export default function Dashboard(props) {
-  const isStudent = true; // this will change based on the request sent in via props. This is set to false right now for testing. 
-  const classes = useStyles();
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+  const [isStudent, setStudent] = useRecoilState(isStudentState); 
+
+  //fill in the user state object with user data from the DB
+  const getUser = () => {
+    axios({
+      method: "GET",
+      url: "https://protoruts-backend.herokuapp.com/auth/current-user",
+    }).then((res) => {
+      setCurrentUser(res.data);
+      setStudent(res.data.user_role === 2); 
+    })
+  }
+
+  //useEffect ensures that getUser() is not called every time the sidebar is 
+  //rerendered. This saves on runtime. 
+  useEffect(() => {
+    if(!currentUser)
+    getUser();
+  }, []);
+
+
+  //this function resets isStudentState to true (for theme purposes)
+  // and currentUser to null. 
+  const clearUser = () => {
+    setCurrentUser(null);
+    setStudent(true); 
+  }
+
+  const classes = useStyles(); 
   const router = useRouter(); 
   const [open, setOpen] = useRecoilState(sidebarOpenState);
   const handleDrawerOpen = () => {
@@ -126,6 +163,7 @@ export default function Dashboard(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
   const handleLogout = () => {
     fetch("/api/logout", {
       method: "post",
@@ -138,14 +176,15 @@ export default function Dashboard(props) {
     }).catch((error) => {
       console.log("System Error")
     })
+    clearUser();
   };
-
+  
   const page = "Dashboard";
   return (
     <div className={classes.root}>
       <CssBaseline />
       <AppBar elevation={0} position="absolute" className={classes.appBar} >
-        <Toolbar className={classes.toolbar}  >
+        <Toolbar className={classes.toolbar}>
           <div className={classes.menuButton}><IconButton
             edge="start"
             color="inherit"
@@ -155,10 +194,8 @@ export default function Dashboard(props) {
           >
             <MenuIcon />
           </IconButton></div>
-          <div className={styles.title} >
-            <Link href="/dashboard">
-              <Image src={Logo} alt="ProctorUTS Logo" width="146" height="48" />
-            </Link>
+          <div className={styles.title} style={{cursor:'pointer'}} >
+              <Image src={Logo} alt="ProctorUTS Logo" width="146" height="48" onClick={()=>(router.push('/dashboard'))} />
           </div>
 
           <div className={classes.toolbarButtonContainer}>
@@ -167,10 +204,8 @@ export default function Dashboard(props) {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            {/* <Link href="/"> */}
-              <Button className={classes.button}
-              
-                onClick={handleLogout}>
+            <Link href="/">
+              <Button className={isStudent? classes.button: classes.buttonT2} onClick={handleLogout}>
                 Logout
               </Button>
             {/* </Link> */}
@@ -179,11 +214,8 @@ export default function Dashboard(props) {
       </AppBar>
       <Drawer
         variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}
-      >
+        classes={{paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)}}
+        open={open}>
         <div className={classes.toolbarIcon}>
           <IconButton onClick={handleDrawerClose}>
             <ChevronLeftIcon />
@@ -193,7 +225,7 @@ export default function Dashboard(props) {
         {/* I'm pulling the actual icons with there respective links from the SidebarListItems file */}
         <List className={classes.drawerItems}>
           <div>
-            <MainItemsList currentItem={router.pathname} open={open} isStudent={isStudent}/>
+            <MainItemsList currentItem={router.pathname} open={open}/>
           </div>
           <Divider />
         </List>

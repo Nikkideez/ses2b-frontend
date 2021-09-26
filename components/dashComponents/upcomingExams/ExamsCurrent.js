@@ -15,9 +15,11 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Button from '@material-ui/core/Button';
 import Link from 'next/link';
+import { isStudentState } from '../../States';
+import { useRecoilValue } from 'recoil';
 
 
-const useRowStyles = makeStyles({
+const useRowStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
       borderBottom: 'unset',
@@ -26,7 +28,16 @@ const useRowStyles = makeStyles({
   iconButton: {
     padding: 0,
   },
-});
+  tableHeadText:{
+    color: theme.palette.text.title,
+  },
+  tableHead:{
+    backgroundColor: theme.palette.primary.main,
+  },
+  tableRow: {
+    color: theme.palette.primary.lighter,
+  }
+}));
 
 function createData(exam, subject, date, time, available) {
   return {
@@ -38,6 +49,7 @@ function Row(props) {
   const { row } = props;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
+  const isStudent = useRecoilValue(isStudentState);
 
   return (
     <React.Fragment>
@@ -58,11 +70,22 @@ function Row(props) {
         <TableCell align="right" >{row.date}</TableCell>
         <TableCell align="right">{row.time}</TableCell>
         <TableCell align="right" style={{width: 330}} size="small">
-          <Link href="/dashboard/testFaceAuth">
+          <div>
+          {
+            isStudent?
+            <Link href="/dashboard/testFaceAuth">
             <Button style={{color: "#4caf50"}} variant="outlined">
               Enter Exam Room
             </Button>
-          </Link>
+          </Link> :
+           <Link href="/dashboard/invigilatorPanel">
+           <Button style={{color: "#4caf50"}} variant="outlined">
+             Enter Exam Room
+           </Button>
+         </Link>
+          }
+          </div>
+          
         </TableCell>
 
       </TableRow>
@@ -88,16 +111,18 @@ const rows = [
 ];
 
 export default function CollapsibleTable() {
+  const classes = useRowStyles();
+
   return (
     <TableContainer component={Paper} elevation={0}>
       <Table aria-label="collapsible table">
-        <TableHead>
+        <TableHead className ={classes.tableHead}>
           <TableRow>
             <TableCell />
-            <TableCell>EXAM</TableCell>
-            <TableCell align="right">DATE</TableCell>
-            <TableCell align="right">TIME</TableCell>
-            <TableCell align="right">ACCESS</TableCell>
+            <TableCell className={classes.tableHeadText} >EXAM</TableCell>
+            <TableCell className={classes.tableHeadText}  align="right">DATE</TableCell>
+            <TableCell className={classes.tableHeadText}  align="right">TIME</TableCell>
+            <TableCell className={classes.tableHeadText} align="right">ACCESS</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>

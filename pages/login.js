@@ -6,7 +6,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
+import Link from 'next/link';
 import Paper from '@material-ui/core/Paper';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
@@ -17,6 +17,7 @@ import Logo from '../src/Images/Logo.png'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import axios from 'axios'
+import { isStudentState } from '../components/States';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -61,7 +62,6 @@ const useStyles = makeStyles((theme) => ({
 export default function SignInSide() {
   const classes = useStyles();
   const router = useRouter();
-
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [feedback, setFeedback] = useState("");

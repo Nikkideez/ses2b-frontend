@@ -18,7 +18,7 @@ import Button from '@material-ui/core/Button';
 import ExamAlert from './ExamsAlert'
 
 
-const useRowStyles = makeStyles({
+const useRowStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
       borderBottom: 'unset',
@@ -27,7 +27,16 @@ const useRowStyles = makeStyles({
   iconButton: {
     padding: 0,
   },
-});
+  tableHeadText:{
+    color: theme.palette.text.title,
+  },
+  tableHead:{
+    backgroundColor: theme.palette.primary.main,
+  },
+  tableRow: {
+    color: theme.palette.primary.lighter,
+  }
+}));
 
 function createData(exam, subject, date, time, available, status) {
   return {
@@ -101,21 +110,23 @@ export default function CollapsibleTable(props) {
     props.handleAgree();
     rows[0].status = true; 
   }
+  const classes = useRowStyles();
+
   return (
     <TableContainer component={Paper} elevation={0} >
       <Table aria-label="collapsible table">
         <TableHead>
-          <TableRow>
+          <TableRow className={classes.tableHead}>
             <TableCell />
-            <TableCell>EXAM</TableCell>
-            <TableCell align="right">DATE</TableCell>
-            <TableCell align="right">TIME</TableCell>
-            <TableCell align="right" style={{width: 330}}>ACCESS</TableCell>
+            <TableCell className={classes.tableHeadText}>EXAM</TableCell>
+            <TableCell className={classes.tableHeadText} align="right">DATE</TableCell>
+            <TableCell  className={classes.tableHeadText} align="right">TIME</TableCell>
+            <TableCell className={classes.tableHeadText} align="right" style={{width: 330}}>ACCESS</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {(rows.filter(row => row.status === false)).map((row) => (
-            <Row key={row.subject} row={row} handleAgree = {handleAgree}/>
+            <Row className={classes.tableRow} key={row.subject} row={row} handleAgree = {handleAgree}/>
           ))}
         </TableBody>
       </Table>

@@ -5,8 +5,13 @@ const sidebarOpenState =atom ({
     default: false
 })
 const currentUserState =atom ({
-    key: 'curerntUserState',
+    key: 'currentUserState',
     default: null
 })
 
-export { sidebarOpenState, currentUserState }
+const isStudentState =atom({
+    key: 'isStudentState',
+    default: true
+})
+
+export { sidebarOpenState, currentUserState, isStudentState }
