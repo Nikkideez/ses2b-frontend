@@ -9,6 +9,7 @@ import ExamsTable from '../../components/dashComponents/upcomingExams/ExamsTable
 import ExamsCurrent from '../../components/dashComponents/upcomingExams/ExamsCurrent';
 import { currentUserState, isStudentState } from '../../components/States';
 import axios from 'axios';
+import cookies from 'js-cookie'
 
 
 
@@ -36,10 +37,29 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
-export default function Test(props) {
+export default function Test({ token }) {
     const classes = useStyles();
     const [showCurrent, setCurrent] = React.useState(false);
     const isStudent = useRecoilValue(isStudentState);
+    const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+    const getUser = () => {
+        axios({
+            method: "POST",
+            url: "https://protoruts-backend.herokuapp.com/auth/current-user",
+            data: {
+                idToken: token
+            },
+            withCredentials: true,
+        }).then((res) => {
+          console.log(res)
+          setCurrentUser(res.data)
+        })
+      }
+
+    useEffect(() => {
+        if(!currentUser)
+            getUser();
+      }, []);
     const handleAgree = () => {
         setCurrent(true);
         console.log("Index side working");
@@ -75,4 +95,8 @@ export default function Test(props) {
             </SidebarV2>
         </div>
     )
+}
+
+export function getServerSideProps({ req, res }) {
+  return { props: { token: req.cookies.token || "" } };
 }

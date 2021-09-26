@@ -77,7 +77,17 @@ export default function SignInSide() {
       url: "https://protoruts-backend.herokuapp.com/auth/login"
     }).then((res) => {
       if (res.data) {
-        router.push("/dashboard")
+        fetch("/api/login", {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({token: res.data})
+        }).then((res) => {
+          router.push("/dashboard")
+        }).catch((error) => {
+          setFeedback("System Error")
+        })
       }
       else if (!res.data)
         setFeedback("Incorrect Email or Password")
