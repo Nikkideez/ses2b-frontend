@@ -5,7 +5,7 @@ import { Typography } from '@material-ui/core'
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 
-export default function help({ token }) {
+export default function Help({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
 	
