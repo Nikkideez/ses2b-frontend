@@ -20,7 +20,7 @@ import MainItemsList  from './SidebarListItemsV2';
 import List from '@material-ui/core/List';
 import Container from '@material-ui/core/Container';
 import Logo from '../../src/Images/Logo.png';
-import WhiteLogo from '../../src/Images/Logo white.png';
+import WhiteLogo from '../../src/Images/Logo White.png';
 import Image from 'next/image';
 import styles from '../../styles/Home.module.css';
 import { ArrowLeft } from '@material-ui/icons';
