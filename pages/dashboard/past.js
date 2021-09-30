@@ -5,7 +5,7 @@ import { getUser } from '../../components/scripts/getUser'
 import SidebarV2 from '../../components/dashComponents/SidebarV2'
 import { Typography } from '@material-ui/core'
 
-export default function past({ token }) {
+export default function Past({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
     const [isStudent, setStudent] = useRecoilState(isStudentState);
     
