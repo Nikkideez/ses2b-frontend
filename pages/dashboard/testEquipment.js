@@ -1,4 +1,7 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
+import { useRecoilState } from 'recoil';
+import { currentUserState, isStudentState } from '../../components/States';
+import { getUser } from '../../components/scripts/getUser'
 import SidebarV2 from '../../components/dashComponents/SidebarV2'
 import { Typography } from '@material-ui/core'
 import FaceStream from '../../components/FaceAPI/FaceStream'
@@ -9,7 +12,7 @@ import Paper from '@material-ui/core/Paper'
 import Hidden from '@material-ui/core/Hidden';
 import { Container } from '@material-ui/core'
 //322, 247
-export default function TestEquipment() {
+export default function TestEquipment({ token }) {
     const [showFace, setFace] = React.useState(false)
     const [videoWidth, setVideoWidth] = React.useState(480)
     const [videoHeight, setVideoHeight] = React.useState(360)
@@ -22,6 +25,17 @@ export default function TestEquipment() {
     console.log(myref)
     const handleCloseVideo = () => myref.current.getClose();
     const handleStartVideo = () => myref.current.getStart();
+
+    const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+	const [isStudent, setStudent] = useRecoilState(isStudentState);
+	
+	useEffect(async () => {
+        if (!currentUser) {
+            const user = await getUser(token)
+            setCurrentUser(user);
+            setStudent(user.user_role === 2);
+        }
+    }, []);
 
     //Honestly, this is super messy
     //Most of these hooks are just me testing out calling functions between diff components
@@ -70,4 +84,8 @@ export default function TestEquipment() {
             </SidebarV2>
         </div>
     )
+}
+
+export function getServerSideProps({ req, res }) {
+  return { props: { token: req.cookies.token || "" } };
 }

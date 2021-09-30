@@ -26,7 +26,7 @@ import styles from '../../styles/Home.module.css';
 import { ArrowLeft } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import tempAvatar from '../../src/Images/Moyaicon.png';
-import axios from 'axios';
+// import axios from 'axios';
 import { red } from '@material-ui/core/colors';
 
 
@@ -121,6 +121,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+
 // Above was all the styling for the components
 // The bottom section will contain all the code and logic needed
 // to make the sidebar function properly
@@ -128,22 +129,12 @@ export default function Dashboard(props) {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const [isStudent, setStudent] = useRecoilState(isStudentState); 
 
-  //fill in the user state object with user data from the DB
-  const getUser = () => {
-    axios({
-      method: "GET",
-      url: "https://protoruts-backend.herokuapp.com/auth/current-user",
-    }).then((res) => {
-      setCurrentUser(res.data);
-      setStudent(res.data.user_role === 2); 
-    })
-  }
-
-  //useEffect ensures that getUser() is not called every time the sidebar is 
-  //rerendered. This saves on runtime. 
+  // Note from Evan: getting server side tokens can only be done through page. Work-around: Pass details through props.
+  // useEffect ensures that getUser() is not called every time the sidebar is 
+  // rerendered. This saves on runtime. 
   useEffect(() => {
-    if(!currentUser)
-    getUser();
+    // if(!currentUser)
+    //   getUser();
   }, []);
 
 
@@ -208,7 +199,7 @@ export default function Dashboard(props) {
               <Button className={isStudent? classes.button: classes.buttonT2} onClick={handleLogout}>
                 Logout
               </Button>
-            {/* </Link> */}
+            </Link>
           </div>
         </Toolbar>
       </AppBar>

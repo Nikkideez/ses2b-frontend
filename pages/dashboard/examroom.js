@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useRecoilState, useRecoilValue } from 'recoil';
 import SidebarV2 from '../../components/dashComponents/SidebarV2'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
@@ -6,9 +7,22 @@ import WarningIcon from '@material-ui/icons/Warning';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
+import { currentUserState, isStudentState } from '../../components/States';
+import { getUser } from '../../components/scripts/getUser'
 
 
-export default function examroom() {
+export default function examroom({token}) {
+    const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+	const [isStudent, setStudent] = useRecoilState(isStudentState);
+	
+	useEffect(async () => {
+        if (!currentUser) {
+            const user = await getUser(token)
+            setCurrentUser(user);
+            setStudent(user.user_role === 2);
+        }
+	}, []);
+	
 	return (
 		<div>
 			<SidebarV2>
@@ -45,4 +59,8 @@ export default function examroom() {
 			</SidebarV2>
 		</div>
 	)
+}
+
+export function getServerSideProps({ req, res }) {
+  return { props: { token: req.cookies.token || "" } };
 }
