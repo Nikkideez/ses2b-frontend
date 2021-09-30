@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
 import SidebarV2 from '../../components/dashComponents/SidebarV2'
 import Container from '@material-ui/core/Container';
@@ -8,11 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import ExamsTable from '../../components/dashComponents/upcomingExams/ExamsTable';
 import ExamsCurrent from '../../components/dashComponents/upcomingExams/ExamsCurrent';
 import { currentUserState, isStudentState } from '../../components/States';
-import axios from 'axios';
-import cookies from 'js-cookie'
-
-
-
+import { getUser } from '../../components/scripts/getUser'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -40,25 +36,16 @@ const useStyles = makeStyles((theme) => ({
 export default function Test({ token }) {
     const classes = useStyles();
     const [showCurrent, setCurrent] = React.useState(false);
-    const isStudent = useRecoilValue(isStudentState);
+    // const isStudent = useRecoilValue(isStudentState);
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
-    const getUser = () => {
-        axios({
-            method: "POST",
-            url: "https://protoruts-backend.herokuapp.com/auth/current-user",
-            data: {
-                idToken: token
-            },
-            withCredentials: true,
-        }).then((res) => {
-          console.log(res)
-          setCurrentUser(res.data)
-        })
-      }
+    const [isStudent, setStudent] = useRecoilState(isStudentState); 
 
-    useEffect(() => {
-        if(!currentUser)
-            getUser();
+    useEffect(async () => {
+        if (!currentUser) {
+            const user = await getUser(token)
+            setCurrentUser(user);
+            setStudent(user.user_role === 2);
+        }
       }, []);
     const handleAgree = () => {
         setCurrent(true);

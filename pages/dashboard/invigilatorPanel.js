@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import SidebarV2 from '../../components/dashComponents/SidebarV2'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
@@ -9,6 +10,8 @@ import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import { Container } from '@material-ui/core';
 import { Smartphone } from '@material-ui/icons';
+import { currentUserState, isStudentState } from '../../components/States';
+import { getUser } from '../../components/scripts/getUser'
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -35,8 +38,18 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default function invigilatorPanel() {
-	const classes = useStyles();
+export default function invigilatorPanel({ token }) {
+    const classes = useStyles();
+    const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+    const [isStudent, setStudent] = useRecoilState(isStudentState);
+    
+    useEffect(async () => {
+        if (!currentUser) {
+            const user = await getUser(token)
+            setCurrentUser(user);
+            setStudent(user.user_role === 2);
+        }
+	}, []);
 	return (
 		<div>
 			<SidebarV2>
@@ -59,4 +72,8 @@ export default function invigilatorPanel() {
 			</SidebarV2>
 		</div>
 	)
+}
+
+export function getServerSideProps({ req, res }) {
+  return { props: { token: req.cookies.token || "" } };
 }

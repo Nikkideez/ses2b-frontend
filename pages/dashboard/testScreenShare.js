@@ -1,10 +1,24 @@
 import router from 'next/router';
-import React from 'react'
+import React, { useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+import { currentUserState, isStudentState } from '../../components/States';
+import { getUser } from '../../components/scripts/getUser'
 import SidebarV2 from '../../components/dashComponents/SidebarV2'
 import ScreenShareTest from '../../components/WebRTC/ScreenShareTest'
 
-export default function TestScreenShare() {
+export default function TestScreenShare({ token }) {
   const [isScreenShare, setScreenShare] = React.useState(false);
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+	const [isStudent, setStudent] = useRecoilState(isStudentState);
+	
+	useEffect(async () => {
+        if (!currentUser) {
+            const user = await getUser(token)
+            setCurrentUser(user);
+            setStudent(user.user_role === 2);
+        }
+  }, []);
+  
   return (
     <div>
       <SidebarV2>
@@ -24,3 +38,8 @@ export default function TestScreenShare() {
     </div>
   )
 }
+
+export function getServerSideProps({ req, res }) {
+  return { props: { token: req.cookies.token || "" } };
+}
+
