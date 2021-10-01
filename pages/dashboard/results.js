@@ -6,7 +6,7 @@ import Sidebar from '../../components/dashComponents/Sidebar'
 import { Typography } from '@material-ui/core'
 
 
-export default function results({ token }) {
+export default function Results({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
 	

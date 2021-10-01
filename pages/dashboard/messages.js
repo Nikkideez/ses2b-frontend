@@ -5,7 +5,7 @@ import Sidebar from '../../components/dashComponents/Sidebar'
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 
-export default function exams({ token }) {
+export default function Exams({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
     const [isStudent, setStudent] = useRecoilState(isStudentState);
     

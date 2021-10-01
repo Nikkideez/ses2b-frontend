@@ -5,7 +5,7 @@ import { getUser } from '../../components/scripts/getUser'
 import Sidebar from '../../components/dashComponents/Sidebar'
 import { Typography } from '@material-ui/core'
 
-export default function exams({ token }) {
+export default function Exams({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
 	

@@ -11,7 +11,7 @@ import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 
 
-export default function examroom({token}) {
+export default function Examroom({token}) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
 	
