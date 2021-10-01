@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
-import SidebarV2 from '../../components/dashComponents/SidebarV2'
+import Sidebar from '../../components/dashComponents/Sidebar'
 import { Typography } from '@material-ui/core'
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
@@ -18,11 +18,11 @@ export default function help({ token }) {
 	}, []);
     return (
         <div>
-            <SidebarV2>
+            <Sidebar>
                 <Typography variant="h5">
                     This will display the Help section
                 </Typography>
-            </SidebarV2>
+            </Sidebar>
         </div>
     )
 }

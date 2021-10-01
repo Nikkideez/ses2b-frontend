@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import SidebarV2 from '../../components/dashComponents/SidebarV2'
+import Sidebar from '../../components/dashComponents/Sidebar'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import WarningIcon from '@material-ui/icons/Warning';
@@ -52,7 +52,7 @@ export default function invigilatorPanel({ token }) {
 	}, []);
 	return (
 		<div>
-			<SidebarV2>
+			<Sidebar>
 			
                 <div>
                 <Typography className={classes.text} variant="h5">
@@ -69,7 +69,7 @@ export default function invigilatorPanel({ token }) {
                 </div>
                 </div>
                 
-			</SidebarV2>
+			</Sidebar>
 		</div>
 	)
 }

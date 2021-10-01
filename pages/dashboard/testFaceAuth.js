@@ -3,7 +3,7 @@ import { useRecoilState } from 'recoil';
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 import FaceApiTest from '../../components/FaceAPI/FaceApiTest'
-import SidebarV2 from '../../components/dashComponents/SidebarV2'
+import Sidebar from '../../components/dashComponents/Sidebar'
 
 export default function testFaceAuth({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
@@ -19,9 +19,9 @@ export default function testFaceAuth({ token }) {
 
     return (
         <div>
-            <SidebarV2>
+            <Sidebar>
                 <FaceApiTest/>
-            </SidebarV2>
+            </Sidebar>
         </div>
     )
 }

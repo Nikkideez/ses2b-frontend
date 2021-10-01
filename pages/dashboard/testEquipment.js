@@ -2,15 +2,18 @@ import React, { useRef, useEffect } from 'react'
 import { useRecoilState } from 'recoil';
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
-import SidebarV2 from '../../components/dashComponents/SidebarV2'
+import Sidebar from '../../components/dashComponents/Sidebar'
 import { Typography } from '@material-ui/core'
-import FaceStream from '../../components/FaceAPI/FaceStream'
 import ScreenShare from '../../components/WebRTC/ScreenShare'
 import Button from '@material-ui/core/Button'
 import Stepper from '../../components/dashComponents/testEquipment/Stepper'
 import Paper from '@material-ui/core/Paper'
 import Hidden from '@material-ui/core/Hidden';
 import { Container } from '@material-ui/core'
+import dynamic from 'next/dynamic'
+
+const FaceNoSSR = dynamic(() => import('../../components/FaceAPI/FaceStream'), { ssr: false });
+
 //322, 247
 export default function TestEquipment({ token }) {
     const [showFace, setFace] = React.useState(false)
@@ -21,10 +24,10 @@ export default function TestEquipment({ token }) {
     const [displayType, setDisplay] = React.useState('flex')
     const [newFlex, setFlex] = React.useState('center')
     const [activeStep, setActiveStep] = React.useState(0)
-    const myref = React.useRef();
-    console.log(myref)
-    const handleCloseVideo = () => myref.current.getClose();
-    const handleStartVideo = () => myref.current.getStart();
+    // const myref = React.useRef();
+    // console.log(myref)
+    // const handleCloseVideo = () => myref.current.getClose();
+    // const handleStartVideo = () => myref.current.getStart();
 
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
@@ -43,7 +46,7 @@ export default function TestEquipment({ token }) {
     
     return (
         <div>
-            <SidebarV2>
+            <Sidebar>
                 <Typography variant="h5">
                     Test Equipment
                 </Typography>
@@ -57,15 +60,16 @@ export default function TestEquipment({ token }) {
                         setDisplay={setDisplay}
                         setFlex={setFlex}
                         setActiveStep={setActiveStep}
-                        handleVideoClose={handleCloseVideo}
-                        handleStartVideo={handleStartVideo}
+                        // handleVideoClose={handleCloseVideo}
+                        // handleStartVideo={handleStartVideo}
                     >
                         <div style={{ display: 'flex', justifyContent: newFlex, alignItems: 'center', height: 470 }}>
                             <Paper style={{ padding: 5, display: displayType }} variant="outlined" square display="none">
-                                <FaceStream
+                                <FaceNoSSR
                                     videoWidth={videoWidth}
                                     videoHeight={videoHeight}
-                                    ref={myref} />
+                                    // ref={myref} 
+                                    />
                             </Paper>
                             {activeStep > 0 && activeStep < 3 ?
                                 <Paper variant="outlined" square
@@ -81,7 +85,7 @@ export default function TestEquipment({ token }) {
                     </Stepper>
                     : <Button color="secondary" onClick={() => { setFace(true) }}> Begin Calibration</Button>
                 }
-            </SidebarV2>
+            </Sidebar>
         </div>
     )
 }

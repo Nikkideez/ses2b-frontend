@@ -1,7 +1,7 @@
 import { Typography } from '@material-ui/core'
 import React, { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import SidebarV2 from '../../components/dashComponents/SidebarV2'
+import Sidebar from '../../components/dashComponents/Sidebar'
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 
@@ -19,11 +19,11 @@ export default function exams({ token }) {
     
     return (
         <div>
-            <SidebarV2>
+            <Sidebar>
                 <Typography variant="h5">
                     This will display any messages from the Examinator
                 </Typography>
-            </SidebarV2>
+            </Sidebar>
         </div>
     )
 }

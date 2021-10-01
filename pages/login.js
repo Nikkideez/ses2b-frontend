@@ -137,7 +137,7 @@ export default function SignInSide() {
             onChange={e => setLoginPassword(e.target.value)}
           />
           <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
+            control={<Checkbox value="remember" color="secondary" />}
             label="Remember me"
           />
 

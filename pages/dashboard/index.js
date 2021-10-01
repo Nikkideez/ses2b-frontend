@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
-import SidebarV2 from '../../components/dashComponents/SidebarV2'
+import Sidebar from '../../components/dashComponents/Sidebar'
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, Typography } from '@material-ui/core';
@@ -54,7 +54,7 @@ export default function Test({ token }) {
     // Conditionally rendering current exams to only appear if a student has exams
     return (
         <div>
-            <SidebarV2>
+            <Sidebar>
                 
                 {showCurrent === true ?
                     <div style={{ paddingBottom: 60 }}>
@@ -79,7 +79,7 @@ export default function Test({ token }) {
                     Upcoming Exams
                 </Typography>
                 <ExamsTable handleAgree={handleAgree} test1="test" />
-            </SidebarV2>
+            </Sidebar>
         </div>
     )
 }
