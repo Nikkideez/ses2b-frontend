@@ -5,7 +5,7 @@ import { getUser } from '../../../components/scripts/getUser'
 import FaceApiTest from '../../../components/FaceAPI/FaceApiTest'
 import Sidebar from '../../../components/dashComponents/Sidebar'
 
-export default function testFaceAuth({ token }) {
+export default function TestFaceAuth({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
 	
