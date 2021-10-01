@@ -23,7 +23,7 @@ export default function VideoContainer() {
 
   return (
     <div>
-      <StudentRTC localRef={localRef} />
+      <StudentRTC />
     </div>
   )
 }
