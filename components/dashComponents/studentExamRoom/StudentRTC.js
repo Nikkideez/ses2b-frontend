@@ -20,13 +20,14 @@ const firebaseConfig = {
   measurementId: "G-7Y4GHS9HZ1"
 }
 
-
+// initialize Firebase
 try {
   initializeApp(firebaseConfig);
 } catch {
   console.log("nevermind nothing")
 }
 
+// Getting firebase
 const firestore = getFirestore();
 
 // Initialize WebRTC
@@ -42,72 +43,16 @@ const servers = {
   iceCandidatePoolSize: 10,
 };
 
+// The RTC connection
 const pc = new RTCPeerConnection(servers);
 
-function StudentRTC(props) {
-  const [currentPage, setCurrentPage] = useState("home");
-  const [joinCode, setJoinCode] = useState("");
-
-  console.log(props.localStream)
-
-  return (
-    <div className="app">
-      {/* {currentPage === "home" ? (
-        <Menu
-          joinCode={joinCode}
-          setJoinCode={setJoinCode}
-          setPage={setCurrentPage}
-        />
-      ) : ( */}
-      <Videos
-        mode={currentPage}
-        callId={joinCode}
-        setPage={setCurrentPage}
-        localStream={props.localStream}
-      />
-    </div>
-  );
-}
-
-// function Menu({ joinCode, setJoinCode, setPage }) {
-//   const autoStart = async () => {
-//     const callCollec = await getDocs(collection(firestore, "calls"));
-//     callCollec.forEach((doc) => {
-//       setJoinCode(doc.id);
-//     })
-//     setPage("join");
-//   }
-
-//   return (
-//     <div className="home">
-//       <div className="create box">
-//         <button onClick={() => setPage("create")}>Create Call</button>
-//       </div>
-
-//       <div className="answer box">
-//         <input
-//           value={joinCode}
-//           onChange={(e) => setJoinCode(e.target.value)}
-//           placeholder="Join with code"
-//         />
-//         <button onClick={() => setPage("join")}>Answer</button>
-//       </div>
-
-//       <div className="autojoin box">
-//         <button onClick={() => autoStart()}>Auto Join</button>
-//       </div>
-
-
-//     </div>
-//   );
-// }
-
-function Videos({ mode, callId, setPage, localStream }) {
+export default function StudentRTC(props) {
   const [webcamActive, setWebcamActive] = useState(false);
-  const [roomId, setRoomId] = useState(callId);
   const [start, setStart] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
-  
+  const localStream = props.localStream
+  let callId;
+
   let blurAmount = 20;
   let enableBlur = true;
   const videoHeight = 480;
@@ -115,14 +60,15 @@ function Videos({ mode, callId, setPage, localStream }) {
   const videoRef = useRef();
   const canvasRef = useRef();
 
+  // Gets the call ID from the database
+  // Puts event listener on start button when offer is available
   const getCall = async () => {
     const callCollec = await getDocs(collection(firestore, "calls"));
     callCollec.forEach((doc) => {
       callId = doc.id;
-      setRoomId(doc.id);
     })
     const callDoc = doc(firestore, "calls", callId);
-    // const callData = (await getDoc(callDoc)).data();
+
     onSnapshot(callDoc, (snapshot) => {
       const data = snapshot.data();
       console.log(data?.offer);
@@ -132,14 +78,12 @@ function Videos({ mode, callId, setPage, localStream }) {
         setStart(false)
       }
     })
-    // if(callData.offer)
-    //   setStart(true)
   }
 
-  // const localRef = useRef();
+  // Get call on render
   useEffect(() => {
     getCall();
-  })
+  }, [])
 
   const setupSources = async () => {
     // Get the call ID from firebase
@@ -147,32 +91,19 @@ function Videos({ mode, callId, setPage, localStream }) {
     const callCollec = await getDocs(collection(firestore, "calls"));
     callCollec.forEach((doc) => {
       callId = doc.id;
-      setRoomId(doc.id);
     })
-    // const localStream = await navigator.mediaDevices.getUserMedia({
-    //   video: true,
-    //   audio: true,
-    // });
-    // const remoteStream = new MediaStream();
+    
     initializeVideo();
-    console.log(pc.connectionState);
     let stream = canvasRef.current.captureStream();
     stream.addTrack(localStream.getAudioTracks()[0]);
 
-    // localStream.getTracks().forEach((track) => {
-    //   console.log("adding student track")
-    //   pc.addTrack(track, localStream);
-    // });
-
+    // Getting tracks for stream to push to invigilator
     stream.getTracks().forEach((track) => {
       console.log("adding student track")
       pc.addTrack(track, stream);
     });
 
-    
-    //video for the local stream that is being sent to invigilator
-    // localRef.current.srcObject = localStream;
-
+    // Conditional render when webcam is active
     setWebcamActive(true);
     // Defining the required collections and documents in database
     const callDoc = doc(firestore, "calls", callId);
@@ -185,12 +116,12 @@ function Videos({ mode, callId, setPage, localStream }) {
     };
     //getting offers from database
     const callData = (await getDoc(callDoc)).data();
-
-
     const offerDescription = callData.offer;
+    // Setting offer from database
     await pc.setRemoteDescription(offerDescription);
     console.log("remote description set!")
 
+    // Creating and Sending answer
     const answerDescription = await pc.createAnswer();
     await pc.setLocalDescription(answerDescription);
 
@@ -200,7 +131,8 @@ function Videos({ mode, callId, setPage, localStream }) {
     };
 
     await updateDoc(callDoc, { answer });
-
+    
+    // When there is a new offer, send a new answer
     onSnapshot(callDoc, (snapshot) => {
       const data = snapshot.data();
       console.log(data?.offer);
@@ -209,6 +141,7 @@ function Videos({ mode, callId, setPage, localStream }) {
       }
     })
 
+    // When there is a new ice candidate, add it
     onSnapshot(offerCandidates, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
@@ -218,12 +151,9 @@ function Videos({ mode, callId, setPage, localStream }) {
           } catch (err) {
             console.log(err);
           }
-
-          // console.log(data);
         }
       });
     });
-    // }
 
     // creates a new answer for a new answer when there is a disconnect
     const newAnswer = async (callDoc, offer) => {
@@ -253,6 +183,7 @@ function Videos({ mode, callId, setPage, localStream }) {
       const answerCandidates = collection(callDoc, "answerCandidates");
       const offerCandidates = collection(callDoc, "offerCandidates");
 
+      // delete the answers, offers and icecandidates to prepare for new connection
       await updateDoc(callDoc, {
         answer: deleteField(),
         offer: deleteField(),
@@ -270,42 +201,42 @@ function Videos({ mode, callId, setPage, localStream }) {
       console.log("finished deleting")
 
     }
-
-
-
+    
+    // Try to reconnect on disconnect and update status
     pc.onconnectionstatechange = (event) => {
       console.log(pc.connectionState)
       setConnectionStatus(pc.connectionState);
       if (pc.connectionState === "disconnected") {
         reconnect();
-        // hangUp();
       }
     };
   };
 
   function reset() {
-      localStream.current && localStream.current.getTracks().forEach((x) => x.stop());
-      localStream.current = null;
-    }
+    localStream.current && localStream.current.getTracks().forEach((x) => x.stop());
+    localStream.current = null;
+  }
 
-    async function initializeVideo() {
-      try {
+  async function initializeVideo() {
+    try {
       //   localStream = await navigator.mediaDevices.getUserMedia({ video: {} })
-        if (localStream != null) {
-          videoRef.current.srcObject = localStream;
-          videoRef.current.play();
-          videoRef.current.addEventListener("loadeddata", async () => {
-            const net = await bodyPix.load();
-            processVideo(net)
-          })
-        }
-      } catch (err){
-        reset();
+      if (localStream != null) {
+        videoRef.current.srcObject = localStream;
+        videoRef.current.play();
+        videoRef.current.addEventListener("loadeddata", async () => {
+          const net = await bodyPix.load();
+          processVideo(net)
+        })
       }
-      return reset();
+    } catch (err) {
+      reset();
     }
+    return reset();
+  }
 
-    async function processVideo(net) {
+  async function processVideo(net) {
+    try {
+
       const outputStride = 8;
       const segmentationThreshold = 0.7;
       const segmentation = await net.estimatePersonSegmentation(videoRef.current, outputStride, segmentationThreshold)
@@ -322,116 +253,41 @@ function Videos({ mode, callId, setPage, localStream }) {
         edgeBlurAmount,
         flipHorizontal
       )
-      
+
       requestAnimationFrame(() => {
         processVideo(net)
       })
+    } catch (err) {
+      console.log(err);
     }
+  }
 
 
   const retry = async () => {
     const callDoc = doc(firestore, "calls", callId);
-    // const answerCandidates = collection(callDoc, "answerCandidates");
-    // const offerCandidates = collection(callDoc, "offerCandidates");
-
     await updateDoc(callDoc, {
       answer: deleteField(),
     });
-
-    // const answerAll = await getDocs(answerCandidates);
-    // answerAll.forEach((doc) => {
-    //   deleteDoc(doc.ref);
-    // })
-
-    // const offerAll = await getDocs(offerCandidates);
-    // offerAll.forEach((doc) => {
-    //   deleteDoc(doc.ref);
-    // })
-    // console.log("finished deleting")
   }
 
-
-  // const hangUp = async () => {
-  //   pc.close();
-
-  //   if (roomId) {
-  //     let roomRef = doc(firestore, "calls", roomId);
-  //     let answerRef = await getDocs(collection(roomRef, "answerCandidates"));
-  //     answerRef.forEach((doc) => {
-  //       delete (doc.ref);
-  //     });
-  //     let offerRef = await getDocs(collection(roomRef, "offerCandidates"))
-  //     offerRef.forEach((doc) => {
-  //       delete (doc.ref);
-  //     });
-
-  //     await deleteDoc(roomRef);
-  //   }
-
-  //   window.location.reload();
-  // };
-
+  console.log(props.localStream)
 
   return (
-    <div className="videos">
-      <video ref={videoRef} playsInline muted height={videoHeight} width={videoWidth} hidden={ true }/>
+    <div className="app">
+
+      <video ref={videoRef} playsInline muted height={videoHeight} width={videoWidth} hidden={true} />
       <canvas ref={canvasRef} height={videoHeight} width={videoWidth} />
-      {/* <video
-        ref={localRef}
-        autoPlay
-        playsInline
-        className="local"
-        muted
-      /> */}
-      {/* <video
-        ref={remoteRef}
-        autoPlay
-        playsInline
-        className="remote" /> */}
-
-      {/* <div className="buttonsContainer">
-        <button
-          onClick={hangUp}
-          disabled={!webcamActive}
-          className="hangup button"
-        >
-          hang up
-        </button>
-
-        <div className="popover">
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(roomId);
-              { console.log(roomId) }
-            }}
-          >
-            Copy joining code
-
-          </button>
-        </div>
-
-      </div> */}
 
       {!webcamActive ? (
         <div className="modalContainer">
-          <div className="modal">
-            <h3>
-              Turn on your camera and microphone and start the
-              call
-            </h3>
-            <div className="container">
-              {/* <button
-                onClick={() => setPage("home")}
-                className="secondary"
-              >
-                Cancel
-              </button> */}
-              <button
-                onClick={setupSources}
-                disabled={!start}
-              >Start</button>
-            </div>
-          </div>
+          <h3>
+            Turn on your camera and microphone and start the
+            call
+          </h3>
+          <button
+            onClick={setupSources}
+            disabled={!start}
+          >Start</button>
         </div>
       ) : (
         <div>
@@ -447,5 +303,3 @@ function Videos({ mode, callId, setPage, localStream }) {
     </div>
   );
 }
-
-export default StudentRTC;
