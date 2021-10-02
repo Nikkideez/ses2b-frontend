@@ -5,8 +5,6 @@ import {
   getFirestore, onSnapshot, deleteField, query
 } from "firebase/firestore";
 import { async } from '@firebase/util';
-import { EmailRounded } from '@material-ui/icons';
-import { computeReshapedDimensions } from 'face-api.js/build/commonjs/utils';
 const bodyPix = require('@tensorflow-models/body-pix');
 
 
@@ -49,7 +47,6 @@ const pc = new RTCPeerConnection(servers);
 function StudentRTC(props) {
   const [currentPage, setCurrentPage] = useState("home");
   const [joinCode, setJoinCode] = useState("");
-  // const [toggleBlur, setToggleBlur] = useState(true)
 
   console.log(props.localStream)
 
@@ -67,7 +64,6 @@ function StudentRTC(props) {
         callId={joinCode}
         setPage={setCurrentPage}
         localStream={props.localStream}
-
       />
     </div>
   );
@@ -112,8 +108,8 @@ function Videos({ mode, callId, setPage, localStream }) {
   const [start, setStart] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
   
-  let enableBlur = true;
   let blurAmount = 20;
+  let enableBlur = true;
   const videoHeight = 480;
   const videoWidth = 640;
   const videoRef = useRef();
@@ -173,6 +169,7 @@ function Videos({ mode, callId, setPage, localStream }) {
       pc.addTrack(track, stream);
     });
 
+    
     //video for the local stream that is being sent to invigilator
     // localRef.current.srcObject = localStream;
 
@@ -286,54 +283,51 @@ function Videos({ mode, callId, setPage, localStream }) {
     };
   };
 
-    // --------------------------------Evan: Video Blurring-------------------------
-
   function reset() {
-    localStream.current && localStream.current.getTracks().forEach((x) => x.stop());
-    localStream.current = null;
-  }
-
-  async function initializeVideo() {
-    try {
-    //   localStream = await navigator.mediaDevices.getUserMedia({ video: {} })
-      if (localStream != null) {
-        videoRef.current.srcObject = localStream;
-        videoRef.current.play();
-        videoRef.current.addEventListener("loadeddata", async () => {
-          const net = await bodyPix.load();
-          processVideo(net)
-        })
-      }
-    } catch (err){
-      reset();
+      localStream.current && localStream.current.getTracks().forEach((x) => x.stop());
+      localStream.current = null;
     }
-    return reset();
-  }
 
+    async function initializeVideo() {
+      try {
+      //   localStream = await navigator.mediaDevices.getUserMedia({ video: {} })
+        if (localStream != null) {
+          videoRef.current.srcObject = localStream;
+          videoRef.current.play();
+          videoRef.current.addEventListener("loadeddata", async () => {
+            const net = await bodyPix.load();
+            processVideo(net)
+          })
+        }
+      } catch (err){
+        reset();
+      }
+      return reset();
+    }
 
-  async function processVideo(net) {
-    const outputStride = 8;
-    const segmentationThreshold = 0.7;
-    const segmentation = await net.estimatePersonSegmentation(videoRef.current, outputStride, segmentationThreshold)
+    async function processVideo(net) {
+      const outputStride = 8;
+      const segmentationThreshold = 0.7;
+      const segmentation = await net.estimatePersonSegmentation(videoRef.current, outputStride, segmentationThreshold)
 
-    let backgroundBlurAmount = enableBlur ? blurAmount : 0;
-    const edgeBlurAmount = 3;
-    const flipHorizontal = true;
+      let backgroundBlurAmount = enableBlur ? blurAmount : 0;
+      const edgeBlurAmount = 3;
+      const flipHorizontal = true;
 
-    bodyPix.drawBokehEffect(
-      canvasRef.current,
-      videoRef.current,
-      segmentation,
-      backgroundBlurAmount,
-      edgeBlurAmount,
-      flipHorizontal
-    )
-    
-    requestAnimationFrame(() => {
-      processVideo(net)
-    })
-  }
-  
+      bodyPix.drawBokehEffect(
+        canvasRef.current,
+        videoRef.current,
+        segmentation,
+        backgroundBlurAmount,
+        edgeBlurAmount,
+        flipHorizontal
+      )
+      
+      requestAnimationFrame(() => {
+        processVideo(net)
+      })
+    }
+
 
   const retry = async () => {
     const callDoc = doc(firestore, "calls", callId);
@@ -445,7 +439,7 @@ function Videos({ mode, callId, setPage, localStream }) {
           <button
             onClick={retry}
             disabled={connectionStatus === "connected" || !start}
-          > 
+          >
             retry
           </button>
         </div>
