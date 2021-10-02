@@ -11,6 +11,7 @@
   "dependencies": {
     "@material-ui/core": "^4.12.3",
     "@material-ui/icons": "^4.11.2",
+    "@tensorflow-models/body-pix": "^1.1.2",
     "axios": "^0.21.4",
     "cookie": "^0.4.1",
     "face-api.js": "^0.22.2",

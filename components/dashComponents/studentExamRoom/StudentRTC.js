@@ -5,6 +5,9 @@ import {
   getFirestore, onSnapshot, deleteField, query
 } from "firebase/firestore";
 import { async } from '@firebase/util';
+import { EmailRounded } from '@material-ui/icons';
+import { computeReshapedDimensions } from 'face-api.js/build/commonjs/utils';
+const bodyPix = require('@tensorflow-models/body-pix');
 
 
 // initialize Firebase
@@ -43,9 +46,12 @@ const servers = {
 
 const pc = new RTCPeerConnection(servers);
 
-function StudentRTC() {
+function StudentRTC(props) {
   const [currentPage, setCurrentPage] = useState("home");
   const [joinCode, setJoinCode] = useState("");
+  // const [toggleBlur, setToggleBlur] = useState(true)
+
+  console.log(props.localStream)
 
   return (
     <div className="app">
@@ -60,6 +66,8 @@ function StudentRTC() {
         mode={currentPage}
         callId={joinCode}
         setPage={setCurrentPage}
+        localStream={props.localStream}
+
       />
     </div>
   );
@@ -98,11 +106,18 @@ function StudentRTC() {
 //   );
 // }
 
-function Videos({ mode, callId, setPage }) {
+function Videos({ mode, callId, setPage, localStream }) {
   const [webcamActive, setWebcamActive] = useState(false);
   const [roomId, setRoomId] = useState(callId);
   const [start, setStart] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
+  
+  let enableBlur = true;
+  let blurAmount = 20;
+  const videoHeight = 480;
+  const videoWidth = 640;
+  const videoRef = useRef();
+  const canvasRef = useRef();
 
   const getCall = async () => {
     const callCollec = await getDocs(collection(firestore, "calls"));
@@ -125,7 +140,7 @@ function Videos({ mode, callId, setPage }) {
     //   setStart(true)
   }
 
-  const localRef = useRef();
+  // const localRef = useRef();
   useEffect(() => {
     getCall();
   })
@@ -138,19 +153,28 @@ function Videos({ mode, callId, setPage }) {
       callId = doc.id;
       setRoomId(doc.id);
     })
-    const localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
+    // const localStream = await navigator.mediaDevices.getUserMedia({
+    //   video: true,
+    //   audio: true,
+    // });
     // const remoteStream = new MediaStream();
+    initializeVideo();
     console.log(pc.connectionState);
-    localStream.getTracks().forEach((track) => {
+    let stream = canvasRef.current.captureStream();
+    stream.addTrack(localStream.getAudioTracks()[0]);
+
+    // localStream.getTracks().forEach((track) => {
+    //   console.log("adding student track")
+    //   pc.addTrack(track, localStream);
+    // });
+
+    stream.getTracks().forEach((track) => {
       console.log("adding student track")
-      pc.addTrack(track, localStream);
+      pc.addTrack(track, stream);
     });
 
     //video for the local stream that is being sent to invigilator
-    localRef.current.srcObject = localStream;
+    // localRef.current.srcObject = localStream;
 
     setWebcamActive(true);
     // Defining the required collections and documents in database
@@ -262,6 +286,55 @@ function Videos({ mode, callId, setPage }) {
     };
   };
 
+    // --------------------------------Evan: Video Blurring-------------------------
+
+  function reset() {
+    localStream.current && localStream.current.getTracks().forEach((x) => x.stop());
+    localStream.current = null;
+  }
+
+  async function initializeVideo() {
+    try {
+    //   localStream = await navigator.mediaDevices.getUserMedia({ video: {} })
+      if (localStream != null) {
+        videoRef.current.srcObject = localStream;
+        videoRef.current.play();
+        videoRef.current.addEventListener("loadeddata", async () => {
+          const net = await bodyPix.load();
+          processVideo(net)
+        })
+      }
+    } catch (err){
+      reset();
+    }
+    return reset();
+  }
+
+
+  async function processVideo(net) {
+    const outputStride = 8;
+    const segmentationThreshold = 0.7;
+    const segmentation = await net.estimatePersonSegmentation(videoRef.current, outputStride, segmentationThreshold)
+
+    let backgroundBlurAmount = enableBlur ? blurAmount : 0;
+    const edgeBlurAmount = 3;
+    const flipHorizontal = true;
+
+    bodyPix.drawBokehEffect(
+      canvasRef.current,
+      videoRef.current,
+      segmentation,
+      backgroundBlurAmount,
+      edgeBlurAmount,
+      flipHorizontal
+    )
+    
+    requestAnimationFrame(() => {
+      processVideo(net)
+    })
+  }
+  
+
   const retry = async () => {
     const callDoc = doc(firestore, "calls", callId);
     // const answerCandidates = collection(callDoc, "answerCandidates");
@@ -307,13 +380,15 @@ function Videos({ mode, callId, setPage }) {
 
   return (
     <div className="videos">
-      <video
+      <video ref={videoRef} playsInline muted height={videoHeight} width={videoWidth} hidden={ true }/>
+      <canvas ref={canvasRef} height={videoHeight} width={videoWidth} />
+      {/* <video
         ref={localRef}
         autoPlay
         playsInline
         className="local"
         muted
-      />
+      /> */}
       {/* <video
         ref={remoteRef}
         autoPlay
@@ -370,7 +445,7 @@ function Videos({ mode, callId, setPage }) {
           <button
             onClick={retry}
             disabled={connectionStatus === "connected" || !start}
-          >
+          > 
             retry
           </button>
         </div>
