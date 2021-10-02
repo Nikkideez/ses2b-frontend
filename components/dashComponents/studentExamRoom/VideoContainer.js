@@ -5,25 +5,29 @@ const StudentRTC = dynamic(() => import('./StudentRTC'), { ssr: false });
 
 
 export default function VideoContainer() {
-  // const localRef = useRef();
-  // const [stream, setStream] = useState();
-  // const getVideo = async () => {
-  //   const localStream = await navigator.mediaDevices.getUserMedia({
-  //     video: true,
-  //     audio: true,
-  //   });
-  //   setStream(localStream);
-  //   // localRef.current.srcObject = localStream;
-  //   console.log(stream);
-  //   console.log(localRef);
-  // }
-  // useEffect(() => {
-  //   getVideo();
-  // }, [])
+  const [stream, setStream] = useState();
+  const [status, setStatus] = useState(false);
+  const getVideo = async () => {
+    try {
+    const localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    setStream(localStream);
+    }
+    catch (err){
+      console.log(err)
+    }
+  }
+  useEffect(() => {
+    getVideo();
+  }, [])
 
   return (
     <div>
-      <StudentRTC />
+      <StudentRTC
+        localStream={stream}
+      />
     </div>
   )
 }
