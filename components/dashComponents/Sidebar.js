@@ -11,12 +11,12 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
-import Link from 'next/Link';
+
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Button from '@material-ui/core/Button';
-import MainItemsList  from './SidebarListItemsV2';
+
 import List from '@material-ui/core/List';
 import Container from '@material-ui/core/Container';
 import Logo from '../../src/Images/Logo.png';
@@ -28,6 +28,8 @@ import { useRouter } from 'next/router';
 import tempAvatar from '../../src/Images/Moyaicon.png';
 import axios from 'axios';
 import { red } from '@material-ui/core/colors';
+
+import MainItemsList from './SidebarListItems.js';
 
 
 
@@ -121,6 +123,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+
 // Above was all the styling for the components
 // The bottom section will contain all the code and logic needed
 // to make the sidebar function properly
@@ -132,7 +135,7 @@ export default function Dashboard(props) {
   // and currentUser to null. 
   const clearUser = () => {
     setCurrentUser(null);
-    setIsStudent(true); 
+    setStudent(true); 
   }
 
   const classes = useStyles(); 
@@ -185,6 +188,7 @@ export default function Dashboard(props) {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
+
               <Button className={isStudent? classes.button: classes.buttonT2} onClick={handleLogout}>
                 Logout
               </Button>

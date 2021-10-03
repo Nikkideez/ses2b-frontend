@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
-import Sidebar from '../../components/dashComponents/Sidebar'
+import Sidebar from '../../../components/dashComponents/Sidebar'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import WarningIcon from '@material-ui/icons/Warning';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
-import { currentUserState, isStudentState } from '../../components/States';
-import { getUser } from '../../components/scripts/getUser'
+import { currentUserState, isStudentState } from '../../../components/States';
+import { getUser } from '../../../components/scripts/getUser'
 
 
 export default function Examroom({token}) {

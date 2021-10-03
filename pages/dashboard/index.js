@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
-import SidebarV2 from '../../components/dashComponents/SidebarV2'
+import Sidebar from '../../components/dashComponents/Sidebar'
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, Typography } from '@material-ui/core';
@@ -8,11 +8,7 @@ import Paper from '@material-ui/core/Paper';
 import ExamsTable from '../../components/dashComponents/upcomingExams/ExamsTable';
 import ExamsCurrent from '../../components/dashComponents/upcomingExams/ExamsCurrent';
 import { currentUserState, isStudentState } from '../../components/States';
-import axios from 'axios';
-import cookies from 'js-cookie'
-
-
-
+import { getUser } from '../../components/scripts/getUser'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -40,28 +36,15 @@ const useStyles = makeStyles((theme) => ({
 export default function Test({ token }) {
     const classes = useStyles();
     const [showCurrent, setCurrent] = React.useState(false);
-    const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
     const [isStudent, setIsStudent] = useRecoilState(isStudentState);
+    const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 
-    //fill in the user state object with user data from the DB
-    const getUser = () => {
-        axios({
-            method: "POST",
-            url: "https://protoruts-backend.herokuapp.com/auth/current-user",
-            data: {
-                idToken: token
-            },
-            withCredentials: true,
-        }).then((res) => {
-          console.log(res)
-          setCurrentUser(res.data)
-          setIsStudent(res.data.user_role === 2); 
-        })
-      }
-
-    useEffect(() => {
-        if(!currentUser)
-            getUser();
+    useEffect(async () => {
+        if (!currentUser) {
+            const user = await getUser(token)
+            setCurrentUser(user);
+            setIsStudent(user.user_role === 2);
+        }
       }, []);
 
     const handleAgree = () => {
@@ -75,7 +58,7 @@ export default function Test({ token }) {
     // Conditionally rendering current exams to only appear if a student has exams
     return (
         <div>
-            <SidebarV2>
+            <Sidebar>
                 
                 {showCurrent === true ?
                     <div style={{ paddingBottom: 60 }}>
@@ -100,7 +83,7 @@ export default function Test({ token }) {
                     Upcoming Exams
                 </Typography>
                 <ExamsTable handleAgree={handleAgree} test1="test" />
-            </SidebarV2>
+            </Sidebar>
         </div>
     )
 }
