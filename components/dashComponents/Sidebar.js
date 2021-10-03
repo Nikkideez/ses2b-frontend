@@ -135,7 +135,7 @@ export default function Dashboard(props) {
   // and currentUser to null. 
   const clearUser = () => {
     setCurrentUser(null);
-    setStudent(true); 
+    setIsStudent(true); 
   }
 
   const classes = useStyles(); 
