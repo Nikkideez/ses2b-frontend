@@ -126,32 +126,13 @@ const useStyles = makeStyles((theme) => ({
 // to make the sidebar function properly
 export default function Dashboard(props) {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
-  const [isStudent, setStudent] = useRecoilState(isStudentState); 
-
-  //fill in the user state object with user data from the DB
-  const getUser = () => {
-    axios({
-      method: "GET",
-      url: "https://protoruts-backend.herokuapp.com/auth/current-user",
-    }).then((res) => {
-      setCurrentUser(res.data);
-      setStudent(res.data.user_role === 2); 
-    })
-  }
-
-  //useEffect ensures that getUser() is not called every time the sidebar is 
-  //rerendered. This saves on runtime. 
-  useEffect(() => {
-    if(!currentUser)
-    getUser();
-  }, []);
-
+  const [isStudent, setIsStudent] = useRecoilState(isStudentState);
 
   //this function resets isStudentState to true (for theme purposes)
   // and currentUser to null. 
   const clearUser = () => {
     setCurrentUser(null);
-    setStudent(true); 
+    setIsStudent(true); 
   }
 
   const classes = useStyles(); 
@@ -204,11 +185,9 @@ export default function Dashboard(props) {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <Link href="/">
               <Button className={isStudent? classes.button: classes.buttonT2} onClick={handleLogout}>
                 Logout
               </Button>
-            {/* </Link> */}
           </div>
         </Toolbar>
       </AppBar>

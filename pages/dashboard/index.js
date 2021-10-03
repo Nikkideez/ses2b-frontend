@@ -40,8 +40,10 @@ const useStyles = makeStyles((theme) => ({
 export default function Test({ token }) {
     const classes = useStyles();
     const [showCurrent, setCurrent] = React.useState(false);
-    const isStudent = useRecoilValue(isStudentState);
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+    const [isStudent, setIsStudent] = useRecoilState(isStudentState);
+
+    //fill in the user state object with user data from the DB
     const getUser = () => {
         axios({
             method: "POST",
@@ -53,6 +55,7 @@ export default function Test({ token }) {
         }).then((res) => {
           console.log(res)
           setCurrentUser(res.data)
+          setIsStudent(res.data.user_role === 2); 
         })
       }
 
@@ -60,10 +63,15 @@ export default function Test({ token }) {
         if(!currentUser)
             getUser();
       }, []);
+
     const handleAgree = () => {
         setCurrent(true);
         console.log("Index side working");
     }
+
+    
+
+
     // Conditionally rendering current exams to only appear if a student has exams
     return (
         <div>
