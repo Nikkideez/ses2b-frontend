@@ -11,12 +11,12 @@ import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Badge from '@material-ui/core/Badge';
-import Link from 'next/link';
+
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Button from '@material-ui/core/Button';
-import MainItemsList  from './SidebarListItems';
+
 import List from '@material-ui/core/List';
 import Container from '@material-ui/core/Container';
 import Logo from '../../src/Images/Logo.png';
@@ -26,8 +26,10 @@ import styles from '../../styles/Home.module.css';
 import { ArrowLeft } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import tempAvatar from '../../src/Images/Moyaicon.png';
-// import axios from 'axios';
+import axios from 'axios';
 import { red } from '@material-ui/core/colors';
+
+import MainItemsList from './SidebarListItems.js';
 
 
 
@@ -127,22 +129,13 @@ const useStyles = makeStyles((theme) => ({
 // to make the sidebar function properly
 export default function Dashboard(props) {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
-  const [isStudent, setStudent] = useRecoilState(isStudentState); 
-
-  // Note from Evan: getting server side tokens can only be done through page. Work-around: Pass details through props.
-  // useEffect ensures that getUser() is not called every time the sidebar is 
-  // rerendered. This saves on runtime. 
-  useEffect(() => {
-    // if(!currentUser)
-    //   getUser();
-  }, []);
-
+  const [isStudent, setIsStudent] = useRecoilState(isStudentState);
 
   //this function resets isStudentState to true (for theme purposes)
   // and currentUser to null. 
   const clearUser = () => {
     setCurrentUser(null);
-    setStudent(true); 
+    setIsStudent(true); 
   }
 
   const classes = useStyles(); 
@@ -195,11 +188,10 @@ export default function Dashboard(props) {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <Link href="/">
+
               <Button className={isStudent? classes.button: classes.buttonT2} onClick={handleLogout}>
                 Logout
               </Button>
-            </Link>
           </div>
         </Toolbar>
       </AppBar>

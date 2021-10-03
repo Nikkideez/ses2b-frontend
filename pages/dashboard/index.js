@@ -36,21 +36,25 @@ const useStyles = makeStyles((theme) => ({
 export default function Test({ token }) {
     const classes = useStyles();
     const [showCurrent, setCurrent] = React.useState(false);
-    // const isStudent = useRecoilValue(isStudentState);
+    const [isStudent, setIsStudent] = useRecoilState(isStudentState);
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
-    const [isStudent, setStudent] = useRecoilState(isStudentState); 
 
     useEffect(async () => {
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);
-            setStudent(user.user_role === 2);
+            setIsStudent(user.user_role === 2);
         }
       }, []);
+
     const handleAgree = () => {
         setCurrent(true);
         console.log("Index side working");
     }
+
+    
+
+
     // Conditionally rendering current exams to only appear if a student has exams
     return (
         <div>
