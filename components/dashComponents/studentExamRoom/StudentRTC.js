@@ -49,6 +49,7 @@ const pc = new RTCPeerConnection(servers);
 export default function StudentRTC(props) {
   const [webcamActive, setWebcamActive] = useState(false);
   const [start, setStart] = useState(false);
+  const [roomId, setRoomId] = useState();
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
   const localStream = props.localStream
   let callId;
@@ -66,12 +67,12 @@ export default function StudentRTC(props) {
     const callCollec = await getDocs(collection(firestore, "calls"));
     callCollec.forEach((doc) => {
       callId = doc.id;
+      setRoomId(doc.id);
     })
     const callDoc = doc(firestore, "calls", callId);
-
     onSnapshot(callDoc, (snapshot) => {
       const data = snapshot.data();
-      console.log(data?.offer);
+      // console.log(data?.offer);
       if (data?.offer && !data?.answer) {
         setStart(true);
       } else {
@@ -92,7 +93,7 @@ export default function StudentRTC(props) {
     callCollec.forEach((doc) => {
       callId = doc.id;
     })
-    
+    // Combine local stream and face blur
     initializeVideo();
     let stream = canvasRef.current.captureStream();
     stream.addTrack(localStream.getAudioTracks()[0]);
@@ -124,18 +125,16 @@ export default function StudentRTC(props) {
     // Creating and Sending answer
     const answerDescription = await pc.createAnswer();
     await pc.setLocalDescription(answerDescription);
-
     const answer = {
       type: answerDescription.type,
       sdp: answerDescription.sdp,
     };
-
     await updateDoc(callDoc, { answer });
-    
+
     // When there is a new offer, send a new answer
     onSnapshot(callDoc, (snapshot) => {
       const data = snapshot.data();
-      console.log(data?.offer);
+      // console.log(data?.offer);
       if (data?.offer && !data?.answer && pc.connectionState === "disconnected") {
         newAnswer(callDoc, data.offer);
       }
@@ -155,63 +154,50 @@ export default function StudentRTC(props) {
       });
     });
 
-    // creates a new answer for a new answer when there is a disconnect
-    const newAnswer = async (callDoc, offer) => {
-      console.log("calling new answer")
-      pc.restartIce();
-      await pc.setRemoteDescription(offer);
-      console.log(pc.signalingState);
-      const answerDescription = await pc.createAnswer();
-      if (pc.signalingState !== "stable") {
-        try {
-          await pc.setLocalDescription(answerDescription);
-        } catch (err) {
-          console.log(err)
-        }
-      }
-      const answer = {
-        type: answerDescription.type,
-        sdp: answerDescription.sdp,
-      };
-      await updateDoc(callDoc, { answer });
-    }
-
-    // function to create a new offer during disconnect
-    const reconnect = async () => {
-      console.log("reconnect called!!")
-      const callDoc = doc(firestore, "calls", callId);
-      const answerCandidates = collection(callDoc, "answerCandidates");
-      const offerCandidates = collection(callDoc, "offerCandidates");
-
-      // delete the answers, offers and icecandidates to prepare for new connection
-      await updateDoc(callDoc, {
-        answer: deleteField(),
-        offer: deleteField(),
-      });
-
-      const answerAll = await getDocs(answerCandidates);
-      answerAll.forEach((doc) => {
-        deleteDoc(doc.ref);
-      })
-
-      const offerAll = await getDocs(offerCandidates);
-      offerAll.forEach((doc) => {
-        deleteDoc(doc.ref);
-      })
-      console.log("finished deleting")
-
-    }
-    
     // Try to reconnect on disconnect and update status
     pc.onconnectionstatechange = (event) => {
-      console.log(pc.connectionState)
+      // console.log(pc.connectionState)
       setConnectionStatus(pc.connectionState);
       if (pc.connectionState === "disconnected") {
-        reconnect();
+        retry();
       }
     };
   };
+  
+  // If there is a new offer then create a new answer to reconnect
+  const retry = async () => {
+    console.log('executing retry')
+    const callDoc = doc(firestore, "calls", roomId);
+    //getting offers from database
+    const callData = (await getDoc(callDoc)).data();
+    if (callData.offer && !callData.answer)
+      newAnswer(callDoc, callData.offer);
+  }
 
+  // Creates a new answer for a new answer when there is a disconnect
+  const newAnswer = async (callDoc, offer) => {
+    console.log("calling new answer")
+    try {
+      await pc.setRemoteDescription(offer);
+    } catch (err) {
+      console.log(err)
+    }
+    // Creating a new answer for the new offer
+    const answerDescription = await pc.createAnswer();
+    if (pc.signalingState !== "stable") {
+      try {
+        await pc.setLocalDescription(answerDescription);
+      } catch (err) {
+        console.log(err)
+      }
+    }
+    const answer = {
+      type: answerDescription.type,
+      sdp: answerDescription.sdp,
+    };
+    await updateDoc(callDoc, { answer });
+  }
+/* <----------------------- Face Blur -------------------------------> */
   function reset() {
     localStream.current && localStream.current.getTracks().forEach((x) => x.stop());
     localStream.current = null;
@@ -262,14 +248,7 @@ export default function StudentRTC(props) {
     }
   }
 
-
-  const retry = async () => {
-    const callDoc = doc(firestore, "calls", callId);
-    await updateDoc(callDoc, {
-      answer: deleteField(),
-    });
-  }
-
+/* <------^^^^^^^------------ Face Blur ------------^^^^^^^^---------> */
   console.log(props.localStream)
 
   return (
