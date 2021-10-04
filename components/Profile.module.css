@@ -1,0 +1,45 @@
+.container {
+    position: relative;
+    width: 100%;
+    color: black;
+  }
+
+  .centered {
+    position: absolute; 
+    top: 495px; 
+    left: 24px; 
+    right: 0px;
+    width: 100%; 
+    font-size: 22px;
+    font-weight: bold;
+  }
+
+  .centeredfirstName {
+    position: absolute; 
+    top: 575px; 
+    left: 24px; 
+    right: 0px;
+    width: 100%; 
+    font-size: 22px;
+  }
+
+  .centeredlastName {
+    position: absolute; 
+    top: 625px; 
+    left: 24px; 
+    right: 0px;
+    width: 100%; 
+    font-size: 22px;
+    font-weight: bold;
+
+  }
+
+  .box {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .subjectbox {
+    display: flex;
+    flex-direction: column;
+  }

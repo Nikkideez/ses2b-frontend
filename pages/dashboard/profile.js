@@ -3,7 +3,11 @@ import { useRecoilState } from 'recoil';
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 import Sidebar from '../../components/dashComponents/Sidebar'
-import { Typography } from '@material-ui/core'
+import Link from 'next/link'
+import Image from 'next/image'
+import profileCard from '/public/profilecardblank.svg'
+import subjectList from '/public/subjectlist.svg'
+import styles from '../../components/Profile.module.css'
 
 export default function Exams({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
@@ -20,9 +24,17 @@ export default function Exams({ token }) {
     return (
         <div>
             <Sidebar>
-                <Typography variant="h5">
-                    This will display the users profile
-                </Typography>
+                <div className = {styles.box}>
+                 <div className={styles.container}>
+                   <Image src={profileCard} alt="user profile card" style="width:100%;"/>
+                   <div className={styles.centered}>12345678</div>
+                   <div className={styles.centeredfirstName}>John</div>
+                   <div className={styles.centeredlastName}>Smith</div>
+                 </div>
+                 <div className = {styles.subjectbox}>
+                  <Image src={subjectList} alt="user subject list" style="width:100%;"/>
+                 </div>
+                </div>
             </Sidebar>
         </div>
     )
