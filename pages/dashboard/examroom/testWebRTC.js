@@ -1,13 +1,15 @@
 import React from 'react'
 import Sidebar from '../../../components/dashComponents/Sidebar'
-import InvigAllStudents from '../../../components/dashComponents/invigExamRoom/InvigAllStudents';
+import TestVideoContainer from '../../../components/dashComponents/studentExamRoom/TestVideoContainer'
 
-export default function envig() {
+
+
+export default function webRTC() {
   return (
     <Sidebar>
       <div>
         <div>
-          <InvigAllStudents />
+          <TestVideoContainer />
         </div>
       </div>
     </Sidebar>

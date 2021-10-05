@@ -3,10 +3,9 @@ import dynamic from 'next/dynamic'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles';
 import { OutlinedFlag } from '@material-ui/icons';
-// This file was created to hardcode rtc components as a server needs to be built to handle multiconnection
+// import styles from './InvigComponentStyles.module.css'
 
-
-const InvigRTC = dynamic(() => import('./InvigRTC'), { ssr: false });
+const TestRTC = dynamic(() => import('./TestRTC'), { ssr: false });
 
 const useStyles = makeStyles({
   root: {
@@ -38,11 +37,11 @@ export default function ComponentContainer(props) {
     <div>
       <Paper className={classes.root} variant="outlined">
         <div className={classes.studentInfo}>
-          <img src="https://pbs.twimg.com/profile_images/1184543288801529862/Lw46ZMHU.jpg"
+          <img src="https://i.kym-cdn.com/entries/icons/facebook/000/009/889/Morpheus2.jpg"
             className={classes.picture} />
           <div>
-            <p>Name: McLOVIN</p>
-            <p>SID: 123454</p>
+            <p>Name: Morpheus</p>
+            <p>SID: 121212</p>
           </div>
         </div>
         <div className={classes.tools}>
@@ -52,7 +51,7 @@ export default function ComponentContainer(props) {
           <button>View Logs</button>
           <button>Message</button>
         </div>
-        <InvigRTC 
+        <TestRTC 
           studentId={props.studentId}
           subject={props.subject}
         />

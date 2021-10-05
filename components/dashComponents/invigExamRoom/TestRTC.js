@@ -5,7 +5,7 @@ import {
   getFirestore, onSnapshot, deleteField,
 } from "firebase/firestore";
 // import { async } from '@firebase/util';
-
+// This was built to hardcode around the problem of webrtc multiconnection
 
 // initialize Firebase
 const firebaseConfig = {
@@ -43,6 +43,7 @@ const servers = {
 
 const pc = new RTCPeerConnection(servers);
 
+
 export default function InvigRTC(props) {
   const [start, setStart] = useState(false);
   const [callDoc, setCallDoc] = useState();
@@ -64,7 +65,7 @@ export default function InvigRTC(props) {
 
   // When start button is pressed, setup the RTC connection and create an offer
   const setupSources = async () => {
-    console.log(pc.localDescription)
+    console.log(pc.localDescription);
     // Delete all answer candidates
     const answerAll = await getDocs(answerCandidates);
     answerAll.forEach((doc) => {

@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { initializeApp } from "firebase/app";
 import {
-  collection, addDoc, doc, updateDoc, getDoc, getDocs, setDoc, deleteDoc,
-  getFirestore, onSnapshot, deleteField, query
+  collection, addDoc, doc, updateDoc, getDoc, getFirestore, onSnapshot, 
+  deleteField, query
 } from "firebase/firestore";
 import { async } from '@firebase/util';
 const bodyPix = require('@tensorflow-models/body-pix');
@@ -49,10 +49,9 @@ const pc = new RTCPeerConnection(servers);
 export default function StudentRTC(props) {
   const [webcamActive, setWebcamActive] = useState(false);
   const [start, setStart] = useState(false);
-  const [roomId, setRoomId] = useState();
+  const [callDoc, setCallDoc] = useState();
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
   const localStream = props.localStream
-  let callId;
 
   let blurAmount = 20;
   let enableBlur = true;
@@ -64,15 +63,10 @@ export default function StudentRTC(props) {
   // Gets the call ID from the database
   // Puts event listener on start button when offer is available
   const getCall = async () => {
-    const callCollec = await getDocs(collection(firestore, "calls"));
-    callCollec.forEach((doc) => {
-      callId = doc.id;
-      setRoomId(doc.id);
-    })
-    const callDoc = doc(firestore, "calls", callId);
+    const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call')
+    setCallDoc(callDoc);
     onSnapshot(callDoc, (snapshot) => {
       const data = snapshot.data();
-      // console.log(data?.offer);
       if (data?.offer && !data?.answer) {
         setStart(true);
       } else {
@@ -81,33 +75,24 @@ export default function StudentRTC(props) {
     })
   }
 
-  // Get call on render
+  // Call getCall() on render
   useEffect(() => {
     getCall();
   }, [])
 
   const setupSources = async () => {
-    // Get the call ID from firebase
-    // CallId should be created in db when student agrees to T&C
-    const callCollec = await getDocs(collection(firestore, "calls"));
-    callCollec.forEach((doc) => {
-      callId = doc.id;
-    })
     // Combine local stream and face blur
     initializeVideo();
     let stream = canvasRef.current.captureStream();
     stream.addTrack(localStream.getAudioTracks()[0]);
-
     // Getting tracks for stream to push to invigilator
     stream.getTracks().forEach((track) => {
       console.log("adding student track")
       pc.addTrack(track, stream);
     });
-
     // Conditional render when webcam is active
     setWebcamActive(true);
     // Defining the required collections and documents in database
-    const callDoc = doc(firestore, "calls", callId);
     const answerCandidates = collection(callDoc, "answerCandidates");
     const offerCandidates = collection(callDoc, "offerCandidates");
     //add ice candidates to the database
@@ -121,7 +106,6 @@ export default function StudentRTC(props) {
     // Setting offer from database
     await pc.setRemoteDescription(offerDescription);
     console.log("remote description set!")
-
     // Creating and Sending answer
     const answerDescription = await pc.createAnswer();
     await pc.setLocalDescription(answerDescription);
@@ -130,7 +114,6 @@ export default function StudentRTC(props) {
       sdp: answerDescription.sdp,
     };
     await updateDoc(callDoc, { answer });
-
     // When there is a new offer, send a new answer
     onSnapshot(callDoc, (snapshot) => {
       const data = snapshot.data();
@@ -139,7 +122,6 @@ export default function StudentRTC(props) {
         newAnswer(callDoc, data.offer);
       }
     })
-
     // When there is a new ice candidate, add it
     onSnapshot(offerCandidates, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
@@ -163,18 +145,19 @@ export default function StudentRTC(props) {
       }
     };
   };
-  
+
   // If there is a new offer then create a new answer to reconnect
   const retry = async () => {
     console.log('executing retry')
-    const callDoc = doc(firestore, "calls", roomId);
+    // const callDoc = doc(firestore, "students/123454/MATH1001", 'call');
+    console.log(callDoc);
     //getting offers from database
     const callData = (await getDoc(callDoc)).data();
     if (callData.offer && !callData.answer)
       newAnswer(callDoc, callData.offer);
   }
 
-  // Creates a new answer for a new answer when there is a disconnect
+  // Creates a new answer for a new offer when there is a disconnect
   const newAnswer = async (callDoc, offer) => {
     console.log("calling new answer")
     try {
@@ -197,7 +180,8 @@ export default function StudentRTC(props) {
     };
     await updateDoc(callDoc, { answer });
   }
-/* <----------------------- Face Blur -------------------------------> */
+
+  /* <----------------------- Face Blur -------------------------------> */
   function reset() {
     localStream.current && localStream.current.getTracks().forEach((x) => x.stop());
     localStream.current = null;
@@ -248,7 +232,7 @@ export default function StudentRTC(props) {
     }
   }
 
-/* <------^^^^^^^------------ Face Blur ------------^^^^^^^^---------> */
+  /* <------^^^^^^^------------ Face Blur ------------^^^^^^^^---------> */
   console.log(props.localStream)
 
   return (
