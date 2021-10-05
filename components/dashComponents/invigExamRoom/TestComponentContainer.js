@@ -3,6 +3,7 @@ import dynamic from 'next/dynamic'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles';
 import { OutlinedFlag } from '@material-ui/icons';
+import InvigOverview from './InvigOverview';
 // import styles from './InvigComponentStyles.module.css'
 
 const TestRTC = dynamic(() => import('./TestRTC'), { ssr: false });
@@ -36,7 +37,7 @@ export default function ComponentContainer(props) {
   return (
     <div>
       <Paper className={classes.root} variant="outlined">
-        <div className={classes.studentInfo}>
+        {/* <div className={classes.studentInfo}>
           <img src="https://i.kym-cdn.com/entries/icons/facebook/000/009/889/Morpheus2.jpg"
             className={classes.picture} />
           <div>
@@ -50,7 +51,12 @@ export default function ComponentContainer(props) {
           <p>Notications: 1</p>
           <button>View Logs</button>
           <button>Message</button>
-        </div>
+        </div> */}
+        <InvigOverview
+          name={'Morpheus'}
+          studentId={121212}
+          image={"https://i.kym-cdn.com/entries/icons/facebook/000/009/889/Morpheus2.jpg"}
+        />
         <TestRTC 
           studentId={props.studentId}
           subject={props.subject}

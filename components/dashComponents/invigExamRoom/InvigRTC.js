@@ -41,9 +41,11 @@ const servers = {
   iceCandidatePoolSize: 10,
 };
 
-const pc = new RTCPeerConnection(servers);
+
 
 export default function InvigRTC(props) {
+  let pc = props.rtc;
+  console.log(pc);
   const [start, setStart] = useState(false);
   const [callDoc, setCallDoc] = useState();
   const [answerCandidates, setAnswerCandidates] = useState();
@@ -64,6 +66,9 @@ export default function InvigRTC(props) {
 
   // When start button is pressed, setup the RTC connection and create an offer
   const setupSources = async () => {
+    console.log(pc.localDescription)
+    if(pc.localDescription)
+      pc = new RTCPeerConnection(servers);
     console.log(pc.localDescription)
     // Delete all answer candidates
     const answerAll = await getDocs(answerCandidates);
