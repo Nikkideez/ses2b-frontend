@@ -12,7 +12,8 @@ import InvigRTC from './InvigRTC';
 const useStyles = makeStyles({
   root: {
     padding: 30,
-    display: 'flex'
+    display: 'flex',
+    width: 653
   },
 });
 

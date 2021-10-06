@@ -80,6 +80,11 @@ export default function StudentRTC(props) {
     getCall();
   }, [])
 
+  // useEffect(() => {
+  //   if (props.screenStream)
+  //     pc.addTrack(props.screenStream, stream);
+  // }, [props.screenStream]);
+
   console.log(props.screenStream)
   const setupSources = async () => {
     // Combine local stream and face blur
@@ -93,7 +98,8 @@ export default function StudentRTC(props) {
       console.log(track)
       pc.addTrack(track, stream);
     });
-    pc.addTrack(props.screenStream, stream);
+    if (props.screenStream)
+      pc.addTrack(props.screenStream, stream);
 
     // Conditional render when webcam is active
     setWebcamActive(true);

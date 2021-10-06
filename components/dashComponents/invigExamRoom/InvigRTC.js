@@ -52,8 +52,10 @@ export default function InvigRTC(props) {
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
   const [isRetry, setRetry] = useState(true);
 
-  // variable to hold the remote video
+  // Ref for the remote video
   const remoteRef = useRef();
+  // Ref for the screen share
+  const screenRef = useRef();
   // Constructor for documents paths
   useEffect(() => {
     const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call');
@@ -81,22 +83,33 @@ export default function InvigRTC(props) {
     })
     // Create a new stream to add the remote stream to
     const remoteStream = new MediaStream();
+    const screenStream = new MediaStream();
     // Allow invigilator to recieve video and audio tracks in connection
     pc.addTransceiver('video')
     pc.addTransceiver('audio')
     pc.addTransceiver('video')
     // When the student adds a new track to the connection, add this to our remote stream
     pc.ontrack = (event) => {
+      let i = 1;
       event.streams[0].getTracks().forEach((track) => {
         console.log("remote track added!!")
-        console.log(track)
-        remoteStream.addTrack(track);
+        if (i % 3) {
+          // console.log(track)
+          remoteStream.addTrack(track);
+        } else {
+          screenStream.addTrack(track);
+        }
+        i++;
       });
-      console.log(pc.getTransceivers());
-      console.log(pc.getReceivers());
+      // console.log(pc.getTransceivers());
+      // console.log(pc.getReceivers());
     };
     // Ref for remote video
     remoteRef.current.srcObject = remoteStream;
+    // Ref for screen share
+    screenRef.current.srcObject = screenStream;
+    console.log(remoteRef);
+    console.log(screenRef);
     // Start button was clicked
     setStart(false);
     // Where there is a new ice candidate, add it to the offer candidates
@@ -189,6 +202,13 @@ export default function InvigRTC(props) {
     <div>
       <video
         ref={remoteRef}
+        autoPlay
+        playsInline
+        style={{ width: 400 }}
+      />
+
+      <video
+        ref={screenRef}
         autoPlay
         playsInline
         style={{ width: 400 }}
