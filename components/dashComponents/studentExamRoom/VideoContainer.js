@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 const StudentRTC = dynamic(() => import('./StudentRTC'), { ssr: false });
 
 
-export default function VideoContainer() {
+export default function VideoContainer(props) {
   const studentId = '123454';
   const subject = 'MATH1001';
   const [stream, setStream] = useState();
@@ -31,6 +31,7 @@ export default function VideoContainer() {
         localStream={stream}
         studentId={studentId}
         subject={subject}
+        screenStream={props.screenStream}
       />
     </div>
   )

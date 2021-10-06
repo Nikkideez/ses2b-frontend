@@ -45,7 +45,6 @@ const servers = {
 
 export default function InvigRTC(props) {
   let pc = props.rtc;
-  console.log(pc);
   const [start, setStart] = useState(false);
   const [callDoc, setCallDoc] = useState();
   const [answerCandidates, setAnswerCandidates] = useState();
@@ -66,10 +65,10 @@ export default function InvigRTC(props) {
 
   // When start button is pressed, setup the RTC connection and create an offer
   const setupSources = async () => {
-    console.log(pc.localDescription)
-    if(pc.localDescription)
-      pc = new RTCPeerConnection(servers);
-    console.log(pc.localDescription)
+    // console.log(pc.localDescription)
+    // if(pc.localDescription)
+    //   pc = new RTCPeerConnection(servers);
+    // console.log(pc.localDescription)
     // Delete all answer candidates
     const answerAll = await getDocs(answerCandidates);
     answerAll.forEach((doc) => {
@@ -85,13 +84,16 @@ export default function InvigRTC(props) {
     // Allow invigilator to recieve video and audio tracks in connection
     pc.addTransceiver('video')
     pc.addTransceiver('audio')
+    pc.addTransceiver('video')
     // When the student adds a new track to the connection, add this to our remote stream
     pc.ontrack = (event) => {
-      // console.log("ontrack working!!")
       event.streams[0].getTracks().forEach((track) => {
         console.log("remote track added!!")
+        console.log(track)
         remoteStream.addTrack(track);
       });
+      console.log(pc.getTransceivers());
+      console.log(pc.getReceivers());
     };
     // Ref for remote video
     remoteRef.current.srcObject = remoteStream;

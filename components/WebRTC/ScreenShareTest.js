@@ -15,10 +15,12 @@ export default function ScreenShare(props) {
   
 
   function handleSuccess(stream) {
+    props.setStream(stream.getVideoTracks()[0]);
+    // console.log(stream.getVideoTracks());
     startButton.disabled = true;
     // const video = document.querySelector('video');
     videoRef.current.srcObject = stream;
-    props.setScreenShare(true);
+    // props.setScreenShare(true);
 
     stream.getVideoTracks()[0].addEventListener('ended', () => {
       errorMsg('The user has ended sharing the screen');

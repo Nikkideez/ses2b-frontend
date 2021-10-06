@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { initializeApp } from "firebase/app";
 import {
-  collection, addDoc, doc, updateDoc, getDoc, getFirestore, onSnapshot, 
+  collection, addDoc, doc, updateDoc, getDoc, getFirestore, onSnapshot,
   deleteField, query
 } from "firebase/firestore";
 import { async } from '@firebase/util';
@@ -80,16 +80,21 @@ export default function StudentRTC(props) {
     getCall();
   }, [])
 
+  console.log(props.screenStream)
   const setupSources = async () => {
     // Combine local stream and face blur
     initializeVideo();
     let stream = canvasRef.current.captureStream();
     stream.addTrack(localStream.getAudioTracks()[0]);
+    // stream.addTrack(props.screenStream)
     // Getting tracks for stream to push to invigilator
     stream.getTracks().forEach((track) => {
       console.log("adding student track")
+      console.log(track)
       pc.addTrack(track, stream);
     });
+    pc.addTrack(props.screenStream, stream);
+
     // Conditional render when webcam is active
     setWebcamActive(true);
     // Defining the required collections and documents in database
@@ -233,7 +238,7 @@ export default function StudentRTC(props) {
   }
 
   /* <------^^^^^^^------------ Face Blur ------------^^^^^^^^---------> */
-  console.log(props.localStream)
+  // console.log(props.localStream)
 
   return (
     <div className="app">
