@@ -18,7 +18,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { isStudentState } from '../components/States';
-
+import Footer from '../components/Footer';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -97,13 +97,14 @@ export default function SignInSide() {
   }
 
   return (
+    <div>
     <Grid container component="main" className={classes.root}>
       <CssBaseline />
       <Grid item xs={false} sm={4} md={7} className={classes.image} />
       <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
         <div className={classes.paper}>
           <div className={classes.logo}>
-            <Image src={Logo} alt="ProctorUTS Logo" />
+          <Image src={Logo} alt="ProctorUTS Logo" onClick={() => { open("/") }} />
           </div>
           <Avatar className={classes.avatar}>
             <LockIcon />
@@ -182,5 +183,7 @@ export default function SignInSide() {
         </div>
       </Grid>
     </Grid>
+            <Footer></Footer>
+    </div>
   );
 }
