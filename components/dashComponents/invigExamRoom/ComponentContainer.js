@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 // import dynamic from 'next/dynamic'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,31 +11,44 @@ import InvigRTC from './InvigRTC';
 
 const useStyles = makeStyles({
   root: {
-    padding: 30,
+    padding: 15,
     display: 'flex',
-    width: 653
+    width: 'min-content'
   },
 });
 
 export default function ComponentContainer(props) {
   const classes = useStyles(props);
+  const [connectionStatus, setConnectionStatus] = useState('new');
   const studentId = props.studentId;
   const subject = props.subject;
   const image = props.image;
   const name = props.name;
+  // Ref for functions in invigRTC to be called in other components
+  const invigRef = useRef();
+  const start = () => invigRef.current.start();
+  const retry = () => invigRef.current.retryConnection();
+  console.log(start);
+
   return (
     <div>
       <Paper className={classes.root} variant="outlined">
-        <InvigOverview 
-        name={name} 
-        studentId={studentId}
-        image={image}
+        <InvigOverview
+          name={name}
+          studentId={studentId}
+          image={image}
+          connectionStatus={connectionStatus}
+          start={start}
+          retry={retry}
         />
         <InvigRTC
-          studentId={props.studentId}
-          subject={props.subject}
+          studentId={studentId}
+          subject={subject}
           rtc={props.rtc}
+          setConnectionStatus={setConnectionStatus}
+          ref={invigRef}
         />
+        {/* <button onClick={() => invigRef.current.start()}> start</button> */}
       </Paper>
     </div>
   )

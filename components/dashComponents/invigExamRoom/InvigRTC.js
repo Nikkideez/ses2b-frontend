@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useImperativeHandle, forwardRef } from 'react'
 import { initializeApp } from "firebase/app";
 import {
   collection, addDoc, doc, updateDoc, getDocs, setDoc, deleteDoc,
@@ -43,12 +43,15 @@ const servers = {
 
 
 
-export default function InvigRTC(props) {
+function InvigRTC(props, ref) {
   let pc = props.rtc;
-  const [start, setStart] = useState(false);
-  const [callDoc, setCallDoc] = useState();
-  const [answerCandidates, setAnswerCandidates] = useState();
-  const [offerCandidates, setOfferCandidates] = useState();
+  const [start, setStart] = useState(true);
+  // const [callDoc, setCallDoc] = useState();
+  // const [answerCandidates, setAnswerCandidates] = useState();
+  // const [offerCandidates, setOfferCandidates] = useState();
+  const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call');
+  const answerCandidates = collection(callDoc, "answerCandidates")
+  const offerCandidates = collection(callDoc, "offerCandidates")
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
   const [isRetry, setRetry] = useState(true);
 
@@ -57,13 +60,24 @@ export default function InvigRTC(props) {
   // Ref for the screen share
   const screenRef = useRef();
   // Constructor for documents paths
-  useEffect(() => {
-    const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call');
-    setCallDoc(callDoc);
-    setAnswerCandidates(collection(callDoc, "answerCandidates"));
-    setOfferCandidates(collection(callDoc, "offerCandidates"));
-    setStart(true);
-  }, []);
+  // useEffect(() => {
+  //   // const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call');
+  //   // setCallDoc(callDoc);
+  //   // setAnswerCandidates(collection(callDoc, "answerCandidates"));
+  //   // setOfferCandidates(collection(callDoc, "offerCandidates"));
+  //   setStart(true);
+  // }, []);
+
+  // window.onload = setupSources();
+
+  useImperativeHandle(ref, () => ({
+    start() {
+      setupSources();
+    },
+    retryConnection() {
+      retry();
+    }
+  }), []) 
 
   // When start button is pressed, setup the RTC connection and create an offer
   const setupSources = async () => {
@@ -165,6 +179,7 @@ export default function InvigRTC(props) {
     pc.onconnectionstatechange = (event) => {
       console.log(pc.connectionState)
       setConnectionStatus(pc.connectionState);
+      props.setConnectionStatus(pc.connectionState);
       if (pc.connectionState === "disconnected" || pc.connectionState === "failed") {
         retry();
       }
@@ -214,11 +229,11 @@ export default function InvigRTC(props) {
         style={{ width: 400 }}
       />
 
-      <div className="buttonsContainer">
+      {/* <div className="buttonsContainer">
         <p>{connectionStatus}</p>
-      </div>
+      </div> */}
 
-      {start ? (
+      {/* {start ? (
         <div>
           <button onClick={setupSources}>Start</button>
         </div>
@@ -227,9 +242,10 @@ export default function InvigRTC(props) {
           <button
             onClick={retry} disabled={isRetry || connectionStatus === "connected"}>retry</button>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
 
+export default forwardRef(InvigRTC);
 
