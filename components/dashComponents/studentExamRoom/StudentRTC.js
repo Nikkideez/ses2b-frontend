@@ -5,8 +5,7 @@ import {
   deleteField, query
 } from "firebase/firestore";
 import { async } from '@firebase/util';
-import Head from 'next/head';
-
+import Script from 'next/script';
 
 // initialize Firebase
 const firebaseConfig = {
@@ -274,11 +273,8 @@ export default function StudentRTC(props) {
           </button>
         </div>
       )}
-
-      <Head>
-          <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></script>
-          <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@1.0.0"></script>
-      </Head>
+        {/* Note From Evan: Importing body-pix as script to allow face api and blur to work together */}
+        <Script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@1.0.0"></Script>
     </div>
   );
 }
