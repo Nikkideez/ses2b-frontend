@@ -5,7 +5,7 @@ import {
   deleteField, query
 } from "firebase/firestore";
 import { async } from '@firebase/util';
-const bodyPix = require('@tensorflow-models/body-pix');
+import Head from 'next/head';
 
 
 // initialize Firebase
@@ -274,6 +274,11 @@ export default function StudentRTC(props) {
           </button>
         </div>
       )}
+
+      <Head>
+          <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></script>
+          <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@1.0.0"></script>
+      </Head>
     </div>
   );
 }
