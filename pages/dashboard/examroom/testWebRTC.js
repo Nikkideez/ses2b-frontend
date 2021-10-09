@@ -9,7 +9,7 @@ export default function webRTC() {
     <Sidebar>
       <div>
         <div>
-          <VideoContainer />
+          <VideoContainer studentId='121212'/>
         </div>
       </div>
     </Sidebar>

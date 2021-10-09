@@ -5,7 +5,7 @@ const StudentRTC = dynamic(() => import('./StudentRTC'), { ssr: false });
 
 
 export default function VideoContainer(props) {
-  const studentId = '123454';
+  const studentId = props.studentID;
   const subject = 'MATH1001';
   const [stream, setStream] = useState();
   // const [status, setStatus] = useState(false);

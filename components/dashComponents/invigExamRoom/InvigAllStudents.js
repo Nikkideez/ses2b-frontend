@@ -20,6 +20,7 @@ const array = [
 
 export default function InvigAllStudents() {
   const [localAudio, setAudio] = useState();
+  const [isMute, setMute] = useState(true);
   // const getAudio = async () => {
   //   try {
   //   const localStream = await navigator.mediaDevices.getUserMedia({
@@ -40,15 +41,17 @@ export default function InvigAllStudents() {
   
   return (
     <div>
+      <button onClick={() => setMute(!isMute)}>Mute Toggle</button>
       {array.map((student, index) =>
         <div key={index}>
           <InvigContainer
             studentId={student.studentId}
             image={student.image}
             name={student.name}
-            rtc={new RTCPeerConnection(servers)}
+            // rtc={new RTCPeerConnection(servers)}
             subject={'MATH1001'}
             localAudio={localAudio}
+            isMute={isMute}
           />
           <div style={{ padding: 10 }} />
         </div >

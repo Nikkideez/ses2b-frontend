@@ -65,10 +65,11 @@ export default function ComponentContainer(props) {
         <InvigRTC
           studentId={props.studentId}
           subject={props.subject}
-          rtc={props.rtc}
+          // rtc={props.rtc}
           setConnectionStatus={setConnectionStatus}
           ref={invigRef}
           localAudio={props.localAudio}
+          isMute={props.isMute}
         />
         {/* <button onClick={() => invigRef.current.start()}> start</button> */}
       </Paper>

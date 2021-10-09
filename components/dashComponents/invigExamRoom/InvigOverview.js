@@ -102,7 +102,7 @@ export default function InvigTools(props) {
             />
           </Badge>
         </div>
-        <div className={classes.buttonSpacing}>
+        {/* <div className={classes.buttonSpacing}>
           <Button
             variant='outlined'
             className={classes.button}
@@ -137,7 +137,7 @@ export default function InvigTools(props) {
           >
             Mute
           </Button>
-        </div>
+        </div> */}
         <div className={classes.buttonSpacing}>
           <Button variant='outlined' className={classes.button} startIcon={<NotificationsIcon />} fullWidth={true}>
             End Exam

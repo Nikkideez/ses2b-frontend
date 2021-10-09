@@ -1,12 +1,35 @@
 import React from 'react'
 import { IconButton } from '@material-ui/core'
+import { PlayCircleOutline } from '@material-ui/icons';
+import { Replay } from '@material-ui/icons';
+import { VolumeUp } from '@material-ui/icons';
+import { makeStyles } from '@material-ui/styles';
 
-export default function InvigRTCControls() {
+const useStyles = makeStyles({
+  muteOn: {
+    color: '#d32f2f'
+  },
+  muteOff: {
+
+  }
+});
+
+export default function InvigRTCControls(props) {
+  const classes = useStyles(props);
+
   return (
-    <div>
-      <IconButton></IconButton>
-      <IconButton></IconButton>
-      <IconButton></IconButton>
+    <div style={{ display: 'flex', justifyContent: "space-between" }}>
+      <div>
+        <IconButton onClick={props.start}>
+          <PlayCircleOutline />
+        </IconButton>
+        <IconButton onClick={props.retry}>
+          <Replay />
+        </IconButton>
+      </div>
+      <IconButton onClick={props.toggleMute}>
+        <VolumeUp className={props.isLocalMute ? classes.muteOn : classes.muteOff}/>
+      </IconButton>
     </div>
   )
 }
