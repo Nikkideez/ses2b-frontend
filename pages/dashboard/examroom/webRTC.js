@@ -12,7 +12,7 @@ export default function WebRTC() {
     <Sidebar>
       <div>
         <div>
-          <VideoContainer studentID='123454' screenStream={screenStream}/>
+          <VideoContainer studentId='123454' screenStream={screenStream}/>
         </div>
         <ScreenShareTest setStream={setStream} />
         

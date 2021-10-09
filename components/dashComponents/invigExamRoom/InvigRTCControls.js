@@ -20,11 +20,11 @@ export default function InvigRTCControls(props) {
   return (
     <div style={{ display: 'flex', justifyContent: "space-between" }}>
       <div>
-        <IconButton onClick={props.start}>
-          <PlayCircleOutline />
-        </IconButton>
-        <IconButton onClick={props.retry}>
+        <IconButton color="secondary" onClick={props.retry} disabled={props.isRetry || props.connectionStatus === "connected" || props.connectionStatus === "connecting"}>
           <Replay />
+        </IconButton>
+        <IconButton onClick={props.start} disabled={props.isStart}>
+          <PlayCircleOutline />
         </IconButton>
       </div>
       <IconButton onClick={props.toggleMute}>

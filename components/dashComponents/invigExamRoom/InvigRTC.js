@@ -44,45 +44,25 @@ const servers = {
 
 
 
-function InvigRTC(props, ref) {
-  let pc = new RTCPeerConnection(servers);
+export default function InvigRTC(props) {
+  const pc = new RTCPeerConnection(servers);
   const [isStart, setStart] = useState(false);
-  // const [callDoc, setCallDoc] = useState();
-  // const [answerCandidates, setAnswerCandidates] = useState();
-  // const [offerCandidates, setOfferCandidates] = useState();
   const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call');
   const answerCandidates = collection(callDoc, "answerCandidates")
   const offerCandidates = collection(callDoc, "offerCandidates")
   const [localAudio, setLocalAudio] = useState();
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
   const [isRetry, setRetry] = useState(true);
-  const [isLocalMute, setLocalMute] = useState(true);
-  // const localAudio = props.localAudio;
-  // console.log(props.localAudio)
-  // pc.addTrack(props.localAudio.getAudioTracks()[0]);
+  const [isLocalMute, setLocalMute] = useState(false);
   // Ref for the remote video
   const remoteRef = useRef();
   // Ref for the screen share
   const screenRef = useRef();
 
-  // This allows functions to be passed up to parents
-  useImperativeHandle(ref, () => ({
-    start() {
-      setupSources();
-    },
-    retryConnection() {
-      retry();
-    },
-    toggleMute() {
-      toggleMute();
-    }
-  }), [])
-
   // Useeffect to fire every time isMute is changed
-  console.log(props.isMute)
   useEffect(() => {
-    if (isStart)
-      toggleMute()
+    if (isStart && connectionStatus === "connected")
+      toggleMuteAll(props.isMute)
   }, [props.isMute])
 
   // useEffect to call setupsources on start
@@ -92,20 +72,20 @@ function InvigRTC(props, ref) {
 
   // When start button is pressed, setup the RTC connection and create an offer
   const setupSources = async () => {
+    // Start button was clicked
     setStart(true);
+    // Let user know new connection has been started
+    props.setConnectionStatus('New Offer Created')
+    // Create audio stream for invigilator
     const localAudio = await navigator.mediaDevices.getUserMedia({
       audio: true,
     });
-    console.log(localAudio);
     setLocalAudio(localAudio);
     // const remoteStream = new MediaStream();
     localAudio.getTracks().forEach((track) => {
+      track.enabled = false;
       pc.addTrack(track, localAudio);
     });
-    // console.log(pc.localDescription)
-    // if(pc.localDescription)
-    //   pc = new RTCPeerConnection(servers);
-    // console.log(pc.localDescription)
     // Delete all answer candidates
     const answerAll = await getDocs(answerCandidates);
     answerAll.forEach((doc) => {
@@ -122,16 +102,12 @@ function InvigRTC(props, ref) {
     // Allow invigilator to recieve video and audio tracks in connection
     pc.addTransceiver('video')
     // pc.addTransceiver('audio')
-    // console.log(props.localAudio);
-    // pc.addTrack(props.audio.getAudioTracks()[0]);
     pc.addTransceiver('video')
     // When the student adds a new track to the connection, add this to our remote stream
     pc.ontrack = (event) => {
       let i = 1;
-      console.log(event.streams[0]);
       event.streams[0].getTracks().forEach((track) => {
-        console.log("remote track added!!")
-        console.log(track)
+        // console.log("remote track added!!")
         if (i % 3) {
           // console.log(track)
           remoteStream.addTrack(track);
@@ -140,18 +116,12 @@ function InvigRTC(props, ref) {
         }
         i++;
       });
-      // console.log(pc.getTransceivers());
-      // console.log(pc.getReceivers());
     };
     // Ref for remote video
     remoteRef.current.srcObject = remoteStream;
     // Ref for screen share
     screenRef.current.srcObject = screenStream;
-    // console.log(remoteRef);
-    // console.log(screenRef);
-    // Start button was clicked
-
-    // Where there is a new ice candidate, add it to the offer candidates
+    // When there is a new ice candidate, add it to the offer candidates
     pc.onicecandidate = (event) => {
       event.candidate &&
         addDoc(offerCandidates, (event.candidate.toJSON()));
@@ -238,20 +208,19 @@ function InvigRTC(props, ref) {
     await setDoc(callDoc, { offer });
   }
 
+  // Allow for invigillator to unmute one student
   const toggleMute = () => {
     localAudio.getAudioTracks()[0].enabled = !localAudio.getAudioTracks()[0].enabled;
     setLocalMute(localAudio.getAudioTracks()[0].enabled);
     console.log(localAudio.getAudioTracks()[0].enabled);
   }
-  // const addAudio = () => {
-  //   if (props.localAudio) {
-  //     const localStream = props.localAudio
-  //     localStream.getTracks().forEach((track) => {
-  //       console.log(track)
-  //       pc.addTrack(track, localStream)
-  //     })
-  //   }
-  // }
+
+  // Allow for invigilator to unmute all students
+  const toggleMuteAll = (isMute) => {
+    localAudio.getAudioTracks()[0].enabled = isMute;
+    setLocalMute(localAudio.getAudioTracks()[0].enabled);
+    console.log(localAudio.getAudioTracks()[0].enabled);
+  }
 
   return (
     <div>
@@ -269,31 +238,16 @@ function InvigRTC(props, ref) {
         style={{ width: 400 }}
       />
 
-      {/* <div className="buttonsContainer">
-        <p>{connectionStatus}</p>
-      </div> */}
-      {/* <button onClick={() => toggleMute()}>Mute</button> */}
-      {/* <button onClick={() => addAudio()}>Add Track</button> */}
-      {/* {start ? (
-        <div>
-          <button onClick={setupSources}>Start</button>
-        </div>
-      ) : (
-        <div>
-          <button
-            onClick={retry} disabled={isRetry || connectionStatus === "connected"}>retry</button>
-        </div>
-      )} */}
       <InvigRTCControls
         start={setupSources}
         retry={retry}
         toggleMute={toggleMute}
         isLocalMute={isLocalMute}
         isStart={isStart}
+        isRetry={isRetry}
+        connectionStatus={connectionStatus}
       />
     </div>
   );
-}
-
-export default forwardRef(InvigRTC);
+};
 
