@@ -1,4 +1,4 @@
-import React, { useRef, useState, useImperativeHandle, forwardRef } from 'react'
+import React, { useRef, useState, useImperativeHandle, forwardRef, useEffect } from 'react'
 import { initializeApp } from "firebase/app";
 import {
   collection, addDoc, doc, updateDoc, getDocs, setDoc, deleteDoc,
@@ -44,7 +44,7 @@ const servers = {
 
 
 function InvigRTC(props, ref) {
-  let pc = props.rtc;
+  let pc = new RTCPeerConnection(servers);
   const [start, setStart] = useState(true);
   // const [callDoc, setCallDoc] = useState();
   // const [answerCandidates, setAnswerCandidates] = useState();
@@ -52,35 +52,41 @@ function InvigRTC(props, ref) {
   const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call');
   const answerCandidates = collection(callDoc, "answerCandidates")
   const offerCandidates = collection(callDoc, "offerCandidates")
+  const [localAudio, setLocalAudio] = useState();
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
   const [isRetry, setRetry] = useState(true);
-
+  // const localAudio = props.localAudio;
+  // console.log(props.localAudio)
+  // pc.addTrack(props.localAudio.getAudioTracks()[0]);
   // Ref for the remote video
   const remoteRef = useRef();
   // Ref for the screen share
   const screenRef = useRef();
-  // Constructor for documents paths
-  // useEffect(() => {
-  //   // const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call');
-  //   // setCallDoc(callDoc);
-  //   // setAnswerCandidates(collection(callDoc, "answerCandidates"));
-  //   // setOfferCandidates(collection(callDoc, "offerCandidates"));
-  //   setStart(true);
-  // }, []);
 
-  // window.onload = setupSources();
-
+  
   useImperativeHandle(ref, () => ({
     start() {
       setupSources();
     },
     retryConnection() {
       retry();
+    },
+    toggleMute() {
+      toggleMute();
     }
-  }), []) 
+  }), [])
 
   // When start button is pressed, setup the RTC connection and create an offer
   const setupSources = async () => {
+    const localAudio = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
+    console.log(localAudio);
+    setLocalAudio(localAudio);
+    // const remoteStream = new MediaStream();
+    localAudio.getTracks().forEach((track) => {
+      pc.addTrack(track, localAudio);
+    });
     // console.log(pc.localDescription)
     // if(pc.localDescription)
     //   pc = new RTCPeerConnection(servers);
@@ -100,13 +106,17 @@ function InvigRTC(props, ref) {
     const screenStream = new MediaStream();
     // Allow invigilator to recieve video and audio tracks in connection
     pc.addTransceiver('video')
-    pc.addTransceiver('audio')
+    // pc.addTransceiver('audio')
+    // console.log(props.localAudio);
+    // pc.addTrack(props.audio.getAudioTracks()[0]);
     pc.addTransceiver('video')
     // When the student adds a new track to the connection, add this to our remote stream
     pc.ontrack = (event) => {
       let i = 1;
+      console.log(event.streams[0]);
       event.streams[0].getTracks().forEach((track) => {
         console.log("remote track added!!")
+        console.log(track)
         if (i % 3) {
           // console.log(track)
           remoteStream.addTrack(track);
@@ -122,8 +132,8 @@ function InvigRTC(props, ref) {
     remoteRef.current.srcObject = remoteStream;
     // Ref for screen share
     screenRef.current.srcObject = screenStream;
-    console.log(remoteRef);
-    console.log(screenRef);
+    // console.log(remoteRef);
+    // console.log(screenRef);
     // Start button was clicked
     setStart(false);
     // Where there is a new ice candidate, add it to the offer candidates
@@ -213,6 +223,20 @@ function InvigRTC(props, ref) {
     await setDoc(callDoc, { offer });
   }
 
+  const toggleMute = () => {
+    localAudio.getAudioTracks()[0].enabled = !localAudio.getAudioTracks()[0].enabled;
+    console.log(localAudio.getAudioTracks()[0].enabled);
+  }
+  // const addAudio = () => {
+  //   if (props.localAudio) {
+  //     const localStream = props.localAudio
+  //     localStream.getTracks().forEach((track) => {
+  //       console.log(track)
+  //       pc.addTrack(track, localStream)
+  //     })
+  //   }
+  // }
+
   return (
     <div>
       <video
@@ -232,7 +256,8 @@ function InvigRTC(props, ref) {
       {/* <div className="buttonsContainer">
         <p>{connectionStatus}</p>
       </div> */}
-
+      <button onClick={() => toggleMute()}>Mute</button>
+      {/* <button onClick={() => addAudio()}>Add Track</button> */}
       {/* {start ? (
         <div>
           <button onClick={setupSources}>Start</button>

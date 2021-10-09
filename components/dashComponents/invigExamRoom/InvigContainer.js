@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 // import dynamic from 'next/dynamic'
 import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles';
@@ -28,25 +28,47 @@ export default function ComponentContainer(props) {
   const invigRef = useRef();
   const start = () => invigRef.current.start();
   const retry = () => invigRef.current.retryConnection();
-  console.log(start);
+  const toggleMute = () => invigRef.current.toggleMute();
+  // console.log(start);
+
+  // const getAudio = async () => {
+  //   try {
+  //   const localStream = await navigator.mediaDevices.getUserMedia({
+  //     audio: true,
+  //   });
+  //   setAudio(localStream);
+  //   console.log(localStream)
+  //   }
+  //   catch (err){
+  //     console.log(err)
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   getAudio();
+  // }, [])
+
+  
 
   return (
     <div>
       <Paper className={classes.root} variant="outlined">
         <InvigOverview
-          name={name}
-          studentId={studentId}
-          image={image}
+          name={props.name}
+          studentId={props.studentId}
+          image={props.image}
           connectionStatus={connectionStatus}
           start={start}
           retry={retry}
+          toggleMute={toggleMute}
         />
         <InvigRTC
-          studentId={studentId}
-          subject={subject}
+          studentId={props.studentId}
+          subject={props.subject}
           rtc={props.rtc}
           setConnectionStatus={setConnectionStatus}
           ref={invigRef}
+          localAudio={props.localAudio}
         />
         {/* <button onClick={() => invigRef.current.start()}> start</button> */}
       </Paper>

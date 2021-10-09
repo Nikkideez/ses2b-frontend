@@ -8,7 +8,7 @@ export default function VideoContainer(props) {
   const studentId = '123454';
   const subject = 'MATH1001';
   const [stream, setStream] = useState();
-  const [status, setStatus] = useState(false);
+  // const [status, setStatus] = useState(false);
   const getVideo = async () => {
     try {
     const localStream = await navigator.mediaDevices.getUserMedia({

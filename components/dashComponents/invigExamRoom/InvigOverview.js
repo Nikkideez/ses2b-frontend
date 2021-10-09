@@ -55,7 +55,7 @@ const useStyles = makeStyles({
 });
 
 export default function InvigTools(props) {
-  console.log(props.start)
+  // console.log(props.start)
   const classes = useStyles(props);
   const [isStart, setStart] = useState(false);
   const [warnings, setWarning] = useState(2);
@@ -124,6 +124,18 @@ export default function InvigTools(props) {
             fullWidth={true}
           >
             retry
+          </Button>
+        </div>
+        <div className={classes.buttonSpacing}>
+          <Button
+            variant='outlined'
+            className={classes.button}
+            disabled={props.connectionStatus !== 'connected'}
+            onClick={() => props.toggleMute()}
+            startIcon={<Replay style={{ color: 'purple' }} />}
+            fullWidth={true}
+          >
+            Mute
           </Button>
         </div>
         <div className={classes.buttonSpacing}>

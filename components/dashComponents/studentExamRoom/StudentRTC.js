@@ -59,6 +59,9 @@ export default function StudentRTC(props) {
   const videoWidth = 640;
   const videoRef = useRef();
   const canvasRef = useRef();
+  // To receive audio
+  const remoteAudioRef = useRef();
+  // const remoteRef = useRef();
 
   // Gets the call ID from the database
   // Puts event listener on start button when offer is available
@@ -80,12 +83,7 @@ export default function StudentRTC(props) {
     getCall();
   }, [])
 
-  // useEffect(() => {
-  //   if (props.screenStream)
-  //     pc.addTrack(props.screenStream, stream);
-  // }, [props.screenStream]);
-
-  console.log(props.screenStream)
+  // console.log(props.screenStream)
   const setupSources = async () => {
     // Combine local stream and face blur
     initializeVideo();
@@ -95,8 +93,10 @@ export default function StudentRTC(props) {
     // Getting tracks for stream to push to invigilator
     stream.getTracks().forEach((track) => {
       console.log("adding student track")
-      console.log(track)
+      // console.log(track)
       pc.addTrack(track, stream);
+      // console.log(track)
+      // console.log(stream)
     });
     if (props.screenStream)
       pc.addTrack(props.screenStream, stream);
@@ -111,6 +111,25 @@ export default function StudentRTC(props) {
       event.candidate &&
         addDoc(answerCandidates, event.candidate.toJSON());
     };
+    // Adding remote audio tracks
+    const remoteStream = new MediaStream();
+    pc.ontrack = (event) => {
+      console.log(event)
+      if (event.streams[0]) {
+        remoteStream.addTrack(event.streams[0].getAudioTracks()[0])
+      };
+    };
+    // remoteRef.current.srcObject = remoteStream;
+
+    // pc.ontrack = (event) => {
+    // console.log(pc.getSenders());
+    // console.log(event.track)
+    // console.log(event.streams[0])
+    // if(event.track.kind === 'audio')
+    //   remoteStream.addTrack(event.track);
+    // };
+    // Setting the remote audio
+    remoteAudioRef.current.srcObject = remoteStream;
     //getting offers from database
     const callData = (await getDoc(callDoc)).data();
     const offerDescription = callData.offer;
@@ -251,6 +270,9 @@ export default function StudentRTC(props) {
 
       <video ref={videoRef} playsInline muted height={videoHeight} width={videoWidth} hidden={true} />
       <canvas ref={canvasRef} height={videoHeight} width={videoWidth} />
+      <audio ref={remoteAudioRef} autoPlay ></audio>
+      {/* <video ref={remoteRef} autoPlay playsInline height={videoHeight} width={videoWidth} /> */}
+
 
       {!webcamActive ? (
         <div className="modalContainer">

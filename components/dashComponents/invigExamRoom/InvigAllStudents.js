@@ -1,5 +1,5 @@
-import React from 'react'
-import ComponentContainer from './ComponentContainer'
+import React, { useEffect, useState} from 'react'
+import InvigContainer from './InvigContainer'
 
 const servers = {
   iceServers: [
@@ -19,17 +19,36 @@ const array = [
 ]
 
 export default function InvigAllStudents() {
+  const [localAudio, setAudio] = useState();
+  // const getAudio = async () => {
+  //   try {
+  //   const localStream = await navigator.mediaDevices.getUserMedia({
+  //     audio: true,
+  //   });
+  //   setAudio(localStream);
+  //   }
+  //   catch (err){
+  //     console.log(err)
+  //   }
+  // }
 
+  // useEffect(() => {
+  //   getAudio();
+  // }, [])
+
+  // console.log(localAudio);
+  
   return (
     <div>
       {array.map((student, index) =>
         <div key={index}>
-          <ComponentContainer
+          <InvigContainer
             studentId={student.studentId}
             image={student.image}
             name={student.name}
             rtc={new RTCPeerConnection(servers)}
             subject={'MATH1001'}
+            localAudio={localAudio}
           />
           <div style={{ padding: 10 }} />
         </div >

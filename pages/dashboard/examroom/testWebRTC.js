@@ -1,6 +1,6 @@
 import React from 'react'
 import Sidebar from '../../../components/dashComponents/Sidebar'
-import TestVideoContainer from '../../../components/dashComponents/studentExamRoom/TestVideoContainer'
+import VideoContainer from '../../../components/dashComponents/studentExamRoom/VideoContainer'
 
 
 
@@ -9,7 +9,7 @@ export default function webRTC() {
     <Sidebar>
       <div>
         <div>
-          <TestVideoContainer />
+          <VideoContainer />
         </div>
       </div>
     </Sidebar>
