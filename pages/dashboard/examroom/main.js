@@ -9,6 +9,7 @@ import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import { currentUserState, isStudentState } from '../../../components/States';
 import { getUser } from '../../../components/scripts/getUser'
+import MainContainer from '../../../components/dashComponents/studentExamRoom/MainContainer';
 
 
 export default function Examroom({token}) {
@@ -26,7 +27,8 @@ export default function Examroom({token}) {
 	return (
 		<div>
 			<Sidebar>
-				<Typography variant="h5">
+				<MainContainer/>
+				{/* <Typography variant="h5">
 					Welcome to the exam room
 				</Typography>
 				<div style={{ display: 'flex', justifyContent: 'space-around', padding: 60, paddingBottom: 20 }}>
@@ -55,7 +57,8 @@ export default function Examroom({token}) {
 							This will hold the screen record API
 						</Typography>
 					</Paper>
-				</div>
+				</div> */}
+
 			</Sidebar>
 		</div>
 	)

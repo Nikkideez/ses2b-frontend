@@ -15,7 +15,7 @@ export default function ScreenShare(props) {
   
 
   function handleSuccess(stream) {
-    props.setStream(stream.getVideoTracks()[0]);
+    props.setScreenStream(stream.getVideoTracks()[0]);
     // console.log(stream.getVideoTracks());
     startButton.disabled = true;
     // const video = document.querySelector('video');
@@ -47,7 +47,7 @@ export default function ScreenShare(props) {
 
 
   return (
-    <div>
+    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
       <video ref={videoRef} height={videoHeight} width={videoWidth} playsInline autoPlay muted />
       <button onClick={() => startButton()}>Activate</button>
       <p>{ feedback }</p>

@@ -166,8 +166,8 @@ export default function InvigRTC(props) {
           }
         }
       });
-      // Allow retry in 8 seconds
-      setTimeout(() => { setRetry(false) }, 8000);
+      // Allow retry in 10 seconds
+      setTimeout(() => { setRetry(false) }, 10000);
     });
 
     //When the connection changes(e.g disconnect) try to reconnect
@@ -243,7 +243,7 @@ export default function InvigRTC(props) {
         retry={retry}
         toggleMute={toggleMute}
         isLocalMute={isLocalMute}
-        isStart={isStart}
+        // isStart={isStart}
         isRetry={isRetry}
         connectionStatus={connectionStatus}
       />

@@ -11,13 +11,13 @@ export default function WebRTC() {
   return (
     <Sidebar>
       <div>
+        {/* Note from Evan: load tensorflow for video processing. */}
+        <Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
         <div>
           <VideoContainer studentId='123454' screenStream={screenStream}/>
         </div>
         <ScreenShareTest setStream={setStream} />
         
-        {/* Note from Evan: load tensorflow for video processing. */}
-        <Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
       </div>
     </Sidebar>
   )

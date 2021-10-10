@@ -169,6 +169,7 @@ export default function StudentRTC(props) {
     pc.onconnectionstatechange = (event) => {
       // console.log(pc.connectionState)
       setConnectionStatus(pc.connectionState);
+      props.setConnectionStatus(pc.connectionState);
       if (pc.connectionState === "disconnected") {
         retry();
       }
@@ -265,13 +266,11 @@ export default function StudentRTC(props) {
   // console.log(props.localStream)
 
   return (
-    <div className="app">
-
+    <div>
       <video ref={videoRef} playsInline muted height={videoHeight} width={videoWidth} hidden={true} />
-      <canvas ref={canvasRef} height={videoHeight} width={videoWidth} />
+      <canvas ref={canvasRef} height={videoHeight} width={videoWidth} style={{width: 500}}/>
       <audio ref={remoteAudioRef} autoPlay ></audio>
       {/* <video ref={remoteRef} autoPlay playsInline height={videoHeight} width={videoWidth} /> */}
-
 
       {!webcamActive ? (
         <div className="modalContainer">
@@ -286,7 +285,7 @@ export default function StudentRTC(props) {
         </div>
       ) : (
         <div>
-          <p>{connectionStatus}</p>
+          {/* <p>{connectionStatus}</p> */}
           <button
             onClick={retry}
             disabled={connectionStatus === "connected" || !start}

@@ -5,8 +5,8 @@ import ScreenShareTest from '../../../components/WebRTC/ScreenShareTest'
 import Script from 'next/script'
 
 
-export default function webRTC() {
-  const [screenStream, setStream] = useState();
+export default function WebRTC() {
+  const [screenStream, setScreenStream] = useState();
 
   return (
     <Sidebar>
@@ -14,7 +14,7 @@ export default function webRTC() {
         <div>
           <VideoContainer studentId='121212' screenStream={screenStream}/>
         </div>
-        <ScreenShareTest setStream={setStream} />
+        <ScreenShareTest setScreenStream={setScreenStream} />
         
         {/* Note from Evan: load tensorflow for video processing. */}
         <Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
