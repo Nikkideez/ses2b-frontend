@@ -2,9 +2,16 @@ import React, { useRef, useState } from "react";
 import styles from '../../../styles/Face.module.css';
 import Button from '@material-ui/core/Button';
 
-export default function ScreenShare(props) {
+let videoRef;
 
-  const videoRef = useRef();
+export function stopScreen() {
+  const tracks = videoRef.current.srcObject.getTracks();
+  for( var i = 0 ; i < tracks.length ; i++ ) tracks[i].stop();
+}
+
+
+export default function ScreenShare(props) {
+  videoRef = useRef();
   const videoHeight = 360;
   const videoWidth = 480;
 
