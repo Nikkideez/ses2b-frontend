@@ -54,6 +54,7 @@ export default function StudentRTC(props) {
 
   let blurAmount = 20;
   let enableBlur = true;
+  let flipHorizontal = true;
   const videoHeight = 480;
   const videoWidth = 640;
   const videoRef = useRef();
@@ -237,14 +238,11 @@ export default function StudentRTC(props) {
   async function processVideo(net) {
     try {
 
-      const outputStride = 8;
-      const segmentationThreshold = 0.7;
-      const segmentation = await net.estimatePersonSegmentation(videoRef.current, outputStride, segmentationThreshold)
+      const segmentation = await net.segmentPerson(videoRef.current);
 
       let backgroundBlurAmount = enableBlur ? blurAmount : 0;
       const edgeBlurAmount = 3;
-      const flipHorizontal = true;
-
+      
       bodyPix.drawBokehEffect(
         canvasRef.current,
         videoRef.current,
@@ -295,7 +293,7 @@ export default function StudentRTC(props) {
         </div>
       )}
         {/* Note From Evan: Importing body-pix as script to allow face api and blur to work together */}
-        <Script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@1.0.0"></Script>
+        <Script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></Script>
     </div>
   );
 }

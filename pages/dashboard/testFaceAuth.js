@@ -4,6 +4,7 @@ import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 import StepperExam from '../../components/dashComponents/studentExamPrep/stepperExam';
 import Sidebar from '../../components/dashComponents/Sidebar'
+import Script from 'next/script';
 
 export default function TestFaceAuth({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
@@ -19,8 +20,9 @@ export default function TestFaceAuth({ token }) {
 
     return (
         <div>
+            <Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
             <Sidebar>
-                <StepperExam />
+                <StepperExam token={ token }/>
             </Sidebar>
         </div>
     )
