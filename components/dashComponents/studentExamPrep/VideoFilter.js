@@ -49,7 +49,7 @@ export default function Blur(props) {
 
   useEffect(() => {
     const img = new Image();
-    img.src = "/logoBG.PNG";
+    img.src = "/LogoBG.PNG";
     img.onload = () => {
       virtualBackground = img;
     }
