@@ -55,7 +55,7 @@ export default function Blur(props) {
     }
 
     initializeVideo();
-  })
+  }, [])
 
   async function initializeVideo() {
     try {
