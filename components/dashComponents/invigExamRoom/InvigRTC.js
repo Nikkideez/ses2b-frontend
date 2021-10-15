@@ -5,7 +5,7 @@ import {
   getFirestore, onSnapshot, deleteField,
 } from "firebase/firestore";
 import InvigRTCControls from './InvigRTCControls';
-// import { async } from '@firebase/util';
+
 
 
 // initialize Firebase
@@ -58,6 +58,24 @@ export default function InvigRTC(props) {
   const remoteRef = useRef();
   // Ref for the screen share
   const screenRef = useRef();
+
+  // ------------------------ Setup Recording --------------------------
+  const [isRecording, setIsRecording] = useState(false)
+  const [mediaRecorder, setMediaRecorder] = useState(null)
+  const [mediaRecorder2, setMediaRecorder2] = useState(null)
+  let videoOptions = { mimeType: "video/webm; codecs=vp9" };
+
+  useEffect(() => {
+    const identifier = "video"
+    processRecording(mediaRecorder, identifier)
+  }, [mediaRecorder]);
+
+  useEffect(() => {
+    const identifier = "screen"
+    processRecording(mediaRecorder2, identifier)
+  }, [mediaRecorder2]);
+
+  
 
   // Useeffect to fire every time isMute is changed
   useEffect(() => {
@@ -222,6 +240,73 @@ export default function InvigRTC(props) {
     console.log(localAudio.getAudioTracks()[0].enabled);
   }
 
+  // ----------------- Stream Recording--------------------
+
+  function recordVideo() {
+    if (!isRecording) {
+      setMediaRecorder(new MediaRecorder(remoteRef.current.srcObject, videoOptions))
+      setMediaRecorder2(new MediaRecorder(screenRef.current.srcObject, videoOptions))
+    } else if (isRecording == true) {
+      mediaRecorder.stop();
+      mediaRecorder2.stop();
+    }
+  }
+
+  function processRecording(mediarecorder, identifier) {
+    if (mediarecorder) {
+      let timeStamp = getTimeStamp();
+      mediarecorder.start();
+      let recordedChunks = [];
+      mediarecorder.addEventListener("dataavailable", (event) => {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
+      });
+      mediarecorder.addEventListener("stop", () => {
+        let blob = new Blob(recordedChunks, {
+          type: "video/webm",
+        });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.style = "display: none";
+        a.href = url;
+        if (identifier == "video")
+          a.download = `${timeStamp}_video.webm`;
+        else if (identifier == "screen")
+          a.download = `${timeStamp}_screen.webm`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        resetRecorder();
+      });
+      setIsRecording(true)
+    }
+  }
+
+  function getTimeStamp() {
+    let newDate = new Date()
+    let date = checkZero(newDate.getDate());
+    let month = checkZero(newDate.getMonth() + 1);
+    let year = checkZero(newDate.getFullYear());
+    let hours = checkZero(newDate.getHours());
+    let minutes = checkZero(newDate.getMinutes());
+    let seconds = checkZero(newDate.getSeconds());
+
+    function checkZero(digits) {
+      if (digits < 10)
+        return `0${digits}`
+      return digits
+    }
+
+    return `${year}${month}${date}${hours}${minutes}${seconds}`
+  }
+
+  function resetRecorder() {
+    setMediaRecorder(null)
+    setMediaRecorder2(null)
+    setIsRecording(false)
+  }
+
   return (
     <div>
       <video
@@ -246,6 +331,8 @@ export default function InvigRTC(props) {
         // isStart={isStart}
         isRetry={isRetry}
         connectionStatus={connectionStatus}
+        recordVideo={recordVideo}
+        isRecording={isRecording}
       />
     </div>
   );
