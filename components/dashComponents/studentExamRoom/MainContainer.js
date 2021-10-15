@@ -38,7 +38,7 @@ const useStyles = makeStyles({
   },
   answerBox: {
     // height: 700,
-    padding: 10
+    padding: 20
   },
   answerButton: {
     display: 'flex',
@@ -152,7 +152,7 @@ export default function MainContainer(props) {
               <div className={classes.examQuestion}>
                 <Image src={ExamQuestion}/>
               </div>
-              <Typography variant='h6'>Write Your Answer Here</Typography>
+              <Typography variant='h6'>Answer Box</Typography>
               <TextField
                 id="outlined-multiline-static"
                 label="Answer"

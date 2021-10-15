@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
-import Sidebar from '../../components/dashComponents/Sidebar'
+import Sidebar from '../../../components/dashComponents/Sidebar'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import WarningIcon from '@material-ui/icons/Warning';
 import NotificationImportantIcon from '@material-ui/icons/NotificationImportant';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
-import { currentUserState, isStudentState } from '../../components/States';
-import { getUser } from '../../components/scripts/getUser'
+import { currentUserState, isStudentState } from '../../../components/States';
+import { getUser } from '../../../components/scripts/getUser'
+import MainContainer from '../../../components/dashComponents/studentExamRoom/MainContainer';
 
 
 export default function Examroom({token}) {
@@ -26,7 +27,8 @@ export default function Examroom({token}) {
 	return (
 		<div>
 			<Sidebar>
-				<Typography variant="h5">
+				<MainContainer/>
+				{/* <Typography variant="h5">
 					Welcome to the exam room
 				</Typography>
 				<div style={{ display: 'flex', justifyContent: 'space-around', padding: 60, paddingBottom: 20 }}>
@@ -55,7 +57,8 @@ export default function Examroom({token}) {
 							This will hold the screen record API
 						</Typography>
 					</Paper>
-				</div>
+				</div> */}
+
 			</Sidebar>
 		</div>
 	)
