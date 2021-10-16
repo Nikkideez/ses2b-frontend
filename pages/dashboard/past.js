@@ -4,12 +4,17 @@ import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 import Sidebar from '../../components/dashComponents/Sidebar'
 import { Typography } from '@material-ui/core'
+import { useRouter } from "next/router";
 
 export default function Past({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
     const [isStudent, setStudent] = useRecoilState(isStudentState);
-    
+    const router = useRouter();
     useEffect(async () => {
+        if (!token){
+            alert("Please log in")
+            router.push("/login")
+        }
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);

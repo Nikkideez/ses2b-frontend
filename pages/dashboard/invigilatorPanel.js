@@ -12,6 +12,7 @@ import { Container } from '@material-ui/core';
 import { Smartphone } from '@material-ui/icons';
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -42,8 +43,12 @@ export default function InvigilatorPanel({ token }) {
     const classes = useStyles();
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
     const [isStudent, setStudent] = useRecoilState(isStudentState);
-    
+    const router = useRouter();
     useEffect(async () => {
+        if (!token){
+            alert("Please log in")
+            router.push("/login")
+        }
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);
