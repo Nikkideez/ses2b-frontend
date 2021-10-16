@@ -9,6 +9,7 @@ import ExamsTable from '../../components/dashComponents/upcomingExams/ExamsTable
 import ExamsCurrent from '../../components/dashComponents/upcomingExams/ExamsCurrent';
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,8 +39,12 @@ export default function Test({ token }) {
     const [showCurrent, setCurrent] = React.useState(false);
     const [isStudent, setIsStudent] = useRecoilState(isStudentState);
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
-
+    const router = useRouter();
     useEffect(async () => {
+        if (!token){
+            alert("Please log in")
+            router.push("/login")
+        }
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);
