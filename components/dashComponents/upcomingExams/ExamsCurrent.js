@@ -78,7 +78,7 @@ function Row(props) {
               Enter Exam Room
             </Button>
           </Link> :
-           <Link href="/dashboard/invigilatorPanel">
+           <Link href="/dashboard/examroom/invigMain">
            <Button style={{color: "#4caf50"}} variant="outlined">
              Enter Exam Room
            </Button>
