@@ -8,12 +8,20 @@ import Image from 'next/image'
 import profileCard from '/public/profilecardblank.svg'
 import subjectList from '/public/subjectlist.svg'
 import styles from '../../components/Profile.module.css'
+import { GetServerSideProps } from 'next';
+import { useRouter } from "next/router";
 
 export default function Exams({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
-	
-	useEffect(async () => {
+    const router = useRouter();
+
+    useEffect(async () => {
+        if(!token){
+            console.log("it works")
+            router.push("/")
+    
+        } 
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);

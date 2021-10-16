@@ -11,6 +11,8 @@ import Paper from '@material-ui/core/Paper'
 import Hidden from '@material-ui/core/Hidden';
 import { Container } from '@material-ui/core'
 import dynamic from 'next/dynamic'
+import { GetServerSideProps } from 'next';
+import { useRouter } from "next/router";
 
 const FaceNoSSR = dynamic(() => import('../../components/FaceAPI/FaceStream'), { ssr: false });
 
@@ -31,8 +33,14 @@ export default function TestEquipment({ token }) {
 
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
-	
-	useEffect(async () => {
+    const router = useRouter();
+
+    useEffect(async () => {
+        if(!token){
+            console.log("it works")
+            router.push("/")
+    
+        } 
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);

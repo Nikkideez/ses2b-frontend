@@ -4,12 +4,20 @@ import { useRecoilState } from 'recoil';
 import Sidebar from '../../components/dashComponents/Sidebar'
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
+import { GetServerSideProps } from 'next';
+import { useRouter } from "next/router";
 
 export default function Exams({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
     const [isStudent, setStudent] = useRecoilState(isStudentState);
-    
+    const router = useRouter();
+
     useEffect(async () => {
+        if(!token){
+            console.log("it works")
+            router.push("/")
+    
+        } 
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);

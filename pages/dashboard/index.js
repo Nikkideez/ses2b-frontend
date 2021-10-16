@@ -9,6 +9,9 @@ import ExamsTable from '../../components/dashComponents/upcomingExams/ExamsTable
 import ExamsCurrent from '../../components/dashComponents/upcomingExams/ExamsCurrent';
 import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
+import { GetServerSideProps } from 'next';
+import { useRouter } from "next/router";
+
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -38,8 +41,16 @@ export default function Test({ token }) {
     const [showCurrent, setCurrent] = React.useState(false);
     const [isStudent, setIsStudent] = useRecoilState(isStudentState);
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+    const router = useRouter();
+
+    
 
     useEffect(async () => {
+    if(!token){
+        console.log("it works")
+        router.push("/")
+
+    } 
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);
@@ -52,7 +63,7 @@ export default function Test({ token }) {
         console.log("Index side working");
     }
 
-    
+  
 
 
     // Conditionally rendering current exams to only appear if a student has exams

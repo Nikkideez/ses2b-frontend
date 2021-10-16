@@ -5,12 +5,20 @@ import { getUser } from '../../components/scripts/getUser'
 import StepperExam from '../../components/dashComponents/studentExamPrep/stepperExam';
 import Sidebar from '../../components/dashComponents/Sidebar'
 import Script from 'next/script';
+import { GetServerSideProps } from 'next';
+import { useRouter } from "next/router";
 
 export default function TestFaceAuth({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
-	
-	useEffect(async () => {
+    const router = useRouter();
+
+    useEffect(async () => {
+        if(!token){
+            console.log("it works")
+            router.push("/")
+    
+        } 
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);

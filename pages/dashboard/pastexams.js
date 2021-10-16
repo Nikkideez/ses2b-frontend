@@ -10,6 +10,8 @@ import NotificationImportantIcon from '@material-ui/icons/NotificationImportant'
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
+import { GetServerSideProps } from 'next';
+import { useRouter } from "next/router";
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -24,8 +26,14 @@ export default function Examroom({ token }) {
 	const classes = useStyles();
 	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
-	
-	useEffect(async () => {
+    const router = useRouter();
+
+    useEffect(async () => {
+        if(!token){
+            console.log("it works")
+            router.push("/")
+    
+        } 
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);
