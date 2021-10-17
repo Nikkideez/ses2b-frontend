@@ -26,9 +26,7 @@ import styles from '../../styles/Home.module.css';
 import { ArrowLeft } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import tempAvatar from '../../src/Images/Moyaicon.png';
-import axios from 'axios';
 import { red } from '@material-ui/core/colors';
-
 import MainItemsList from './SidebarListItems.js';
 
 
@@ -160,6 +158,7 @@ export default function Dashboard(props) {
     }).catch((error) => {
       console.log("System Error")
     })
+    localStorage.removeItem("currUser");
     clearUser();
   };
   

@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     },
     text:{
         color: theme.palette.text.lighter,
-    }
+    },
 }))
 
 export default function Test({ token }) {
@@ -39,11 +39,13 @@ export default function Test({ token }) {
     const [isStudent, setIsStudent] = useRecoilState(isStudentState);
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 
+
     useEffect(async () => {
         if (!currentUser) {
             const user = await getUser(token)
-            setCurrentUser(user);
+            setCurrentUser(user); // should be able to be deleted but keeping the state here just incase
             setIsStudent(user.user_role === 2);
+            localStorage.setItem('currUser', JSON.stringify(user)); 
         }
       }, []);
 
@@ -57,9 +59,9 @@ export default function Test({ token }) {
 
     // Conditionally rendering current exams to only appear if a student has exams
     return (
+
         <div>
             <Sidebar>
-                
                 {showCurrent === true ?
                     <div style={{ paddingBottom: 60 }}>
                         <Typography className={classes.titleText} variant="h5" style={{ paddingBottom: 20 }}>

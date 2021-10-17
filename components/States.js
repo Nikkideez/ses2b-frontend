@@ -1,3 +1,4 @@
+import {theme, themeTwo} from '../src/theme';
 const { atom, selector } = require("recoil");
 
 const sidebarOpenState =atom ({
@@ -14,4 +15,9 @@ const isStudentState =atom({
     default: true
 })
 
-export { sidebarOpenState, currentUserState, isStudentState }
+const themeState = atom({
+    key: 'themeState',
+    default: theme
+})
+
+export { sidebarOpenState, currentUserState, isStudentState, themeState}

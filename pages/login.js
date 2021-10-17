@@ -96,6 +96,12 @@ export default function SignInSide() {
     })
   }
 
+  useEffect( async () => {
+    if(localStorage.getItem('currUser') !== null){
+      router.push("/dashboard")
+    }
+  },[])
+
   return (
     <div>
     <Grid container component="main" className={classes.root}>
