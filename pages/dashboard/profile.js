@@ -14,6 +14,7 @@ export default function Exams({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
     const router = useRouter();
+    const hasUser = (currentUser !== null);
     useEffect(async () => {
         if (!token){
             alert("Please log in")
@@ -26,22 +27,28 @@ export default function Exams({ token }) {
         }
 	}, []);
 
-    return (
-        <div>
-            <Sidebar>
-                <div className = {styles.box}>
-                 <div className={styles.profileContainer}>
-                   <Image src={profileCard} alt="user profile card" style="width:100%;"/>
-                   <div className={styles.centered}>12345678</div>
-                   <div className={styles.centeredfirstName}>John</div>
-                   <div className={styles.centeredlastName}>Smith</div>
-                 </div>
-                 <div className = {styles.subjectbox}>
-                  <Image src={subjectList} alt="user subject list" style="width:100%;"/>
-                 </div>
-                </div>
-            </Sidebar>
-        </div>
+    
+    if(hasUser){
+        return (
+            <div>
+                <Sidebar>
+                    <div className = {styles.box}>
+                     <div className={styles.profileContainer}>
+                       <Image src={profileCard} alt="user profile card" style="width:100%;"/>
+                       <div className={styles.centered}>{currentUser.student_id}</div>
+                       <div className={styles.centeredfirstName}>{currentUser.first_name}</div>
+                       <div className={styles.centeredlastName}>{currentUser.last}</div>
+                     </div>
+                     <div className = {styles.subjectbox}>
+                      <Image src={subjectList} alt="user subject list" style="width:100%;"/>
+                     </div>
+                    </div>
+                </Sidebar>
+            </div>
+        )
+    }
+    return(
+        <div></div>
     )
 }
 

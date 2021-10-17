@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -34,6 +34,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ButtonAppBar() {
   const classes = useStyles();
+  const [hasUser, setHasUser] = React.useState(false);
+  useEffect(() => {
+    setHasUser(localStorage.getItem('currUser') !== null && 
+    JSON.parse(localStorage.getItem('currUser')) !== "")
+    });
+
 
   return (
     <div >
@@ -55,9 +61,9 @@ export default function ButtonAppBar() {
           <Link href="/contact" >
             <Button color="inherit" >Contact</Button>
           </Link>    
-          <Link href="/login" >
+          {hasUser ? <div></div> : <Link href="/login" >
             <Button color="inherit" >Login</Button>
-          </Link>     
+          </Link>}     
         </Toolbar>
       </AppBar>
     </div>

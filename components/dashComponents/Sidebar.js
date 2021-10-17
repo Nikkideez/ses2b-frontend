@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { sidebarOpenState, currentUserState, stuState, isStudentState } from '../States.js';
+import { sidebarOpenState, currentUserState, hasCurrExamState, isStudentState } from '../States.js';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -26,9 +26,7 @@ import styles from '../../styles/Home.module.css';
 import { ArrowLeft } from '@material-ui/icons';
 import { useRouter } from 'next/router';
 import tempAvatar from '../../src/Images/Moyaicon.png';
-import axios from 'axios';
 import { red } from '@material-ui/core/colors';
-
 import MainItemsList from './SidebarListItems.js';
 
 
@@ -136,6 +134,8 @@ export default function Dashboard(props) {
   const clearUser = () => {
     setCurrentUser(null);
     setIsStudent(true); 
+    localStorage.removeItem("currUser");
+    localStorage.removeItem("hasCurrExam");
   }
 
   const classes = useStyles(); 
@@ -162,6 +162,14 @@ export default function Dashboard(props) {
     })
     clearUser();
   };
+
+  const returnStudent = () => {
+    router.push('/dashboard/examroom')
+  }
+  const returnInvig = () => {
+    
+  }
+  
   
   const page = "Dashboard";
   return (

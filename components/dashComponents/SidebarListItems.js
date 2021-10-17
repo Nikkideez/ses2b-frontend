@@ -236,7 +236,7 @@ export default function MainItemsList(props) {
                     <Avatar className={`${classes.avatar}${isOpen ? ` ${classes.bigAvatar}` : ``}`} >
                         <Tooltip title="View profile" placement="right">
                             <div className={classes.avatarHover}>
-                                <LinkIcon style={{ position: "absolute", zIndex: "999999", height: "25%", width: "25%", pointerEvents: "none" }} className={classes.avatarLink} />
+                                <LinkIcon style={{ position: "absolute", zIndex: "10", height: "25%", width: "25%", pointerEvents: "none" }} className={classes.avatarLink} />
                                 <Image className={classes.avatarImage} src={tempAvatar}></Image>
                             </div>
                         </Tooltip>

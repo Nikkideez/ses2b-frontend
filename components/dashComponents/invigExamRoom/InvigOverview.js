@@ -66,10 +66,10 @@ export default function InvigTools(props) {
       <img src={props.image}
         className={classes.picture} />
       <div>
-        <p>Name: {props.name}</p>
+        <p>Student Name: {props.name}</p>
         <p>SID: {props.studentId}</p>
-        <p>Connection: <span className={props.connectionStatus === "connected" ? classes.connectionGood : classes.connectionBad}>
-          {props.connectionStatus}
+        <p>{"Connection:" + "\n"}<span className={props.connectionStatus === "connected" ? classes.connectionGood : classes.connectionBad}>
+          {"\n" + props.connectionStatus }
         </span></p>
         <p>Warnings: <span style={{ color: '#d32f2f' }}>{warnings}</span></p>
       </div>

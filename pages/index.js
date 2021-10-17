@@ -9,7 +9,13 @@ import Footer from '../components/Footer';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { green } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
+import React, { useEffect } from 'react';
 export default function Home() {
+  const [hasUser, setHasUser] = React.useState();
+    useEffect(() => {
+      setHasUser(localStorage.getItem('currUser') !== null && 
+      JSON.parse(localStorage.getItem('currUser')) !== "")
+      });
   return (
     <div className={styles.container}>
       <Head>
@@ -27,9 +33,11 @@ export default function Home() {
                 <h1>Anti-Cheating AI <br />for <span>students</span><br />taking online exams.</h1>
                 <p>Our most secure solution blends our technology solutions with human supervision, including a live proctored launch, continuous monitoring, active proctor intervention to stop suspicious behavior, comprehensive reporting and more. Essential for high-stakes programs looking to prevent cheating at UTS.</p>
                 <div className={styles.buttonN}>
-                  <Button variant="contained" color="primary" className={styles.buttonN} onClick={() => { open("/login") }}>
+                  {hasUser ?  <Button  fullWidth ={true} variant="contained" color="primary" className={styles.buttonN} onClick={() => { open("/dashboard") }}>
+                    Go to Your Dashboard
+                  </Button>: <Button variant="contained" color="primary" className={styles.buttonN} onClick={() => { open("/login") }}>
                     Login
-                  </Button>
+                  </Button>}
                 </div>
               </div>
             </Grid>
@@ -41,72 +49,6 @@ export default function Home() {
             </Grid>
 
           </Grid>
-
-          {/*            <Grid container className={styles.Grid}>
-            <Grid item xs={12} md={4}>
-              <div>
-                <CheckCircleIcon fontSize="large" style={{ color:green[500]}}></CheckCircleIcon>
-                <p> hi</p>
-              </div>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <p> hi</p>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <p> hi</p>
-            </Grid>
-             
-           </Grid>   */}
-
-
-          {/*    <div className={styles.logo} >
-                <Image  src={Logo} alt="ProctorUTS Logo" />
-              </div> */}
-          {/* 
-              <p className={styles.description}>
-                An Anti-Cheating Online Exam System with Privacy Protection 
-              </p> */}
-          {/*  <div className={styles.grid}>
-              <Link href="/login" className={styles.card}>
-                <div className={styles.card}>
-                  <h2>Login &rarr;</h2>
-                  <p>Login with your UTS Student or UTS Staff credentials</p>
-                </div>
-              </Link> */}
-
-          {/*   <Link href="https://www.uts.edu.au/current-students/managing-your-course/classes-and-assessment/exams/online-exams"  className={styles.card}>
-                
-                <div className={styles.card}>
-                  <h2>About &rarr;</h2>
-                  <p>Find out information about online exams at UTS</p>
-                </div>
-              </Link>
- */}
-          {/*       <Link
-                href="/contact"
-                className={styles.card}
-              >
-                <div className={styles.card}>
-                  <h2>Contact &rarr;</h2>
-                  <p>Contact ProctorUTS Admin team if you are experiencing any issues</p>
-                </div>
-              </Link> */}
-
-          {/*       <Link
-                href="/helpandfaq"
-                className={styles.card}
-              >
-                <div className={styles.card}>
-                  <h2>FAQ &rarr;</h2>
-                  <p>
-                  Get answers fast
-                </p>
-                </div>
-              </Link>
-            </div>  */}
-
 
         </main>
       </div>
