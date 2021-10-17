@@ -1,7 +1,25 @@
-.container {
+.profileContainer {
     position: relative;
     width: 100%;
     color: black;
+  }
+
+  .resultsContainer {
+    position: relative;
+    height: 60%;
+    width: 60%;
+    justify-content:center;
+    display: flexbox;
+    flex-direction: column;
+  }
+
+  .pastExamsContainer {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    justify-content:center;
+    display: flexbox;
+    flex-direction: column;
   }
 
   .centered {
@@ -39,7 +57,7 @@
     flex-direction: row;
   }
 
-  .subjectbox {
+  .resultsBox {
     display: flex;
     flex-direction: column;
   }

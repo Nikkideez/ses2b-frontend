@@ -25,7 +25,7 @@ export default function Exams({ token }) {
         <div>
             <Sidebar>
                 <div className = {styles.box}>
-                 <div className={styles.container}>
+                 <div className={styles.profileContainer}>
                    <Image src={profileCard} alt="user profile card" style="width:100%;"/>
                    <div className={styles.centered}>12345678</div>
                    <div className={styles.centeredfirstName}>John</div>
