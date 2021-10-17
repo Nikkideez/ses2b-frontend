@@ -11,9 +11,10 @@ import { green } from '@material-ui/core/colors';
 import Button from '@material-ui/core/Button';
 import React, { useEffect } from 'react';
 export default function Home() {
-  const [hasUser, setHasUser] = React.useState(false);
+  const [hasUser, setHasUser] = React.useState();
     useEffect(() => {
-      setHasUser(localStorage.getItem('currUser') !== null)
+      setHasUser(localStorage.getItem('currUser') !== null && 
+      JSON.parse(localStorage.getItem('currUser')) !== "")
       });
   return (
     <div className={styles.container}>

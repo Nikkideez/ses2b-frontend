@@ -5,13 +5,18 @@ import { currentUserState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 import Sidebar from '../../components/dashComponents/Sidebar'
 import ScreenShareTest from '../../components/WebRTC/ScreenShareTest'
+import { useRouter } from "next/router";
 
 export default function TestScreenShare({ token }) {
   const [isScreenShare, setScreenShare] = React.useState(false);
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
-	
-	useEffect(async () => {
+  const router = useRouter();
+  useEffect(async () => {
+      if (!token){
+          alert("Please log in")
+          router.push("/login")
+      }
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);

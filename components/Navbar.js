@@ -36,7 +36,8 @@ export default function ButtonAppBar() {
   const classes = useStyles();
   const [hasUser, setHasUser] = React.useState(false);
   useEffect(() => {
-    setHasUser(localStorage.getItem('currUser') !== null)
+    setHasUser(localStorage.getItem('currUser') !== null && 
+    JSON.parse(localStorage.getItem('currUser')) !== "")
     });
 
 

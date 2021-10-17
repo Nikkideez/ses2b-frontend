@@ -10,13 +10,18 @@ import IconButton from '@material-ui/core/IconButton';
 import { currentUserState, isStudentState } from '../../../components/States';
 import { getUser } from '../../../components/scripts/getUser'
 import MainContainer from '../../../components/dashComponents/studentExamRoom/MainContainer';
+import { useRouter } from "next/router";
 
 
 export default function Examroom({token}) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
-	
-	useEffect(async () => {
+	const router = useRouter();
+    useEffect(async () => {
+        if (!token){
+            alert("Please log in")
+            router.push("/login")
+        }
         if (!currentUser) {
             const user = await getUser(token)
             setCurrentUser(user);

@@ -97,7 +97,8 @@ export default function SignInSide() {
   }
 
   useEffect( async () => {
-    if(localStorage.getItem('currUser') !== null){
+    if(localStorage.getItem('currUser') !== null && 
+       JSON.parse(localStorage.getItem('currUser')) !== ""){
       router.push("/dashboard")
     }
   },[])

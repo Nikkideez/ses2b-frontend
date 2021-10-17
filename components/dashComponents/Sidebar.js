@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { sidebarOpenState, currentUserState, stuState, isStudentState } from '../States.js';
+import { sidebarOpenState, currentUserState, hasCurrExamState, isStudentState } from '../States.js';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -134,6 +134,8 @@ export default function Dashboard(props) {
   const clearUser = () => {
     setCurrentUser(null);
     setIsStudent(true); 
+    localStorage.removeItem("currUser");
+    localStorage.removeItem("hasCurrExam");
   }
 
   const classes = useStyles(); 
@@ -158,9 +160,16 @@ export default function Dashboard(props) {
     }).catch((error) => {
       console.log("System Error")
     })
-    localStorage.removeItem("currUser");
     clearUser();
   };
+
+  const returnStudent = () => {
+    router.push('/dashboard/examroom')
+  }
+  const returnInvig = () => {
+    
+  }
+  
   
   const page = "Dashboard";
   return (
