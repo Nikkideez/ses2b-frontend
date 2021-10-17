@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil';
 
 const InvigAllStudents = dynamic(() => import('../../../components/dashComponents/invigExamRoom/InvigAllStudents'), { ssr: false });
 
-export default function envig() {
+export default function Invig() {
   const message = "Are you sure you want to leave this page while an exam is in progress? \n";
   warnLeavePage(message);
   const [isStudent, setIsStudent] = useRecoilState(isStudentState);  

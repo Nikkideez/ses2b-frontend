@@ -8,6 +8,7 @@ import Script from 'next/script'
 export default function WebRTC() {
   const [screenStream, setScreenStream] = useState();
 
+
   return (
     <Sidebar>
       <div>
