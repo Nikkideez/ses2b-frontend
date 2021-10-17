@@ -1,45 +1,63 @@
-.container {
-    position: relative;
-    width: 100%;
-    color: black;
-  }
+.profileContainer {
+  position: relative;
+  width: 100%;
+  color: black;
+}
 
-  .centered {
-    position: absolute; 
-    top: 495px; 
-    left: 24px; 
-    right: 0px;
-    width: 100%; 
-    font-size: 22px;
-    font-weight: bold;
-  }
+.resultsContainer {
+  position: relative;
+  height: 60%;
+  width: 60%;
+  justify-content:center;
+  display: flexbox;
+  flex-direction: column;
+}
 
-  .centeredfirstName {
-    position: absolute; 
-    top: 575px; 
-    left: 24px; 
-    right: 0px;
-    width: 100%; 
-    font-size: 22px;
-  }
+.pastExamsContainer {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  justify-content:center;
+  display: flexbox;
+  flex-direction: column;
+}
 
-  .centeredlastName {
-    position: absolute; 
-    top: 625px; 
-    left: 24px; 
-    right: 0px;
-    width: 100%; 
-    font-size: 22px;
-    font-weight: bold;
+.centered {
+  position: absolute; 
+  top: 495px; 
+  left: 24px; 
+  right: 0px;
+  width: 100%; 
+  font-size: 22px;
+  font-weight: bold;
+}
 
-  }
+.centeredfirstName {
+  position: absolute; 
+  top: 575px; 
+  left: 24px; 
+  right: 0px;
+  width: 100%; 
+  font-size: 22px;
+}
 
-  .box {
-    display: flex;
-    flex-direction: row;
-  }
+.centeredlastName {
+  position: absolute; 
+  top: 625px; 
+  left: 24px; 
+  right: 0px;
+  width: 100%; 
+  font-size: 22px;
+  font-weight: bold;
 
-  .subjectbox {
-    display: flex;
-    flex-direction: column;
-  }
+}
+
+.box {
+  display: flex;
+  flex-direction: row;
+}
+
+.resultsBox {
+  display: flex;
+  flex-direction: column;
+}
