@@ -5,6 +5,9 @@ import { getUser } from '../../components/scripts/getUser'
 import Sidebar from '../../components/dashComponents/Sidebar'
 import { Typography } from '@material-ui/core'
 import { useRouter } from "next/router";
+import Image from 'next/image'
+import pastExamsCard from '/public/pastexams.svg'
+import styles from '../../components/Profile.module.css'
 
 export default function Past({ token }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
@@ -25,9 +28,11 @@ export default function Past({ token }) {
     return (
         <div>
             <Sidebar>
-                <Typography variant="h5">
-                    This will display the Past Exams section
-                </Typography>
+                <div className = {styles.resultsBox}>
+                 <div className={styles.pastExamsContainer}>
+                   <Image src={pastExamsCard} alt="past exams"/>
+                 </div>
+                </div>
             </Sidebar>
         </div>
     )
