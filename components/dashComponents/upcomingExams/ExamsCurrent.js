@@ -35,7 +35,26 @@ const useRowStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
   },
   tableRow: {
-    color: theme.palette.primary.lighter,
+    backgroundColor: theme.palette.primary.lighterV2,
+  },
+  rowText:{
+    color: theme.palette.text.title,
+  },
+  tableCellClosed: {
+    paddingBottom: 0,
+    paddingTop: 0,
+    transition: "padding-Top 0.4s, padding-Bottom 0.4s"
+  },
+  tableCellOpened: {
+    paddingTop:10,
+    paddingBottom:10,
+  },
+  examButton: {
+    backgroundColor: theme.button.buttonBG2,
+    color: theme.button.buttonBG1
+  },
+  examButtonDisabled: {
+    backgroundColor: '#f',
   }
 }));
 
@@ -53,23 +72,23 @@ function Row(props) {
 
   return (
     <React.Fragment>
-      <TableRow className={classes.root}>
+      <TableRow className ={classes.tableRow}>
         <TableCell>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)} className={classes.iconButton}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          <Typography >
+          <Typography className={classes.rowText} >
             {row.exam}
           </Typography>
-          <Typography variant='body2'>
+          <Typography variant='body2' className={classes.rowText}> 
             {row.subject}
           </Typography>
         </TableCell>
-        <TableCell align="right" >{row.date}</TableCell>
-        <TableCell align="right">{row.time}</TableCell>
-        <TableCell align="right" style={{width: 330}} size="small">
+        <TableCell className={classes.rowText} align="right" >{row.date}</TableCell>
+        <TableCell className={classes.rowText} align="right">{row.time}</TableCell>
+        <TableCell className={classes.rowText} align="right" style={{width: 330}} size="small">
           <div>
           {
             isStudent?
@@ -79,7 +98,7 @@ function Row(props) {
             </Button>
           </Link> :
            <Link href="/dashboard/examroom/invigMain">
-           <Button style={{color: "#4caf50"}} variant="outlined">
+           <Button className={classes.examButton} variant="outlined" >
              Enter Exam Room
            </Button>
          </Link>
@@ -90,7 +109,7 @@ function Row(props) {
 
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell className={open? classes.tableCellOpened : classes.tableCellClosed} colSpan={6}>
           <Collapse in={open} timeout="auto" >
             <Typography variant="h6" gutterBottom component="div">
               Details
@@ -117,7 +136,7 @@ export default function CollapsibleTable() {
     <TableContainer component={Paper} elevation={0}>
       <Table aria-label="collapsible table">
         <TableHead className ={classes.tableHead}>
-          <TableRow>
+          <TableRow >
             <TableCell />
             <TableCell className={classes.tableHeadText} >EXAM</TableCell>
             <TableCell className={classes.tableHeadText}  align="right">DATE</TableCell>
@@ -125,9 +144,9 @@ export default function CollapsibleTable() {
             <TableCell className={classes.tableHeadText} align="right">ACCESS</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
           {rows.map((row) => (
-            <Row key={row.subject} row={row} />
+            <Row key={row.subject} row={row}  />
           ))}
         </TableBody>
       </Table>

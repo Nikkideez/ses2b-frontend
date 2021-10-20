@@ -8,9 +8,11 @@ const theme = createTheme({
       main: '#f',
       darker: '#F9F9F9',
       lighter: '#ffffff',
+      lighterV2: '#ffffff',
     },
     secondary: {
       main: '#d32f2f',
+      brighter: "#526dff",
     },
     error: {
       main: red.A400,
@@ -29,6 +31,10 @@ const theme = createTheme({
   menuItem:{
     color: '#000000',
     opacity: 0.5,
+  },
+  button:{
+    buttonBG1: '#4259d4',
+    buttonBG2: '#ffffff',
   }
 });
 
@@ -38,6 +44,7 @@ const themeTwo = createTheme({
       main: '#2c2c2e',
       darker: '#161617',
       lighter: '#969696',
+      lighterV2:'#7d7d7d',
     },
     secondary: {
       main: '#4259d4',
@@ -60,6 +67,10 @@ const themeTwo = createTheme({
   menuItem:{
     color: '#FFFFFF',
     opacity: 0.9,
+  },
+  button:{
+    buttonBG1: '#ffffff',
+    buttonBG2: '#4259d4',
   }
 
 });

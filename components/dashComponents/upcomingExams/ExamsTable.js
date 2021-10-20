@@ -34,8 +34,21 @@ const useRowStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
   },
   tableRow: {
-    color: theme.palette.primary.lighter,
+    backgroundColor: theme.palette.primary.lighterV2,
+  },
+  rowText:{
+    color: theme.palette.text.title,
+  },
+  tableCellClosed: {
+    paddingBottom: 0,
+    paddingTop: 0,
+    transition: "padding-Top 0.4s, padding-Bottom 0.4s"
+  },
+  tableCellOpened: {
+    paddingTop:10,
+    paddingBottom:10,
   }
+
 }));
 
 function createData(exam, subject, date, time, available, status) {
@@ -60,30 +73,30 @@ function Row(props) {
 
   return (
     <React.Fragment>
-      <TableRow className={classes.root}>
-        <TableCell>
+      <TableRow className={classes.tableRow}>
+        <TableCell >
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)} className={classes.iconButton}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
-          <Typography >
+        <TableCell component="th" scope="row" className={classes.tableRow}> 
+          <Typography className={classes.rowText}>
             {row.exam}
           </Typography>
-          <Typography variant='body2'>
+          <Typography variant='body2' className={classes.rowText}>
             {row.subject}
           </Typography>
 
         </TableCell>
-        <TableCell align="right">{row.date}</TableCell>
-        <TableCell align="right">{row.time}</TableCell>
+        <TableCell align="right" className={classes.rowText}>{row.date} </TableCell>
+        <TableCell align="right"className={classes.rowText}>{row.time}</TableCell>
         <TableCell align="right">
           <ExamAlert isDisabled={row.available} handleAgree = {handleAgree}/>
         </TableCell>
 
       </TableRow>
       <TableRow>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+        <TableCell className={open? classes.tableCellOpened : classes.tableCellClosed} colSpan={6} >
           <Collapse in={open} timeout="auto" >
             <Typography variant="h6" gutterBottom component="div">
               Details
@@ -124,9 +137,9 @@ export default function CollapsibleTable(props) {
             <TableCell className={classes.tableHeadText} align="right" style={{width: 330}}>ACCESS</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
           {(rows.filter(row => row.status === false)).map((row) => (
-            <Row className={classes.tableRow} key={row.subject} row={row} handleAgree = {handleAgree}/>
+            <Row  key={row.subject} row={row} handleAgree = {handleAgree}/>
           ))}
         </TableBody>
       </Table>

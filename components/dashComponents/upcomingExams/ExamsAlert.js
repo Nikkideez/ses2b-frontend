@@ -5,8 +5,22 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  examButton: {
+    backgroundColor: theme.button.buttonBG2,
+    color: theme.button.buttonBG1
+  },
+  examButtonDisabled: {
+    backgroundColor: '#f',
+  }
+}))
+
 
 export default function AlertDialog(props) {
+  const classes = useStyles();
+
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -26,7 +40,7 @@ export default function AlertDialog(props) {
 
   return (
     <div>
-      <Button variant="outlined" color="secondary" onClick={handleClickOpen} disabled={props.isDisabled}>
+      <Button variant="outlined" className={props.isDisabled? classes.examButtonDisabled:classes.examButton} onClick={handleClickOpen} disabled={props.isDisabled}>
         Start Exam
       </Button>
       <Dialog

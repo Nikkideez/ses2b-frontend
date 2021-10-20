@@ -38,10 +38,11 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    backgroundColor: '#0000',
+    backgroundColor: theme.palette.primary.darker,
     color: '#000'
   },
   toolbar: {
+    BackgroundColor: theme.palette.primary.main,
     boxShadow: "0px 1px 4px 1px rgba(0,0,0,0.25)",
     paddingRight: 24, // keep right padding when drawer closed
   },
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
   },
   appBar: {
-    
+    BackgroundColor: theme.palette.primary.main,
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
