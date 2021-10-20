@@ -3,13 +3,16 @@ import Paper from '@material-ui/core/Paper'
 import { makeStyles } from '@material-ui/core/styles';
 import InvigOverview from './InvigOverview';
 import InvigRTC from './InvigRTC';
+import { themeTwo } from '../../../src/theme';
 
 const useStyles = makeStyles({
   root: {
     padding: 15,
     display: 'flex',
-    width: 'min-content'
+    width: 'min-content',
+    backgroundColor: themeTwo.palette.primary.main
   },
+
 });
 
 export default function ComponentContainer(props) {

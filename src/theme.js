@@ -59,6 +59,7 @@ const themeTwo = createTheme({
     text: {
       title: '#FFFFFF',
       lighter: "#969696",
+      slightyLighter:'#E9E9E9'
     },
     white: {
       default: '#FFFFFF',

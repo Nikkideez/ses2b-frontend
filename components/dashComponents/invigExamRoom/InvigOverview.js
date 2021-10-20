@@ -5,7 +5,8 @@ import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
 import InvigDialog from './InvigDialog';
 import { HighlightOff } from '@material-ui/icons';
-
+import { theme, themeTwo } from '../../../src/theme';
+import { Avatar, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles({
   root: {
@@ -36,20 +37,38 @@ const useStyles = makeStyles({
     display: 'flex',
     width: 150,
     flexDirection: 'column',
-    paddingTop: 20,
+    paddingTop: 10,
     // paddingBottom: 10,
   },
   button: {
     justifyContent: 'flex-start',
+    color: '#E9E9E9',
+    backgroundColor: '#4259d4'
   },
   buttonSpacing: {
-    marginTop: 8
+    marginTop: 8,
+    marginBottom: 8
   },
   connectionGood: {
-    color: 'green'
+    color: 'green',
+    fontWeight: 'bold',
+    fontSize: '14px'
   },
   connectionBad: {
-    color: '#d32f2f'
+    color: '#d32f2f',
+    fontWeight: 'bold',
+    fontSize: '14px'
+    
+  },
+  studentName:{
+    color: themeTwo.palette.text.title,
+    textAlign: 'center',
+    marginTop:'10px',
+    opacity:'0.9'
+  },
+  rootText:{
+    color: themeTwo.palette.text.title,
+    opacity:'0.9'
   }
 });
 
@@ -61,30 +80,22 @@ export default function InvigTools(props) {
     if (confirm("Are you sure you want to give a warning?"))
       setWarning(warnings + 1)
   }
+
   return (
     <div className={classes.root}>
-      <img src={props.image}
+      <Avatar src={props.image}
         className={classes.picture} />
-      <div>
-        <p>Student Name: {props.name}</p>
-        <p>SID: {props.studentId}</p>
-        <p>{"Connection:" + "\n"}<span className={props.connectionStatus === "connected" ? classes.connectionGood : classes.connectionBad}>
-          {"\n" + props.connectionStatus }
-        </span></p>
-        <p>Warnings: <span style={{ color: '#d32f2f' }}>{warnings}</span></p>
+      <div >
+        <Typography variant='subtitle2' className={classes.studentName}>{props.name}</Typography>
+        <p className={classes.rootText}>SID: {props.studentId}</p>
+        <p style={{color: themeTwo.palette.text.title, fontSize: '12px', opacity:'0.9'}}>{"Connection Status"}<br/>
+        <span className={props.connectionStatus === "connected" ? classes.connectionGood : classes.connectionBad}>
+          { props.connectionStatus }
+        </span>
+        </p>
+        <p style={{color: themeTwo.palette.text.title, opacity:'0.9'}}>{"Warnings: \u00A0\u00A0"} <span style={{ color: '#d32f2f', }}>{warnings}</span></p>
       </div>
       <div className={classes.tools}>
-        <div >
-          <Button
-            variant='outlined'
-            className={classes.button}
-            startIcon={<WarningIcon style={{ color: 'orange' }} />}
-            fullWidth={true}
-            onClick={() => warningHandler()}
-          >
-            +Warning
-          </Button>
-        </div>
         <div className={classes.buttonSpacing}>
           <Badge badgeContent={4} color="secondary" style={{ display: 'block' }}>
             <InvigDialog
@@ -93,6 +104,17 @@ export default function InvigTools(props) {
               image={props.image}
             />
           </Badge>
+        </div>
+        <div >
+          <Button 
+            variant='outlined'
+            className={classes.button}
+            startIcon={<WarningIcon style={{ color: 'orange' }} />}
+            fullWidth={true}
+            onClick={() => warningHandler()}
+          >
+            {"\u00A0+Warning"}
+          </Button>
         </div>
         <div className={classes.buttonSpacing}>
           <Button variant='outlined' className={classes.button} startIcon={<HighlightOff />} fullWidth={true}>

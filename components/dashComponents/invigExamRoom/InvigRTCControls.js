@@ -11,7 +11,7 @@ const useStyles = makeStyles({
     color: '#d32f2f'
   },
   muteOff: {
-
+    color:'#E9E9E9'
   },
 
   recordOn: {
@@ -28,9 +28,11 @@ export default function InvigRTCControls(props) {
   return (
     <div style={{ display: 'flex', justifyContent: "space-between" }}>
 
+      <Tooltip title = "retry connection" placement="right">
       <IconButton color="secondary" onClick={props.retry} disabled={props.isRetry || props.connectionStatus === "connected" || props.connectionStatus === "connecting"}>
-        <Replay />
+        <Replay style={{color:'#E9E9E9'}} />
       </IconButton>
+      </Tooltip>
       {props.connectionStatus !== "new" ?
         <IconButton onClick={props.recordVideo}>
           <FiberManualRecord className={props.isRecording ? classes.recordOn : classes.recordOff}/>

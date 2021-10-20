@@ -294,14 +294,14 @@ export default function InvigRTC(props) {
         ref={remoteRef}
         autoPlay
         playsInline
-        style={{ width: 400 }}
+        style={{ width: 400, backgroundColor: '#555' }}
       />
 
       <video
         ref={screenRef}
         autoPlay
         playsInline
-        style={{ width: 400 }}
+        style={{ width: 400, backgroundColor:'#555' }}
       />
 
       <InvigRTCControls

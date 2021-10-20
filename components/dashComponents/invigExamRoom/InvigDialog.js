@@ -41,7 +41,7 @@ export default function DraggableDialog(props) {
 
   return (
     <div>
-      <Button variant="outlined" onClick={handleClickOpen} startIcon={<NotificationsIcon style={{ color: '#d32f2f' }} />} style={{justifyContent: 'flex-start'}} fullWidth={true}>
+      <Button variant="outlined" onClick={handleClickOpen} startIcon={<NotificationsIcon style={{ color: '#d32f2f'}} />} style={{justifyContent: 'flex-start', backgroundColor: '#E9E9E9'}} fullWidth={true}>
         View
       </Button>
       <Dialog
@@ -51,7 +51,7 @@ export default function DraggableDialog(props) {
         aria-labelledby="draggable-dialog-title"
         hideBackdrop={true}
       >
-        <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+        <DialogTitle style={{ cursor: 'move', zIndex:'10' }} id="draggable-dialog-title">
           {props.studentId} {props.name} 
         </DialogTitle>
         <DialogContent>
