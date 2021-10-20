@@ -29,7 +29,7 @@ export default function InvigAllStudents() {
     await axios({
       method: "GET",
       withCredentials: true,
-      url: "http://protoruts-backend.herokuapp.com/student/exam/MAT100",
+      url: "https://protoruts-backend.herokuapp.com/student/exam/MAT100",
     }).then((res) => {
       console.log(res.data)
       setStudents(res.data);
