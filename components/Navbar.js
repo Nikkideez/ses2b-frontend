@@ -32,13 +32,13 @@ const useStyles = makeStyles((theme) => ({
   // },
 }));
 
-export default function ButtonAppBar() {
+export default function ButtonAppBar(props) {
   const classes = useStyles();
   const [hasUser, setHasUser] = React.useState(false);
   useEffect(() => {
     setHasUser(localStorage.getItem('currUser') !== null && 
     JSON.parse(localStorage.getItem('currUser')) !== "")
-    });
+    }, []);
 
 
   return (
@@ -61,7 +61,7 @@ export default function ButtonAppBar() {
           <Link href="/contact" >
             <Button color="inherit" >Contact</Button>
           </Link>    
-          {hasUser ? <div></div> : <Link href="/login" >
+          {props.token ? <div></div> : <Link href="/login" >
             <Button color="inherit" >Login</Button>
           </Link>}     
         </Toolbar>
