@@ -6,27 +6,6 @@ import {
 } from "firebase/firestore";
 import InvigRTCControls from './InvigRTCControls';
 
-
-
-// initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAY0GdJm87pXHr_pVvLO3_yZf3xetzyASY",
-  authDomain: "webrtc-test-96c34.firebaseapp.com",
-  databaseURL: "https://webrtc-test-96c34-default-rtdb.firebaseio.com",
-  projectId: "webrtc-test-96c34",
-  storageBucket: "webrtc-test-96c34.appspot.com",
-  messagingSenderId: "315521969341",
-  appId: "1:315521969341:web:9ada7fe12ef4f5bec45bd4",
-  measurementId: "G-7Y4GHS9HZ1"
-}
-
-
-try {
-  initializeApp(firebaseConfig);
-} catch {
-  console.log("nevermind nothing")
-}
-
 const firestore = getFirestore();
 
 // Initialize WebRTC
@@ -47,7 +26,9 @@ const servers = {
 export default function InvigRTC(props) {
   const pc = new RTCPeerConnection(servers);
   const [isStart, setStart] = useState(false);
-  const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call');
+  const callDoc = doc(firestore, `students/${props.studentId}/Exam`, 'call');
+  // const callDoc = doc(firestore, `users/jGfA2AthjJgf0LzBoUwTOOUGDXl2/Exam`, 'call');
+  // const callDoc = doc(firestore, `subjects/MAT100/call`, JSON.stringify(props.studentId));
   const answerCandidates = collection(callDoc, "answerCandidates")
   const offerCandidates = collection(callDoc, "offerCandidates")
   const [localAudio, setLocalAudio] = useState();

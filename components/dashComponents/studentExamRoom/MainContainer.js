@@ -83,9 +83,10 @@ export default function MainContainer(props) {
           <Grid item sm={12} md={6}>
             <Paper variant='outlined' className={classes.videoStream}>
               <VideoContainer
-                studentId='123454'
+                studentId={ props.studentId }
                 screenStream={screenStream}
                 setConnectionStatus={setConnectionStatus}
+                token={ props.token }
               />
             </Paper>
           </Grid>

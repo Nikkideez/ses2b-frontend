@@ -6,10 +6,10 @@ import Grid from "@material-ui/core/Grid";
 import Checkbox from "@material-ui/core/Checkbox";
 import { makeStyles } from '@material-ui/core/styles';
 
-let enableBlur = true;
+let enableBlur = false;
 let enableBackground = false;
-let blurAmount = 5;
-let threshold = 70;
+let blurAmount = 0;
+let threshold = 0;
 let virtualBackground;
 
 let localStream;
@@ -17,6 +17,10 @@ let localStream;
 export function stopVideo() {
     localStream && localStream.getTracks().forEach((x) => x.stop());
     localStream = null;
+}
+
+export function getPreference() {
+  return [enableBlur, blurAmount, threshold, enableBackground]
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +50,10 @@ export default function Blur(props) {
   const canvasRef = useRef();
   localStream = useRef();
   const classes = useStyles();
+  enableBlur = props.filter_preference[0];
+  blurAmount = props.filter_preference[1];
+  threshold = props.filter_preference[2];
+  enableBackground = props.filter_preference[3];
 
   useEffect(() => {
     const img = new Image();
@@ -118,7 +126,7 @@ export default function Blur(props) {
         processVideo(net)
       })
     }
-    catch (err) { console.log(err)}
+    catch (err) { }
   }
 
 

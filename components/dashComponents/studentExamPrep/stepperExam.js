@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Stepper from '@material-ui/core/Stepper';
@@ -12,7 +12,10 @@ import { useRouter } from "next/router";
 import success from '../../../src/Images/success.png';
 import Image from 'next/image'
 import styles from '../../../styles/StepperExam.module.css'
-import VideoFilter, { stopVideo } from './VideoFilter'
+import VideoFilter, { stopVideo, getPreference } from './VideoFilter'
+import { useRecoilState } from 'recoil';
+import { currentUserState } from '../../States';
+import axios from 'axios';
 
 const steps = ['Face Authentication', 'Video Filter' ,'Test Screen Sharing', 'Start Exam'];
 
@@ -40,6 +43,39 @@ export default function StepperExam(props) {
   const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [disabledStep2, setDisabledStep2] = useState(true);
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+  const [filterPreferences, setFilterPreferences] = useState([]);
+
+  useEffect(() => {
+    setFilterPreferences(getFilterPreferences(props.token))
+  }, [])
+
+  async function getFilterPreferences(token) {
+    await axios({
+        method: "POST",
+        url: "https://protoruts-backend.herokuapp.com/student/get-filter-preferences",
+        data: {
+          idToken: token
+        },
+        withCredentials: true,
+    }).then((res) => {
+        return res.data;
+    })
+  }
+
+  async function updateFilterPreferences(token, filter_preference) {
+      await axios({
+          method: "POST",
+          url: "https://protoruts-backend.herokuapp.com/student/update-filter-preferences",
+          data: {
+            idToken: token,
+            filter_preference: filter_preference
+          },
+          withCredentials: true,
+      }).then((res) => {
+          return res.data;
+      })
+  }
 
   const handleNext = () => {
     if (activeStep == 1) {
@@ -50,8 +86,12 @@ export default function StepperExam(props) {
       stopScreen();
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
-    else if (activeStep == steps.length - 1)
+    else if (activeStep == steps.length - 1) {
+      if (JSON.stringify(filterPreferences) != JSON.stringify(getPreference())) {
+        updateFilterPreferences(props.token, getPreference())
+      }
       router.push("/dashboard/examroom")
+      }
     else
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -84,7 +124,7 @@ export default function StepperExam(props) {
                   <Typography sx={{ mt: 2, mb: 1 }}>Exam Preparations Complete</Typography>}
             <div className={styles.display}>
             {activeStep === 0 ? <FaceAuth handleNext={ handleNext } token={props.token}/> : 
-              activeStep === 1 ? <VideoFilter /> : 
+          activeStep === 1 ? <VideoFilter filter_preference={currentUser.filter_preference}/> :
                 activeStep === 2 ? <ScreenShare handleDisabled={handleDisabled} /> :
               <Image src={success} alt="Success" width="300" height="300" className={classes.image} />}
             </div>
@@ -105,7 +145,7 @@ export default function StepperExam(props) {
                 {activeStep === steps.length - 1 ? 'Finish' :
                     activeStep === 0 ? null : 'Next'}
             </Button>
-          </Box>
+      </Box>
     </Box>
   );
 }

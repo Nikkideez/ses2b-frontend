@@ -6,25 +6,7 @@ import {
 } from "firebase/firestore";
 import { async } from '@firebase/util';
 import Script from 'next/script';
-
-// initialize Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAY0GdJm87pXHr_pVvLO3_yZf3xetzyASY",
-  authDomain: "webrtc-test-96c34.firebaseapp.com",
-  databaseURL: "https://webrtc-test-96c34-default-rtdb.firebaseio.com",
-  projectId: "webrtc-test-96c34",
-  storageBucket: "webrtc-test-96c34.appspot.com",
-  messagingSenderId: "315521969341",
-  appId: "1:315521969341:web:9ada7fe12ef4f5bec45bd4",
-  measurementId: "G-7Y4GHS9HZ1"
-}
-
-// initialize Firebase
-try {
-  initializeApp(firebaseConfig);
-} catch {
-  console.log("nevermind nothing")
-}
+import axios from 'axios';
 
 // Getting firebase
 const firestore = getFirestore();
@@ -45,20 +27,27 @@ const servers = {
 // The RTC connection
 const pc = new RTCPeerConnection(servers);
 
+let enableBlur = true;
+let blurAmount = 20;
+let threshold = 70;
+let enableBackground = false;
+let virtualBackground;
+let enableFilter = true;
+
 export default function StudentRTC(props) {
   const [webcamActive, setWebcamActive] = useState(false);
   const [start, setStart] = useState(false);
   const [callDoc, setCallDoc] = useState();
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
+  const [filterPreferences, setFilterPreferences] = useState([]);
   const localStream = props.localStream
 
-  let blurAmount = 20;
-  let enableBlur = true;
-  let flipHorizontal = true;
+  let flipHorizontal = false;
   const videoHeight = 480;
   const videoWidth = 640;
   const videoRef = useRef();
   const canvasRef = useRef();
+
   // To receive audio
   const remoteAudioRef = useRef();
   // const remoteRef = useRef();
@@ -66,7 +55,9 @@ export default function StudentRTC(props) {
   // Gets the call ID from the database
   // Puts event listener on start button when offer is available
   const getCall = async () => {
-    const callDoc = doc(firestore, `students/${props.studentId}/${props.subject}`, 'call')
+    const callDoc = doc(firestore, `students/${props.studentId}/Exam`, 'call');
+    // const callDoc = doc(firestore, `subjects/${props.subject}/call`, props.studentId);
+    // const callDoc = doc(firestore, `subjects/MAT100/call`, JSON.stringify(props.studentId));
     setCallDoc(callDoc);
     onSnapshot(callDoc, (snapshot) => {
       const data = snapshot.data();
@@ -80,8 +71,34 @@ export default function StudentRTC(props) {
 
   // Call getCall() on render
   useEffect(() => {
+    getFilterPreferences(props.token)
+    // Get Virtual Background
+    const img = new Image();
+    img.src = "/LogoBG.PNG";
+    img.onload = () => {
+      virtualBackground = img;
+    }
+
+    // Get Call ID
     getCall();
   }, [])
+
+  async function getFilterPreferences(token) {
+    await axios({
+      method: "POST",
+      url: "https://protoruts-backend.herokuapp.com/student/get-filter-preferences",
+      data: {
+        idToken: token
+      },
+      withCredentials: true,
+    }).then((res) => {
+      setFilterPreferences(res.data)
+      enableBlur = res.data[0];
+      blurAmount = res.data[1];
+      threshold = res.data[2];
+      enableBackground = res.data[3];
+    })
+  }
 
   // console.log(props.screenStream)
   const setupSources = async () => {
@@ -213,14 +230,13 @@ export default function StudentRTC(props) {
   }
 
   /* <----------------------- Face Blur -------------------------------> */
-  function reset() {
+  function stopVideo() {
     localStream.current && localStream.current.getTracks().forEach((x) => x.stop());
     localStream.current = null;
   }
 
   async function initializeVideo() {
     try {
-      //   localStream = await navigator.mediaDevices.getUserMedia({ video: {} })
       if (localStream != null) {
         videoRef.current.srcObject = localStream;
         videoRef.current.play();
@@ -230,35 +246,68 @@ export default function StudentRTC(props) {
         })
       }
     } catch (err) {
-      reset();
+      console.log(err)
     }
-    return reset();
+  }
+  function handleToggleFilter() {
+    enableFilter = !enableFilter
+    if (!enableFilter) {
+      enableBlur = false;
+      enableBackground = false;
+    } else {
+      enableBlur = filterPreferences[0];
+      enableBackground = filterPreferences[3];
+    }
+  }
+
+  function addBlur(segmentation) {
+    let backgroundBlurAmount = enableBlur ? blurAmount : 0;
+    const edgeBlurAmount = 3;
+    const flipHorizontal = false;
+    
+    bodyPix.drawBokehEffect(
+      canvasRef.current,
+      videoRef.current,
+      segmentation,
+      backgroundBlurAmount,
+      edgeBlurAmount,
+      flipHorizontal
+    )
+  }
+
+  function removeBackground(segmentation) {
+    const foregroundColor = { r: 0, g: 0, b: 0, a: 255 };
+    const backgroundColor = { r: 0, g: 0, b: 0, a: 0 };
+    const backgroundDarkeningMask = bodyPix.toMask(segmentation, foregroundColor, backgroundColor);
+    const ctx = canvasRef.current.getContext("2d");
+    ctx.putImageData(backgroundDarkeningMask, 0, 0);
+    ctx.globalCompositeOperation = "source-in";
+    ctx.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
+  }
+
+  function addBackground() {
+    const ctx = canvasRef.current.getContext("2d");
+    ctx.globalCompositeOperation = "destination-atop";
+    ctx.drawImage(virtualBackground, 0, 0, canvasRef.current.width, canvasRef.current.height);
   }
 
   async function processVideo(net) {
     try {
-
-      const segmentation = await net.segmentPerson(videoRef.current);
-
-      let backgroundBlurAmount = enableBlur ? blurAmount : 0;
-      const edgeBlurAmount = 3;
+      const segmentation = await net.segmentPerson(videoRef.current, {segmentationThreshold: threshold/100});
       
-      bodyPix.drawBokehEffect(
-        canvasRef.current,
-        videoRef.current,
-        segmentation,
-        backgroundBlurAmount,
-        edgeBlurAmount,
-        flipHorizontal
-      )
-
+      if (enableBackground) {
+        removeBackground(segmentation)
+        addBackground()
+      } else
+        addBlur(segmentation)
+      
       requestAnimationFrame(() => {
         processVideo(net)
       })
-    } catch (err) {
-      console.log(err);
     }
+    catch (err) { }
   }
+
 
   /* <------^^^^^^^------------ Face Blur ------------^^^^^^^^---------> */
   // console.log(props.localStream)
@@ -269,7 +318,7 @@ export default function StudentRTC(props) {
       <canvas ref={canvasRef} height={videoHeight} width={videoWidth} style={{width: 500}}/>
       <audio ref={remoteAudioRef} autoPlay ></audio>
       {/* <video ref={remoteRef} autoPlay playsInline height={videoHeight} width={videoWidth} /> */}
-
+      <div>
       {!webcamActive ? (
         <div className="modalContainer">
           <h3>
@@ -279,7 +328,7 @@ export default function StudentRTC(props) {
           <button
             onClick={setupSources}
             disabled={!start}
-          >Start</button>
+            >Start</button>
         </div>
       ) : (
         <div>
@@ -287,11 +336,13 @@ export default function StudentRTC(props) {
           <button
             onClick={retry}
             disabled={connectionStatus === "connected" || !start}
-          >
+            >
             retry
           </button>
         </div>
       )}
+      <button onClick={handleToggleFilter}>Filter ON/OFF</button>
+      </div>
         {/* Note From Evan: Importing body-pix as script to allow face api and blur to work together */}
         <Script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></Script>
     </div>
