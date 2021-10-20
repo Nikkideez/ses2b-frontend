@@ -35,6 +35,7 @@ export default function VideoContainer(props) {
         subject={subject}
         screenStream={props.screenStream}
         setConnectionStatus={props.setConnectionStatus}
+        token={props.token}
         // style={{display: 'inline'}}
       />
     </div>

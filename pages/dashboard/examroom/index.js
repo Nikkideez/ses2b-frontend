@@ -11,13 +11,20 @@ import { currentUserState, isStudentState } from '../../../components/States';
 import { getUser } from '../../../components/scripts/getUser'
 import MainContainer from '../../../components/dashComponents/studentExamRoom/MainContainer';
 import { useRouter } from "next/router";
+import { initializeApp } from "firebase/app";
 
 
-export default function Examroom({token}) {
+export default function Examroom({token, firebaseConfig}) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
 	const router = useRouter();
-    useEffect(async () => {
+	useEffect(async () => {
+		// Initialize Firebase
+		try {
+			initializeApp(firebaseConfig);
+		} catch {
+			console.log("nevermind nothing")
+		}
         if (!token){
             alert("Please log in")
             router.push("/login")
@@ -32,7 +39,9 @@ export default function Examroom({token}) {
 	return (
 		<div>
 			<Sidebar>
-				<MainContainer/>
+				{currentUser ?
+					<MainContainer token={token} studentId={ currentUser.student_id }/>
+				: null}
 				{/* <Typography variant="h5">
 					Welcome to the exam room
 				</Typography>
@@ -70,5 +79,16 @@ export default function Examroom({token}) {
 }
 
 export function getServerSideProps({ req, res }) {
-  return { props: { token: req.cookies.token || "" } };
+	const firebaseConfig = {
+	apiKey: process.env.PRIVATE_API_KEY,
+	authDomain: process.env.AUTHDOMAIN,
+	databaseURL: process.env.DATABASEURL,
+	projectId: process.env.PROJECTID,
+	storageBucket: process.env.STORAGEBUCKET,
+	messagingSenderId: process.env.MESSAGINGSENDERID,
+	appId: process.env.APPID,
+	measurementId: process.env.MEASUREMENTID
+  	}
+
+  	return { props: { token: req.cookies.token || "" ,  firebaseConfig: firebaseConfig } };
 }
