@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignInSide() {
+export default function SignInSide({token}) {
   const classes = useStyles();
   const router = useRouter();
   const [loginUsername, setLoginUsername] = useState("");
@@ -96,11 +96,19 @@ export default function SignInSide() {
     })
   }
 
-  useEffect( async () => {
-    if(localStorage.getItem('currUser') !== null && 
-       JSON.parse(localStorage.getItem('currUser')) !== ""){
+  useEffect(async () => {
+    // Evan: IF no token and no currUser THEN remove currUser (cleanup)
+    //       ESLSE IF token exist THEN route to dashboard
+    if (!token && localStorage.getItem('currUser') !== null &&
+      JSON.parse(localStorage.getItem('currUser')) !== "") {
+      localStorage.removeItem("currUser");
+    } else if (token != '') {
       router.push("/dashboard")
-    }
+    } else { }
+    // if(localStorage.getItem('currUser') !== null && 
+    //    JSON.parse(localStorage.getItem('currUser')) !== ""){
+    //   router.push("/dashboard")
+    // }
   },[])
 
   return (
@@ -193,4 +201,8 @@ export default function SignInSide() {
             <Footer></Footer>
     </div>
   );
+}
+
+export function getServerSideProps({ req, res }) {
+  return { props: { token: req.cookies.token || "" } };
 }
