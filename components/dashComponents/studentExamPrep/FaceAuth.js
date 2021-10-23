@@ -5,7 +5,6 @@ import Router, { useRouter } from "next/router";
 import Typography from '@material-ui/core/Typography';
 import axios from 'axios'
 import Button from '@material-ui/core/Button';
-import fallback from './Fallback';
 import Fallback from './Fallback';
 
 let canvasRef;
@@ -227,7 +226,7 @@ function Face(props) {
         <Typography style={{ color: "red" }}>{feedback}</Typography>
         </div>
       <div className={styles.display}>
-        <Button onClick={() => setShowFallback(true)}>Can't Authenticate?</Button>
+        <Button onClick={() => setShowFallback(true)}>Cannot Authenticate?</Button>
       </div>
       <div className={styles.display}>
       {showFallback ?
