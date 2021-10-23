@@ -41,7 +41,9 @@ export default function Examroom({token, firebaseConfig}) {
 			<Sidebar>
 				{currentUser ?
 					<MainContainer token={token} studentId={ currentUser.student_id }/>
-				: null}
+				: <div>
+						Loading.....
+					</div>}
 				{/* <Typography variant="h5">
 					Welcome to the exam room
 				</Typography>
