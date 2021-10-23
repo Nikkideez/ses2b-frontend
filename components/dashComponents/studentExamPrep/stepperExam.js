@@ -123,7 +123,7 @@ export default function StepperExam(props) {
                 activeStep === 2 ? <Typography sx={{ mt: 2, mb: 1 }}>Test Screen Sharing</Typography> :
                   <Typography sx={{ mt: 2, mb: 1 }}>Exam Preparations Complete</Typography>}
             <div className={styles.display}>
-            {activeStep === 0 ? <FaceAuth handleNext={ handleNext } token={props.token}/> : 
+            {activeStep === 0 ? <FaceAuth handleNext={ handleNext } token={props.token} EmailToken={props.EmailToken}/> : 
           activeStep === 1 ? <VideoFilter filter_preference={currentUser.filter_preference}/> :
                 activeStep === 2 ? <ScreenShare handleDisabled={handleDisabled} /> :
               <Image src={success} alt="Success" width="300" height="300" className={classes.image} />}

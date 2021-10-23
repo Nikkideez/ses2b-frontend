@@ -7,7 +7,7 @@ import Sidebar from '../../components/dashComponents/Sidebar'
 import Script from 'next/script';
 import { useRouter } from "next/router";
 
-export default function TestFaceAuth({ token }) {
+export default function TestFaceAuth({ token, EmailToken }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
     const router = useRouter();
@@ -26,13 +26,14 @@ export default function TestFaceAuth({ token }) {
     return (
         <div>
             <Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
+            <Script src="https://smtpjs.com/v3/smtp.js"></Script>
             <Sidebar>
-                <StepperExam token={ token }/>
+                <StepperExam token={token} EmailToken={ EmailToken }/>
             </Sidebar>
         </div>
     )
 }
 
 export function getServerSideProps({ req, res }) {
-  return { props: { token: req.cookies.token || "" } };
+  return { props: { token: req.cookies.token || "" , EmailToken: process.env.EMAIL_TOKEN} };
 }

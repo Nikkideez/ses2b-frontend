@@ -27,5 +27,5 @@ export default function useWarnIfUnsavedChanges(message) {
             window.removeEventListener('beforeunload', beforeunload);
             Router.events.off('routeChangeStart', routeChangeStart);
         };
-    });
+    }, []);
 };
