@@ -5,6 +5,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { useRecoilState } from 'recoil';
 import { currentUserState } from '../../States';
+import jwt_decode from "jwt-decode";
 
 let randomNumber;
 
@@ -36,13 +37,7 @@ export default function Fallback(props) {
     }
     
     function getEmail (token) {
-        var base64Url = token.split('.')[1];
-        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-
-        return JSON.parse(jsonPayload).email;
+        return jwt_decode(token).email
     };
 
     const submit = () => {
