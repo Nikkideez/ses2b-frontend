@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import InvigContainer from './InvigContainer'
 import axios from 'axios';
+import AnnounceBtn from './AnnounceBtn';
 
 // const array = [
 //   { studentId: '123454', name: 'McLOVIN', image: "https://pbs.twimg.com/profile_images/1184543288801529862/Lw46ZMHU.jpg" },
@@ -41,9 +42,10 @@ export default function InvigAllStudents() {
   // Map function for every student who is in the exam room
   return (
     <div>
+      <AnnounceBtn/>
       <button onClick={() => setMute(!isMute)}>Mute Toggle</button>
       <div style={{display: 'flex', flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-around'}}>
-        {students.length > 1 ?
+        {students.length ?
           students.map((student, index) =>
             <div key={index}>
               <InvigContainer

@@ -10,6 +10,7 @@ import ExamsCurrent from '../../components/dashComponents/upcomingExams/ExamsCur
 import { currentUserState, hasCurrExamState, isStudentState } from '../../components/States';
 import { getUser } from '../../components/scripts/getUser'
 import { useRouter } from "next/router";
+import InvigExamTable from '../../components/dashComponents/invigDashboard/InvigExamTable';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     titleText: {
         color: theme.palette.text.title,
     },
-    text:{
+    text: {
         color: theme.palette.text.lighter,
     },
 }))
@@ -42,7 +43,7 @@ export default function Test({ token }) {
     const hasUser = (currentUser !== null);
     const router = useRouter();
     useEffect(async () => {
-        if (!token){
+        if (!token) {
             alert("Please log in")
             router.push("/login")
         }
@@ -50,57 +51,65 @@ export default function Test({ token }) {
             const user = await getUser(token)
             setCurrentUser(user); // should be able to be deleted but keeping the state here just incase
             setIsStudent(user.user_role === 2);
-            localStorage.setItem('currUser', JSON.stringify(user)); 
+            localStorage.setItem('currUser', JSON.stringify(user));
         }
-        if(localStorage.getItem('hasCurrExam')){
+        if (localStorage.getItem('hasCurrExam')) {
             console.log(JSON.parse(localStorage.getItem('hasCurrExam')))
             setCurrent(JSON.parse(localStorage.getItem('hasCurrExam')))
-         }
-      }, []);
+        }
+    }, []);
     const handleAgree = () => {
         setCurrent(true);
         localStorage.setItem('hasCurrExam', 'true');
         console.log("Index side working");
     }
-
+    // console.log(isStudent)
     // Conditionally rendering current exams to only appear if a student has exams
-    if(hasUser){
+    if (hasUser) {
         return (
             <div>
                 <Sidebar>
-                    {showCurrent === true ?
-                        <div style={{ paddingBottom: 60 }}>
+
+                    {isStudent ?
+                        <div>
+                            {showCurrent === true ?
+                                <div style={{ paddingBottom: 60 }}>
+                                    <Typography className={classes.titleText} variant="h5" style={{ paddingBottom: 20 }}>
+                                        Current Exams
+                                    </Typography>
+                                    <ExamsCurrent />
+                                </div>
+                                :
+                                <div>
+                                    {isStudent ?
+                                        <Typography color="secondary" variant="body1" style={{ paddingBottom: 20 }}>
+                                            You have no current exams.
+                                        </Typography>
+                                        :
+                                        <Typography className={classes.text} color="secondary" variant="body1" style={{ paddingBottom: 20 }}>
+                                            No exam to invigilate.
+                                        </Typography>
+                                    }
+                                </div>
+                            }
                             <Typography className={classes.titleText} variant="h5" style={{ paddingBottom: 20 }}>
-                                Current Exams
+                                Upcoming Exams
                             </Typography>
-                            <ExamsCurrent/>
+                            <ExamsTable handleAgree={handleAgree} test1="test" />
                         </div>
                         :
-                        <div>
-                        { isStudent? 
-                            <Typography color="secondary" variant="body1" style={{ paddingBottom: 20 }}>
-                            You have no current exams.
-                            </Typography> : 
-                            <Typography className={classes.text} color="secondary" variant="body1" style={{ paddingBottom: 20 }}>
-                            No exam to invigilate.
-                            </Typography> 
-                        }
-                        </div>
+                        <InvigExamTable />
                     }
-                    <Typography className ={classes.titleText} variant="h5" style={{ paddingBottom: 20 }}>
-                        Upcoming Exams
-                    </Typography>
-                    <ExamsTable handleAgree={handleAgree} test1="test" />
                 </Sidebar>
             </div>
         )
     }
-    return(
+    return (
         <div></div>
     )
-    
+
 }
 
 export function getServerSideProps({ req, res }) {
-  return { props: { token: req.cookies.token || "" } };
+    return { props: { token: req.cookies.token || "" } };
 }
