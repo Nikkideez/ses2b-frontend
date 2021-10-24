@@ -1,4 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import {
+  collection, addDoc, doc, updateDoc, getDoc, getFirestore, onSnapshot,
+  deleteField, query
+} from "firebase/firestore";
 import VideoContainer from './VideoContainer'
 import Script from 'next/script'
 import ScreenShareTest from '../../WebRTC/ScreenShareTest'
@@ -11,6 +15,8 @@ import { TextField } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 import Image from 'next/dist/client/image'
 import ExamQuestion from '../../../src/Images/ExamQuestionMath.png'
+
+
 
 const useStyles = makeStyles({
   examInformation: {
@@ -66,7 +72,26 @@ const useStyles = makeStyles({
 export default function MainContainer(props) {
   const [screenStream, setScreenStream] = useState();
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
+  const [examDetails, setExamDetails] = useState()
   const classes = useStyles(props);
+  const studentID = props.studentId
+  // const examDetails = onSnapshot(doc(firestore, "exams", props.examID), (doc) => {
+  //   console.log("Current data: ", doc.data());
+  // });
+  
+  // Getting firebase
+  const firestore = getFirestore();
+
+  useEffect(() => {
+    getAnnouncments("7VvK5sOx3TUpmHYAkLSQ")
+  }, [])
+
+  async function getAnnouncments(examID) {
+    onSnapshot(doc(firestore, "exams", examID), (doc) => {
+      console.log("Current data: ", doc.data());
+      setExamDetails(doc.data())
+    });
+  }
 
   return (
     <div>
@@ -102,15 +127,19 @@ export default function MainContainer(props) {
           </Grid>
           <Grid item xs={6} md={4}>
             <Paper variant='outlined' className={classes.examInformation}>
-              <Typography variant="h6">
-                Exam: MATH1001 Mathematical Modelling 1
-              </Typography>
-              <Typography variant="h6">
-                Session: Spring 2021
-              </Typography>
-              <Typography variant="h6">
-                Tutorial: 124A Mrs Jackson
-              </Typography>
+              {examDetails ?
+                <div>
+                  <Typography variant="h6">
+                    Exam: { examDetails.subject }
+                  </Typography>
+                  <Typography variant="h6">
+                    Session: Spring 2021
+                  </Typography>
+                  <Typography variant="h6">
+                    Invigilator: { examDetails.invigilator}
+                  </Typography>
+                </div>
+              : null}
             </Paper>
           </Grid>
           <Grid item xs={6} md={4} >
@@ -118,14 +147,13 @@ export default function MainContainer(props) {
               <Typography variant="h6" align='center'>
                 Announcements
               </Typography>
-              {/* <Typography variant="body1" align='center'>
-              
-              </Typography> */}
               <ul>
-                <li>Anouncement 1</li>
-                <li>Anouncement 2</li>
-                <li>Anouncement 3</li>
-                <li>Anouncement 4</li>
+                {examDetails ?
+                  examDetails.announcements.map((announcement, index) =>
+                    <div key={index}>
+                      <li>{ announcement }</li>
+                    </div >)
+                  : null}
               </ul>
             </Paper>
           </Grid>
@@ -138,12 +166,17 @@ export default function MainContainer(props) {
           </Grid>
           <Grid item xs={6} md={2}>
             <Paper variant='outlined' className={classes.timer}>
-              <Typography variant="h6" align='center'>
+              {examDetails ?
+                <Typography variant="h6" align='center'>
+                  Warnings: {examDetails.strikes[studentID] }
+                </Typography>
+              :null }
+              {/* <Typography variant="h6" align='center'>
                 Warnings: 1
               </Typography>
               <Typography variant="h6" align='center'>
                 Alerts: 2
-              </Typography>
+              </Typography> */}
             </Paper>
           </Grid>
           <Grid item xs={12}>

@@ -43,7 +43,7 @@ export default function InvigMain({ token, firebaseConfig }) {
 
     <Sidebar>
       {isExam ?
-        < InvigAllStudents />
+        < InvigAllStudents examID={ useRouter().query.examId }/>
       :
         <div>
           This exam does not exist
