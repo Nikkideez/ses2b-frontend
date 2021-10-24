@@ -7,6 +7,7 @@ import InvigDialog from './InvigDialog';
 import { HighlightOff } from '@material-ui/icons';
 import { theme, themeTwo } from '../../../src/theme';
 import { Avatar, Typography } from '@material-ui/core';
+import axios from 'axios';
 
 const useStyles = makeStyles({
   root: {
@@ -76,8 +77,19 @@ export default function InvigTools(props) {
   const classes = useStyles(props);
   const [warnings, setWarning] = useState(2);
 
+  function assignWarning() {
+    axios({
+      method: "POST",
+      url: `https://protoruts-backend.herokuapp.com/student/addstrike/${props.examID}/${props.studentId}`,
+      withCredentials: true,
+    }).then((res) => {
+      return res.data;
+    })
+  }
+
   const warningHandler = () => {
     if (confirm("Are you sure you want to give a warning?"))
+      assignWarning()
       setWarning(warnings + 1)
   }
 

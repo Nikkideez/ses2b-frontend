@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { initializeApp } from "firebase/app";
 import {
   collection, addDoc, doc, updateDoc, getDoc, getFirestore, onSnapshot,
   deleteField, query
