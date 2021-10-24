@@ -13,7 +13,7 @@ const InvigAllStudents = dynamic(() => import('../../../components/dashComponent
 
 
 export default function InvigMain({ token, firebaseConfig }) {
-  console.log(useRouter().query.examId)
+  let examID = useRouter().query.examId
   const message = "Are you sure you want to leave this page while an exam is in progress? \n";
   warnLeavePage(message);
   const [isStudent, setIsStudent] = useRecoilState(isStudentState);
@@ -43,7 +43,7 @@ export default function InvigMain({ token, firebaseConfig }) {
 
     <Sidebar>
       {isExam ?
-        < InvigAllStudents examID={ useRouter().query.examId }/>
+        < InvigAllStudents examID={ examID }/>
       :
         <div>
           This exam does not exist

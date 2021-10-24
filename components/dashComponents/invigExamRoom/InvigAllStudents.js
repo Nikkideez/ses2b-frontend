@@ -22,6 +22,7 @@ const profilePic = [
 export default function InvigAllStudents(props) {
   const [isMute, setMute] = useState(false);
   const [students, setStudents] = useState([])
+  const [exam, setExam] = useState()
   useEffect(() => {
     getStudents()
   }, [])
@@ -30,11 +31,11 @@ export default function InvigAllStudents(props) {
     await axios({
       method: "GET",
       withCredentials: true,
-      url: "http://protoruts-backend.herokuapp.com/student/invigilator/8025498",
+      url: `https://protoruts-backend.herokuapp.com/student/get-exam/${props.examID}`,
     }).then((res) => {
       console.log(res.data)
-      setStudents(res.data);
-      // students = res.data;
+      setExam(res.data.exam)
+      setStudents(res.data.students);
     })
   }
 
@@ -56,7 +57,8 @@ export default function InvigAllStudents(props) {
                 subject={'MAT100'}
                 // localAudio={localAudio}
                 isMute={isMute}
-                examID={ props.examID }
+                examID={props.examID}
+                warnings={exam.strikes[student.student_id]}
               />
               <div style={{ padding: 10 }} />
             </div >)
