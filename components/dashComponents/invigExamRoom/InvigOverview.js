@@ -75,7 +75,7 @@ const useStyles = makeStyles({
 
 export default function InvigTools(props) {
   const classes = useStyles(props);
-  const [warnings, setWarning] = useState(2);
+  const [warnings, setWarning] = useState(props.warnings);
 
   function assignWarning() {
     axios({
