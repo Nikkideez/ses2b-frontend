@@ -192,11 +192,12 @@ export default function Dashboard(props) {
           </div>
 
           <div className={classes.toolbarButtonContainer}>
-            <IconButton color="inherit" >
+            {/* We wont have time to implement this feature */}
+            {/* <IconButton color="inherit" >
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
               </Badge>
-            </IconButton>
+            </IconButton> */}
 
               <Button className={isStudent? classes.button: classes.buttonT2} onClick={handleLogout}>
                 Logout

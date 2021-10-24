@@ -83,9 +83,9 @@ const invMenuItems = [
         divider: false,
     },
     {
-        name: "PastExams",
+        name: "All Exams",
         text: "Exam Recordings",
-        link: "/dashboard/pastexams",
+        link: "/dashboard/allexams",
         icon: <VideoLibraryIcon />,
         divider: false,
     },

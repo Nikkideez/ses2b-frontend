@@ -11,6 +11,7 @@ import { currentUserState, hasCurrExamState, isStudentState } from '../../compon
 import { getUser } from '../../components/scripts/getUser'
 import { useRouter } from "next/router";
 import InvigExamTable from '../../components/dashComponents/invigDashboard/InvigExamTable';
+import InvigToday from '../../components/dashComponents/invigDashboard/InvigToday';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -98,7 +99,13 @@ export default function Test({ token }) {
                             <ExamsTable handleAgree={handleAgree} test1="test" />
                         </div>
                         :
-                        <InvigExamTable />
+                        // <InvigToday />
+                        <div>
+                            <Typography variant="h5" className={classes.titleText}>
+                                Exams
+                            </Typography>
+                        <InvigExamTable/>
+                        </div>
                     }
                 </Sidebar>
             </div>

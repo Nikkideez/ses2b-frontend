@@ -11,10 +11,14 @@ import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import { useRouter } from "next/router";
+import InvigExamTable from '../../components/dashComponents/invigDashboard/InvigExamTable';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
 		display: 'flex',
+	},
+	header: {
+		paddingBottom: 20,
 	},
 	text:{
 		color: theme.palette.text.title, 	
@@ -41,9 +45,12 @@ export default function Examroom({ token }) {
 	return (
 		<div>
 			<Sidebar>
-				<Typography className={classes.text} variant="h5">
-					Welcome to the past exam room
+				<div className={classes.header}>
+				<Typography className={classes.text} variant="h5" align="center">
+					View all exams
 				</Typography>
+				</div>
+				<InvigExamTable/>
 			</Sidebar>
 		</div>
 	)
