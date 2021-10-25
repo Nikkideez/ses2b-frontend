@@ -224,13 +224,15 @@ function Face(props) {
       </div>
       <div className={styles.display}>
         <Typography style={{ color: "red" }}>{feedback}</Typography>
-        </div>
-      <div className={styles.display}>
-        <Button onClick={() => setShowFallback(true)}>Cannot Authenticate?</Button>
       </div>
+      {props.name ?
+        <div className={styles.display}>
+          <Button onClick={() => setShowFallback(true)}>Cannot Authenticate?</Button>
+        </div>
+      : null }
       <div className={styles.display}>
       {showFallback ?
-          <Fallback EmailToken={props.EmailToken} token={props.token} handleUnlock={ handleUnlock }/>
+          <Fallback EmailToken={props.EmailToken} token={props.token} handleUnlock={handleUnlock} name={ props.name }/>
         : null
         }
       </div>
