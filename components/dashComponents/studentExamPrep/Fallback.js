@@ -31,8 +31,8 @@ export default function Fallback(props) {
             To: email,
             From: "proctoruts@gmail.com",
             FromName: "Proctor UTS",
-            Subject: "Testing This Won't Work",
-            Body: "Hi " + currentUser.first_name +"!<br><br> We noticed you were not able to authenticate using our face authentication process. Please enter this code to finish logging in:<br><br>" + code +"<br><br>If you did NOT initiate this log-in, we highly recommend you changing your password. If you are still unable to login, please contact admin.<br><br>Thanks,<br>ProctorUTS" ,
+            Subject: "Email Verification",
+            Body: "Hi " + props.name +"!<br><br> We noticed you were not able to authenticate using our face authentication process. Please enter this code to finish logging in:<br><br>" + code +"<br><br>If you did NOT initiate this log-in, we highly recommend you changing your password. If you are still unable to login, please contact admin.<br><br>Thanks,<br>ProctorUTS" ,
         });
     }
     

@@ -12,6 +12,7 @@ import { getUser } from '../../components/scripts/getUser'
 import { useRouter } from "next/router";
 import InvigExamTable from '../../components/dashComponents/invigDashboard/InvigExamTable';
 import InvigToday from '../../components/dashComponents/invigDashboard/InvigToday';
+import { initializeApp } from "firebase/app";
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -36,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }))
 
-export default function Test({ token }) {
+export default function Test({ token, firebaseConfig }) {
     const classes = useStyles();
     const [showCurrent, setCurrent] = React.useState(false);
     const [isStudent, setIsStudent] = useRecoilState(isStudentState);
@@ -44,6 +45,13 @@ export default function Test({ token }) {
     const hasUser = (currentUser !== null);
     const router = useRouter();
     useEffect(async () => {
+        // Initialize Firebase
+		try {
+			initializeApp(firebaseConfig);
+		} catch {
+			console.log("nevermind nothing")
+        }
+        
         if (!token) {
             alert("Please log in")
             router.push("/login")
@@ -118,5 +126,16 @@ export default function Test({ token }) {
 }
 
 export function getServerSideProps({ req, res }) {
-    return { props: { token: req.cookies.token || "" } };
+	const firebaseConfig = {
+	apiKey: process.env.PRIVATE_API_KEY,
+	authDomain: process.env.AUTHDOMAIN,
+	databaseURL: process.env.DATABASEURL,
+	projectId: process.env.PROJECTID,
+	storageBucket: process.env.STORAGEBUCKET,
+	messagingSenderId: process.env.MESSAGINGSENDERID,
+	appId: process.env.APPID,
+	measurementId: process.env.MEASUREMENTID
+  	}
+
+  	return { props: { token: req.cookies.token || "" ,  firebaseConfig: firebaseConfig } };
 }
