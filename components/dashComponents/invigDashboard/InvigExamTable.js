@@ -35,6 +35,7 @@ const useRowStyles = makeStyles((theme) => ({
   rowBorder: {
     backgroundColor: theme.palette.primary.darker,
     borderColor: theme.palette.primary.darker,
+    color: theme.palette.primary.darker,
   },
   tableHeadText: {
     color: theme.palette.text.title,
@@ -45,9 +46,14 @@ const useRowStyles = makeStyles((theme) => ({
   tableRow: {
     backgroundColor: theme.palette.primary.main,
   },
-  rowText: {
+  tableCell: {
+    backgroundColor: theme.palette.primary.main,
+    borderColor: theme.palette.primary.darker,
     color: theme.palette.text.title,
   },
+  // rowText: {
+  //   color: theme.palette.text.title,
+  // },
   tableCellClosed: {
     paddingBottom: 0,
     paddingTop: 0,
@@ -60,24 +66,15 @@ const useRowStyles = makeStyles((theme) => ({
 
 }));
 
-function createData(exam, subject, date, time, available, status) {
-  return {
-    exam, subject, date, time, available, status
-  };
-}
-
-
+// Represent the data to go in each cell for the row
 function Row(props) {
+  // the exam object
   const row = props.row;
   console.log(row)
+  // drawer for opening and closing the collapse
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
-
-  const handleAgree = () => {
-    console.log("exam side working");
-    props.handleAgree();
-  }
-
+  
   const date = new Date(row.date_time.seconds * 1000)
   console.log(date)
   console.log(date.getDate())
@@ -85,12 +82,12 @@ function Row(props) {
   return (
     <React.Fragment >
       <TableRow className={classes.tableRow}>
-        <TableCell >
+        <TableCell className={classes.tableCell}>
           <IconButton aria-label="expand row" size="small" onClick={() => setOpen(!open)} className={classes.iconButton}>
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row" className={classes.tableRow}>
+        <TableCell component="th" scope="row" className={classes.tableCell}>
           <Typography className={classes.rowText}>
             {row.exam}
           </Typography>
@@ -99,9 +96,9 @@ function Row(props) {
           </Typography>
 
         </TableCell>
-        <TableCell align="right" className={classes.rowText}>{`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`}</TableCell>
-        <TableCell align="right" className={classes.rowText}>{`${date.getHours()}:${date.getMinutes()}`}</TableCell>
-        <TableCell align="right">
+        <TableCell align="right" className={classes.tableCell}>{`${date.getDate()}/${date.getMonth()}/${date.getFullYear()}`}</TableCell>
+        <TableCell align="right" className={classes.tableCell}>{`${date.getHours()}:${date.getMinutes()}`}</TableCell>
+        <TableCell align="right" className={classes.tableCell}>
           <Link href={`./dashboard/invigRoom/${row.id}`}>
             <Button variant="outlined" color="secondary">
               Enter Exam Room
@@ -112,7 +109,7 @@ function Row(props) {
       </TableRow>
       <TableRow>
         <TableCell className={open ? classes.tableCellOpened : classes.tableCellClosed} colSpan={6} >
-          <Collapse in={open} timeout="auto" className={classes.rowText}>
+          <Collapse in={open} timeout="auto" className={classes.tableCell}>
             <Typography variant="h6" gutterBottom component="div">
               Details
             </Typography >
@@ -126,19 +123,13 @@ function Row(props) {
   );
 }
 
-
-const rows = [
-  createData('Final Exam', 'MATH101', '12/12/12', '4:20', false, false),
-  createData('Final Exam', 'SCIE101', '12/12/12', '4:20', true, false),
-  createData('Final Exam', 'ENG101', '12/12/12', '4:20', true, false),
-];
-
+// The whole table
 export default function InvigExamTable(props) {
-  // Getting the actual data. Im going to move this part dont worry.
+  // Getting the actual data
+  const [exams, setExams] = useState([])
   useEffect(() => {
     getExams()
   }, [])
-  const [exams, setExams] = useState([])
   const getExams = async () => {
     await axios({
       method: "GET",
@@ -147,14 +138,9 @@ export default function InvigExamTable(props) {
     }).then((res) => {
       console.log(res.data)
       setExams(res.data);
-      // students = res.data;
     })
   }
 
-  const handleAgree = () => {
-    props.handleAgree();
-    rows[0].status = true;
-  }
   const classes = useRowStyles();
 
   return (
@@ -171,7 +157,7 @@ export default function InvigExamTable(props) {
         </TableHead>
         <TableBody >
           {exams.map((exam) => (
-            <Row key={exam.subject} row={exam} handleAgree={handleAgree}/>
+            <Row key={exam.subject} row={exam}/>
           ))}
         </TableBody>
       </Table>

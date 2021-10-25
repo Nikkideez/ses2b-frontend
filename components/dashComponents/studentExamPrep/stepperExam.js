@@ -90,7 +90,7 @@ export default function StepperExam(props) {
       if (JSON.stringify(filterPreferences) != JSON.stringify(getPreference())) {
         updateFilterPreferences(props.token, getPreference())
       }
-      router.push("/dashboard/examroom")
+      router.push("/dashboard/" + router.query.examroom)
       }
     else
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
