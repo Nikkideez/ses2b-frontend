@@ -35,6 +35,8 @@ const theme = createTheme({
   button:{
     buttonBG1: '#4259d4',
     buttonBG2: '#ffffff',
+    buttonBG3: '#d32f2f',
+    buttonBG4: '#4caf50',
   }
 });
 

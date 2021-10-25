@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import InvigExamTable from '../../components/dashComponents/invigDashboard/InvigExamTable';
 import InvigToday from '../../components/dashComponents/invigDashboard/InvigToday';
 import { initializeApp } from "firebase/app";
+import axios from 'axios'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -44,6 +45,24 @@ export default function Test({ token, firebaseConfig }) {
     const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
     const hasUser = (currentUser !== null);
     const router = useRouter();
+    // get the students exams
+    const [exams, setExams] = useState([])
+    useEffect(() => {
+        getExams()
+    }, [])
+    const getExams = async () => {
+        await axios({
+            method: "GET",
+            withCredentials: true,
+            url: "https://protoruts-backend.herokuapp.com/student/get-exams/8898312",
+        }).then((res) => {
+            console.log(res.data)
+            setExams(res.data);
+        })
+    }
+    if (currentUser)
+        console.log(currentUser.accept_terms)
+    // route guarding
     useEffect(async () => {
         // Initialize Firebase
 		try {
@@ -74,37 +93,34 @@ export default function Test({ token, firebaseConfig }) {
     }
     // console.log(isStudent)
     // Conditionally rendering current exams to only appear if a student has exams
+    // console.log(exams.filter(time => time.date_time.seconds > 10))
+    //split the object into two objects
+    const upcomingExam = exams.filter(time => time.date_time.seconds > 1102770720)
+    const currentExam = exams.filter(time => time.date_time.seconds <= 1102770720)
     if (hasUser) {
         return (
             <div>
                 <Sidebar>
-
                     {isStudent ?
                         <div>
-                            {showCurrent === true ?
+                            {currentExam ?
                                 <div style={{ paddingBottom: 60 }}>
                                     <Typography className={classes.titleText} variant="h5" style={{ paddingBottom: 20 }}>
                                         Current Exams
                                     </Typography>
-                                    <ExamsCurrent />
+                                    <ExamsTable exams={currentExam} />
                                 </div>
                                 :
                                 <div>
-                                    {isStudent ?
-                                        <Typography color="secondary" variant="body1" style={{ paddingBottom: 20 }}>
-                                            You have no current exams.
-                                        </Typography>
-                                        :
-                                        <Typography className={classes.text} color="secondary" variant="body1" style={{ paddingBottom: 20 }}>
-                                            No exam to invigilate.
-                                        </Typography>
-                                    }
+                                    <Typography color="secondary" variant="body1" style={{ paddingBottom: 20 }}>
+                                        You have no current exams.
+                                    </Typography>
                                 </div>
                             }
                             <Typography className={classes.titleText} variant="h5" style={{ paddingBottom: 20 }}>
                                 Upcoming Exams
                             </Typography>
-                            <ExamsTable handleAgree={handleAgree} test1="test" />
+                            <ExamsTable exams={upcomingExam} buttonDisabled={true}/>
                         </div>
                         :
                         // <InvigToday />
@@ -112,7 +128,7 @@ export default function Test({ token, firebaseConfig }) {
                             <Typography variant="h5" className={classes.titleText}>
                                 Exams
                             </Typography>
-                        <InvigExamTable/>
+                            <InvigExamTable />
                         </div>
                     }
                 </Sidebar>

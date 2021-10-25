@@ -92,7 +92,7 @@ function Row(props) {
           <div>
           {
             isStudent?
-            <Link href="/dashboard/testFaceAuth">
+            <Link href={"/dashboard/" + "123123123" + "/studentAuth"}>
             <Button style={{color: "#4caf50"}} variant="outlined">
               Enter Exam Room
             </Button>

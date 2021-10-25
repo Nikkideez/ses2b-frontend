@@ -27,16 +27,16 @@ const useRowStyles = makeStyles((theme) => ({
   iconButton: {
     padding: 0,
   },
-  tableHeadText:{
+  tableHeadText: {
     color: theme.palette.text.title,
   },
-  tableHead:{
+  tableHead: {
     backgroundColor: theme.palette.primary.main,
   },
   tableRow: {
     backgroundColor: theme.palette.primary.lighterV2,
   },
-  rowText:{
+  rowText: {
     color: theme.palette.text.title,
   },
   tableCellClosed: {
@@ -45,21 +45,15 @@ const useRowStyles = makeStyles((theme) => ({
     transition: "padding-Top 0.4s, padding-Bottom 0.4s"
   },
   tableCellOpened: {
-    paddingTop:10,
-    paddingBottom:10,
+    paddingTop: 10,
+    paddingBottom: 10,
   }
 
 }));
 
-function createData(exam, subject, date, time, available, status) {
-  return {
-    exam, subject, date, time, available, status
-  };
-}
-
-
 
 function Row(props) {
+  // getting the single exam
   const row = props.row;
   const [open, setOpen] = React.useState(false);
   const classes = useRowStyles();
@@ -69,7 +63,9 @@ function Row(props) {
     props.handleAgree();
   }
 
- 
+  const date = new Date(row.date_time.seconds*1000)
+  // console.log(date)
+  console.log(props.buttonDisabled)
 
   return (
     <React.Fragment>
@@ -79,7 +75,7 @@ function Row(props) {
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row" className={classes.tableRow}> 
+        <TableCell component="th" scope="row" className={classes.tableRow}>
           <Typography className={classes.rowText}>
             {row.exam}
           </Typography>
@@ -88,15 +84,15 @@ function Row(props) {
           </Typography>
 
         </TableCell>
-        <TableCell align="right" className={classes.rowText}>{row.date} </TableCell>
-        <TableCell align="right"className={classes.rowText}>{row.time}</TableCell>
+        <TableCell align="right" className={classes.rowText}>{`${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`}</TableCell>
+        <TableCell align="right" className={classes.rowText}>{`${date.getHours()}:${date.getMinutes()}`}</TableCell>
         <TableCell align="right">
-          <ExamAlert isDisabled={row.available} handleAgree = {handleAgree}/>
+          <ExamAlert isDisabled={props.buttonDisabled} handleAgree={handleAgree} examId={row.id}/>
         </TableCell>
 
       </TableRow>
       <TableRow>
-        <TableCell className={open? classes.tableCellOpened : classes.tableCellClosed} colSpan={6} >
+        <TableCell className={open ? classes.tableCellOpened : classes.tableCellClosed} colSpan={6} >
           <Collapse in={open} timeout="auto" >
             <Typography variant="h6" gutterBottom component="div">
               Details
@@ -112,19 +108,21 @@ function Row(props) {
 }
 
 
-const rows = [
-  createData('Final Exam', 'MATH101', '12/12/12', '4:20', false, false),
-  createData('Final Exam', 'SCIE101', '12/12/12', '4:20', true, false),
-  createData('Final Exam', 'ENG101', '12/12/12', '4:20', true, false),
-];
+// const rows = [
+//   createData('Final Exam', 'MATH101', '12/12/12', '4:20', false, false),
+//   createData('Final Exam', 'SCIE101', '12/12/12', '4:20', true, false),
+//   createData('Final Exam', 'ENG101', '12/12/12', '4:20', true, false),
+// ];
 
 export default function CollapsibleTable(props) {
-  const handleAgree = () => {
-    props.handleAgree();
-    rows[0].status = true; 
-  }
-  const classes = useRowStyles();
+  // const handleAgree = () => {
+  //   props.handleAgree();
+  //   rows[0].status = true; 
+  // }
+  props.buttonDisabled
 
+  const classes = useRowStyles();
+  console.log(props.exams)
   return (
     <TableContainer component={Paper} elevation={0} >
       <Table aria-label="collapsible table">
@@ -133,14 +131,15 @@ export default function CollapsibleTable(props) {
             <TableCell />
             <TableCell className={classes.tableHeadText}>EXAM</TableCell>
             <TableCell className={classes.tableHeadText} align="right">DATE</TableCell>
-            <TableCell  className={classes.tableHeadText} align="right">TIME</TableCell>
-            <TableCell className={classes.tableHeadText} align="right" style={{width: 330}}>ACCESS</TableCell>
+            <TableCell className={classes.tableHeadText} align="right">TIME</TableCell>
+            <TableCell className={classes.tableHeadText} align="right" style={{ width: 330 }}>ACCESS</TableCell>
           </TableRow>
         </TableHead>
         <TableBody >
-          {(rows.filter(row => row.status === false)).map((row) => (
-            <Row  key={row.subject} row={row} handleAgree = {handleAgree}/>
-          ))}
+          {props.exams &&
+            props.exams.map((exam) => (
+              <Row key={exam.id} row={exam} buttonDisabled={props.buttonDisabled}/>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

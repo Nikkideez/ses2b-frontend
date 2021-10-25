@@ -6,20 +6,31 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { makeStyles } from '@material-ui/core';
+import Link from 'next/link'
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { currentUserState, hasCurrExamState, isStudentState } from '../../States';
+
 
 const useStyles = makeStyles((theme) => ({
   examButton: {
-    backgroundColor: theme.button.buttonBG2,
-    color: theme.button.buttonBG1
+    // backgroundColor: theme.button.buttonBG2,
+    color: theme.button.buttonBG4
   },
   examButtonDisabled: {
     backgroundColor: '#f',
-  }
+  },
+  acceptButton: {
+    color: theme.button.buttonBG3,
+  },
+
 }))
 
 
 export default function AlertDialog(props) {
   const classes = useStyles();
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+
+  console.log(currentUser.accept_terms)
 
   const [open, setOpen] = React.useState(false);
 
@@ -40,9 +51,18 @@ export default function AlertDialog(props) {
 
   return (
     <div>
-      <Button variant="outlined" className={props.isDisabled? classes.examButtonDisabled:classes.examButton} onClick={handleClickOpen} disabled={props.isDisabled}>
-        Start Exam
-      </Button>
+      {!currentUser ?
+        <Button variant="outlined"  className={classes.acceptButton} onClick={handleClickOpen} disabled={props.isDisabled}>
+          Enter Exam Room
+        </Button>
+        :
+        <Link href={`/dashboard/${props.examId}/studentAuth`} >
+          <Button variant="outlined"  disabled={props.isDisabled} className={classes.examButton}>
+            Enter Exam Room
+          </Button>
+        </Link>
+
+      }
       <Dialog
         open={open}
         onClose={handleClose}

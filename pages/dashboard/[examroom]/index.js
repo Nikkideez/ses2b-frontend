@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import Sidebar from '../../../components/dashComponents/Sidebar'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
@@ -14,8 +14,8 @@ import { useRouter } from "next/router";
 import { initializeApp } from "firebase/app";
 
 
-export default function Examroom({token, firebaseConfig}) {
-    const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+export default function Examroom({ token, firebaseConfig }) {
+	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
 	const router = useRouter();
 	useEffect(async () => {
@@ -25,23 +25,23 @@ export default function Examroom({token, firebaseConfig}) {
 		} catch {
 			console.log("nevermind nothing")
 		}
-        if (!token){
-            alert("Please log in")
-            router.push("/login")
-        }
-        if (!currentUser) {
-            const user = await getUser(token)
-            setCurrentUser(user);
-            setStudent(user.user_role === 2);
-        }
+		if (!token) {
+			alert("Please log in")
+			router.push("/login")
+		}
+		if (!currentUser) {
+			const user = await getUser(token)
+			setCurrentUser(user);
+			setStudent(user.user_role === 2);
+		}
 	}, []);
-	
+
 	return (
 		<div>
 			<Sidebar>
 				{currentUser ?
-					<MainContainer token={token} studentId={ currentUser.student_id }/>
-				: <div>
+					<MainContainer token={token} studentId={currentUser.student_id} />
+					: <div>
 						Loading.....
 					</div>}
 				{/* <Typography variant="h5">
@@ -82,15 +82,15 @@ export default function Examroom({token, firebaseConfig}) {
 
 export function getServerSideProps({ req, res }) {
 	const firebaseConfig = {
-	apiKey: process.env.PRIVATE_API_KEY,
-	authDomain: process.env.AUTHDOMAIN,
-	databaseURL: process.env.DATABASEURL,
-	projectId: process.env.PROJECTID,
-	storageBucket: process.env.STORAGEBUCKET,
-	messagingSenderId: process.env.MESSAGINGSENDERID,
-	appId: process.env.APPID,
-	measurementId: process.env.MEASUREMENTID
-  	}
+		apiKey: process.env.PRIVATE_API_KEY,
+		authDomain: process.env.AUTHDOMAIN,
+		databaseURL: process.env.DATABASEURL,
+		projectId: process.env.PROJECTID,
+		storageBucket: process.env.STORAGEBUCKET,
+		messagingSenderId: process.env.MESSAGINGSENDERID,
+		appId: process.env.APPID,
+		measurementId: process.env.MEASUREMENTID
+	}
 
-  	return { props: { token: req.cookies.token || "" ,  firebaseConfig: firebaseConfig } };
+	return { props: { token: req.cookies.token || "", firebaseConfig: firebaseConfig } };
 }

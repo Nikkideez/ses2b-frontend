@@ -16,8 +16,9 @@ import VideoFilter, { stopVideo, getPreference } from './VideoFilter'
 import { useRecoilState } from 'recoil';
 import { currentUserState } from '../../States';
 import axios from 'axios';
+import Link from 'next/link'
 
-const steps = ['Face Authentication', 'Video Filter' ,'Test Screen Sharing', 'Start Exam'];
+const steps = ['Face Authentication', 'Video Filter', 'Test Screen Sharing', 'Start Exam'];
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
     "justify-content": "center"
   },
 
-  icon:{
+  icon: {
     color: "default",
     "&$activeIcon": {
       color: "#2979FF"
@@ -52,29 +53,29 @@ export default function StepperExam(props) {
 
   async function getFilterPreferences(token) {
     await axios({
-        method: "POST",
-        url: "https://protoruts-backend.herokuapp.com/student/get-filter-preferences",
-        data: {
-          idToken: token
-        },
-        withCredentials: true,
+      method: "POST",
+      url: "https://protoruts-backend.herokuapp.com/student/get-filter-preferences",
+      data: {
+        idToken: token
+      },
+      withCredentials: true,
     }).then((res) => {
-        return res.data;
+      return res.data;
     })
   }
 
   async function updateFilterPreferences(token, filter_preference) {
-      await axios({
-          method: "POST",
-          url: "https://protoruts-backend.herokuapp.com/student/update-filter-preferences",
-          data: {
-            idToken: token,
-            filter_preference: filter_preference
-          },
-          withCredentials: true,
-      }).then((res) => {
-          return res.data;
-      })
+    await axios({
+      method: "POST",
+      url: "https://protoruts-backend.herokuapp.com/student/update-filter-preferences",
+      data: {
+        idToken: token,
+        filter_preference: filter_preference
+      },
+      withCredentials: true,
+    }).then((res) => {
+      return res.data;
+    })
   }
 
   const handleNext = () => {
@@ -91,7 +92,7 @@ export default function StepperExam(props) {
         updateFilterPreferences(props.token, getPreference())
       }
       router.push("/dashboard/" + router.query.examroom)
-      }
+    }
     else
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -99,7 +100,7 @@ export default function StepperExam(props) {
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-  
+
   const handleDisabled = () => {
     setDisabledStep2(false)
   }
@@ -112,7 +113,7 @@ export default function StepperExam(props) {
           const labelProps = {};
           return (
             <Step key={label} {...stepProps}>
-              <StepLabel {...labelProps} StepIconProps={{ classes:{ root: classes.icon, active: classes.activeIcon, completed: classes.completedIcon } }}>{label}</StepLabel>
+              <StepLabel {...labelProps} StepIconProps={{ classes: { root: classes.icon, active: classes.activeIcon, completed: classes.completedIcon } }}>{label}</StepLabel>
             </Step>
           );
         })}

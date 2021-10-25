@@ -36,6 +36,7 @@ let enableFilter = true;
 export default function StudentRTC(props) {
   const [webcamActive, setWebcamActive] = useState(false);
   const [start, setStart] = useState(false);
+  const [isScreenShare, setIsScreenShare] = useState(false);
   const [callDoc, setCallDoc] = useState();
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
   const [filterPreferences, setFilterPreferences] = useState([]);
@@ -67,7 +68,10 @@ export default function StudentRTC(props) {
       }
     })
   }
-
+  useEffect(() => {
+    if(props.screenStream)
+      setIsScreenShare(true)
+  }, [props.screenStream])
   // Call getCall() on render
   useEffect(() => {
     getFilterPreferences(props.token)
@@ -314,19 +318,19 @@ export default function StudentRTC(props) {
   return (
     <div>
       <video ref={videoRef} playsInline muted height={videoHeight} width={videoWidth} hidden={true} />
-      <canvas ref={canvasRef} height={videoHeight} width={videoWidth} style={{width: 500}}/>
+      <canvas ref={canvasRef} height={videoHeight} width={videoWidth} style={{width: 400}}/>
       <audio ref={remoteAudioRef} autoPlay ></audio>
       {/* <video ref={remoteRef} autoPlay playsInline height={videoHeight} width={videoWidth} /> */}
       <div>
       {!webcamActive ? (
         <div className="modalContainer">
           <h3>
-            Turn on your camera and microphone and start the
+            Activate screenshare before turning on your camera and microphone and start the
             call
           </h3>
           <button
             onClick={setupSources}
-            disabled={!start}
+            disabled={!start && !isScreenShare}
             >Start</button>
         </div>
       ) : (

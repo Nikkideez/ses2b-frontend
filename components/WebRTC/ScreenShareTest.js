@@ -5,7 +5,7 @@ export default function ScreenShare(props) {
 
   const videoRef = useRef();
   const videoHeight = 360;
-  const videoWidth = 480;
+  const videoWidth = 400;
 
   const [feedback, setFeedback] = useState("")
 
