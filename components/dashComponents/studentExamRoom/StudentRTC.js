@@ -40,7 +40,7 @@ export default function StudentRTC(props) {
   const [callDoc, setCallDoc] = useState();
   const [connectionStatus, setConnectionStatus] = useState(pc.connectionState);
   const [filterPreferences, setFilterPreferences] = useState([]);
-  const localStream = props.localStream
+  let localStream;
 
   let flipHorizontal = false;
   const videoHeight = 480;
@@ -50,8 +50,7 @@ export default function StudentRTC(props) {
 
   // To receive audio
   const remoteAudioRef = useRef();
-  // const remoteRef = useRef();
-
+ 
   // Gets the call ID from the database
   // Puts event listener on start button when offer is available
   const getCall = async () => {
@@ -69,11 +68,13 @@ export default function StudentRTC(props) {
     })
   }
   useEffect(() => {
-    if(props.screenStream)
+    if (props.screenStream)
       setIsScreenShare(true)
   }, [props.screenStream])
   // Call getCall() on render
   useEffect(() => {
+
+    // Getting preferences for face blur
     getFilterPreferences(props.token)
     // Get Virtual Background
     const img = new Image();
@@ -105,6 +106,12 @@ export default function StudentRTC(props) {
 
   // console.log(props.screenStream)
   const setupSources = async () => {
+    // Get the video stream
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+    
     // Combine local stream and face blur
     initializeVideo();
     let stream = canvasRef.current.captureStream();
@@ -267,7 +274,7 @@ export default function StudentRTC(props) {
     let backgroundBlurAmount = enableBlur ? blurAmount : 0;
     const edgeBlurAmount = 3;
     const flipHorizontal = false;
-    
+
     bodyPix.drawBokehEffect(
       canvasRef.current,
       videoRef.current,
@@ -296,14 +303,14 @@ export default function StudentRTC(props) {
 
   async function processVideo(net) {
     try {
-      const segmentation = await net.segmentPerson(videoRef.current, {segmentationThreshold: threshold/100});
-      
+      const segmentation = await net.segmentPerson(videoRef.current, { segmentationThreshold: threshold / 100 });
+
       if (enableBackground) {
         removeBackground(segmentation)
         addBackground()
       } else
         addBlur(segmentation)
-      
+
       requestAnimationFrame(() => {
         processVideo(net)
       })
@@ -318,36 +325,36 @@ export default function StudentRTC(props) {
   return (
     <div>
       <video ref={videoRef} playsInline muted height={videoHeight} width={videoWidth} hidden={true} />
-      <canvas ref={canvasRef} height={videoHeight} width={videoWidth} style={{width: 400}}/>
+      <canvas ref={canvasRef} height={videoHeight} width={videoWidth} style={{ width: 400 }} />
       <audio ref={remoteAudioRef} autoPlay ></audio>
       {/* <video ref={remoteRef} autoPlay playsInline height={videoHeight} width={videoWidth} /> */}
       <div>
-      {!webcamActive ? (
-        <div className="modalContainer">
-          <h3>
-            Activate screenshare before turning on your camera and microphone and start the
-            call
-          </h3>
-          <button
-            onClick={setupSources}
-            disabled={!start && !isScreenShare}
+        {!webcamActive ? (
+          <div className="modalContainer">
+            <h3>
+              Activate screenshare before turning on your camera and microphone and start the
+              call
+            </h3>
+            <button
+              onClick={setupSources}
+              disabled={!start && !isScreenShare}
             >Start</button>
-        </div>
-      ) : (
-        <div>
-          {/* <p>{connectionStatus}</p> */}
-          <button
-            onClick={retry}
-            disabled={connectionStatus === "connected" || !start}
+          </div>
+        ) : (
+          <div>
+            {/* <p>{connectionStatus}</p> */}
+            <button
+              onClick={retry}
+              disabled={connectionStatus === "connected" || !start}
             >
-            retry
-          </button>
-        </div>
-      )}
-      <button onClick={handleToggleFilter}>Filter ON/OFF</button>
+              retry
+            </button>
+          </div>
+        )}
+        <button onClick={handleToggleFilter}>Filter ON/OFF</button>
       </div>
-        {/* Note From Evan: Importing body-pix as script to allow face api and blur to work together */}
-        <Script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></Script>
+      {/* Note From Evan: Importing body-pix as script to allow face api and blur to work together */}
+      <Script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></Script>
     </div>
   );
 }
