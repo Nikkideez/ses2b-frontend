@@ -26,7 +26,25 @@ export default function ChatContainer(props) {
         // doc.data() will be undefined in this case
         console.log("No such user!");
     }
-  }   
+    }
+    
+    function getTimeStamp() {
+        let newDate = new Date(props.ping.date_time.seconds * 1000)
+        let date = checkZero(newDate.getDate());
+        let month = checkZero(newDate.getMonth() + 1);
+        let year = checkZero(newDate.getFullYear());
+        let hours = checkZero(newDate.getHours());
+        let minutes = checkZero(newDate.getMinutes());
+        let seconds = checkZero(newDate.getSeconds());
+
+        function checkZero(digits) {
+        if (digits < 10)
+            return `0${digits}`
+        return digits
+        }
+
+        return `${date}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
     
   return (
     <div>
@@ -48,7 +66,7 @@ export default function ChatContainer(props) {
                             >
                                 {props.ping.message}
                             </Typography>
-                                {props.ping.date_time.seconds}
+                                {` - ${getTimeStamp()}`}
                             </Fragment>
                         }
                 />
