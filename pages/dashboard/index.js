@@ -95,8 +95,8 @@ export default function Test({ token, firebaseConfig }) {
     // Conditionally rendering current exams to only appear if a student has exams
     // console.log(exams.filter(time => time.date_time.seconds > 10))
     //split the object into two objects
-    const upcomingExam = exams.filter(time => time.date_time.seconds > 1102770720)
-    const currentExam = exams.filter(time => time.date_time.seconds <= 1102770720)
+    const upcomingExam = exams.filter(time => time.date_time.seconds <= 1102770720)
+    const currentExam = exams.filter(time => time.date_time.seconds > 1102770720)
     if (hasUser) {
         return (
             <div>

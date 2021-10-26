@@ -43,7 +43,7 @@ export default function InvigMain({ token, firebaseConfig }) {
 
     <Sidebar>
       {isExam ?
-        < InvigAllStudents examID={ examID }/>
+        < InvigAllStudents examID={examID} token={ token }/>
       :
         <div>
           This exam does not exist
