@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import Router, { useRouter } from "next/router";
+import Button from '@material-ui/core/Button'
 
 export default function ScreenShare(props) {
 
@@ -49,7 +50,7 @@ export default function ScreenShare(props) {
   return (
     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
       <video ref={videoRef} height={videoHeight} width={videoWidth} playsInline autoPlay muted />
-      <button onClick={() => startButton()}>Activate</button>
+      <Button onClick={() => startButton()}>Activate</Button>
       <p>{ feedback }</p>
     </div>
   );

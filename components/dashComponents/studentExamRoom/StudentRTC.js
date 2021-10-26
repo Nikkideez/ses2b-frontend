@@ -6,6 +6,7 @@ import {
 import { async } from '@firebase/util';
 import Script from 'next/script';
 import axios from 'axios';
+import Button from '@material-ui/core/Button'
 
 // Getting firebase
 const firestore = getFirestore();
@@ -337,23 +338,23 @@ export default function StudentRTC(props) {
               Activate screenshare before turning on your camera and microphone and start the
               call
             </h3>
-            <button
+            <Button
               onClick={setupSources}
               disabled={!start || !isScreenShare}
-            >Start</button>
+            >Start</Button>
           </div>
         ) : (
           <div>
             {/* <p>{connectionStatus}</p> */}
-            <button
+            <Button
               onClick={retry}
               disabled={connectionStatus === "connected" || !start}
             >
               retry
-            </button>
+            </Button>
           </div>
         )}
-        <button onClick={handleToggleFilter}>Filter ON/OFF</button>
+        <Button onClick={handleToggleFilter}>Filter ON/OFF</Button>
       </div>
       {/* Note From Evan: Importing body-pix as script to allow face api and blur to work together */}
       <Script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/body-pix@2.2.0"></Script>
