@@ -15,7 +15,9 @@ import { TextField } from '@material-ui/core'
 import { Button } from '@material-ui/core'
 import Image from 'next/dist/client/image'
 import ExamQuestion from '../../../src/Images/ExamQuestionMath.png'
-
+import Snackbar from '@material-ui/core/Snackbar';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 const useStyles = makeStyles({
@@ -69,13 +71,17 @@ const useStyles = makeStyles({
   }
 })
 
+let initialized = false;
+
 export default function MainContainer(props) {
   const [screenStream, setScreenStream] = useState();
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
   const [examDetails, setExamDetails] = useState()
   const [isStarted, setIsStarted] = useState()
   const classes = useStyles(props);
-  const studentID = props.studentId
+  const studentID = props.studentId;
+  const [announcements, setAnnouncements] = useState([])
+  const [snackOpen, setSnackOpen] = useState(false);
   // const examDetails = onSnapshot(doc(firestore, "exams", props.examID), (doc) => {
   //   console.log("Current data: ", doc.data());
   // });
@@ -87,14 +93,31 @@ export default function MainContainer(props) {
     getAnnouncments(props.examID)
   }, [])
 
+  useEffect(() => {
+    if (announcements.length > 0 && !initialized) {
+      initialized = true
+    } else if (announcements.length > 0 && initialized) {
+      handleNewAnnouncement()
+    }
+  }, [announcements])
+
   async function getAnnouncments(examID) {
     onSnapshot(doc(firestore, "exams", examID), (doc) => {
       // console.log("Current data: ", doc.data());
       setIsStarted(doc.data().is_started)
       // console.log(doc.data().is_started)
       setExamDetails(doc.data())
+      setAnnouncements(doc.data().announcements)
     });
   }
+
+  const handleNewAnnouncement = () => {
+    setSnackOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    setSnackOpen(false);
+  };
 
   return (
     <div>
@@ -150,7 +173,7 @@ export default function MainContainer(props) {
               </Typography>
               <ul>
                 {examDetails ?
-                  examDetails.announcements.map((announcement, index) =>
+                  announcements.map((announcement, index) =>
                     <div key={index}>
                       <li>{announcement}</li>
                     </div >)
@@ -213,6 +236,24 @@ export default function MainContainer(props) {
           </Grid>
 
         </Grid>
+
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+          open={snackOpen}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          message="New Announcement"
+          action={
+            <React.Fragment>
+              <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+          }
+        />
 
       </div>
     </div>

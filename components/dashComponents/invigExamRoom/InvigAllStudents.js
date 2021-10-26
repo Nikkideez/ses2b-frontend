@@ -10,6 +10,7 @@ import Fab from '@material-ui/core/Fab';
 import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import StopIcon from '@material-ui/icons/Stop';
+import AnnounceContainer from './AnnounceContainer'
 
 const profilePic = [
   "https://pbs.twimg.com/profile_images/1184543288801529862/Lw46ZMHU.jpg",
@@ -77,6 +78,10 @@ export default function InvigAllStudents(props) {
   // Map function for every student who is in the exam room
   return (
     <div>
+      {exam ?
+        < AnnounceContainer announcements={exam.announcements} />
+        : null}
+      <br />
       <AnnounceBtn examID={props.examID} />
       {isStarted ?
         <Fab color="primary" onClick={() => stopExam()}
