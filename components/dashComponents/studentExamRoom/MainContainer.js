@@ -73,12 +73,13 @@ export default function MainContainer(props) {
   const [screenStream, setScreenStream] = useState();
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
   const [examDetails, setExamDetails] = useState()
+  const [isStarted, setIsStarted] = useState()
   const classes = useStyles(props);
   const studentID = props.studentId
   // const examDetails = onSnapshot(doc(firestore, "exams", props.examID), (doc) => {
   //   console.log("Current data: ", doc.data());
   // });
-  
+
   // Getting firebase
   const firestore = getFirestore();
 
@@ -88,7 +89,9 @@ export default function MainContainer(props) {
 
   async function getAnnouncments(examID) {
     onSnapshot(doc(firestore, "exams", examID), (doc) => {
-      console.log("Current data: ", doc.data());
+      // console.log("Current data: ", doc.data());
+      setIsStarted(doc.data().is_started)
+      // console.log(doc.data().is_started)
       setExamDetails(doc.data())
     });
   }
@@ -106,10 +109,10 @@ export default function MainContainer(props) {
           <Grid item sm={12} md={6}>
             <Paper variant='outlined' className={classes.videoStream}>
               <VideoContainer
-                studentId={ props.studentId }
+                studentId={props.studentId}
                 screenStream={screenStream}
                 setConnectionStatus={setConnectionStatus}
-                token={ props.token }
+                token={props.token}
               />
             </Paper>
           </Grid>
@@ -128,16 +131,16 @@ export default function MainContainer(props) {
               {examDetails ?
                 <div>
                   <Typography variant="h6">
-                    Exam: { examDetails.subject }
+                    Exam: {examDetails.subject}
                   </Typography>
                   <Typography variant="h6">
                     Session: Spring 2021
                   </Typography>
                   <Typography variant="h6">
-                    Invigilator: { examDetails.invigilator}
+                    Invigilator: {examDetails.invigilator}
                   </Typography>
                 </div>
-              : null}
+                : null}
             </Paper>
           </Grid>
           <Grid item xs={6} md={4} >
@@ -149,7 +152,7 @@ export default function MainContainer(props) {
                 {examDetails ?
                   examDetails.announcements.map((announcement, index) =>
                     <div key={index}>
-                      <li>{ announcement }</li>
+                      <li>{announcement}</li>
                     </div >)
                   : null}
               </ul>
@@ -166,9 +169,9 @@ export default function MainContainer(props) {
             <Paper variant='outlined' className={classes.timer}>
               {examDetails ?
                 <Typography variant="h6" align='center'>
-                  Warnings: {examDetails.strikes[studentID] }
+                  Warnings: {examDetails.strikes[studentID]}
                 </Typography>
-              :null }
+                : null}
               {/* <Typography variant="h6" align='center'>
                 Warnings: 1
               </Typography>
@@ -180,26 +183,32 @@ export default function MainContainer(props) {
           <Grid item xs={12}>
             <Paper variant='outlined' className={classes.answerBox}>
               {/* <h1>Question</h1> */}
-              <Typography variant="h4" align='center'>Question Section</Typography>
-              <div className={classes.examQuestion}>
-                <Image src={ExamQuestion}/>
-              </div>
-              <Typography variant='h6'>Answer Box</Typography>
-              <TextField
-                id="outlined-multiline-static"
-                label="Answer"
-                multiline
-                rows={50}
-                fullWidth
-                variant='outlined'
-                // defaultValue="Write answer in here"
-                placeholder='Write answer in here'
-              />
-              <div className={classes.answerButton}>
-                <Button variant='contained'>
-                  Submit
-                </Button>
-              </div>
+              {isStarted ?
+                <div>
+                  <Typography variant="h4" align='center'>Question Section</Typography>
+                  <div className={classes.examQuestion}>
+                    <Image src={ExamQuestion} />
+                  </div>
+                  <Typography variant='h6'>Answer Box</Typography>
+                  <TextField
+                    id="outlined-multiline-static"
+                    label="Answer"
+                    multiline
+                    rows={50}
+                    fullWidth
+                    variant='outlined'
+                    // defaultValue="Write answer in here"
+                    placeholder='Write answer in here'
+                  />
+                  <div className={classes.answerButton}>
+                    <Button variant='contained'>
+                      Submit
+                    </Button>
+                  </div>
+                </div>
+                :
+                <div> Exam Currently Not Available</div>
+              }
             </Paper>
           </Grid>
 

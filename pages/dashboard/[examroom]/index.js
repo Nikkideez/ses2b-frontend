@@ -47,43 +47,12 @@ export default function Examroom({ token, firebaseConfig }) {
 				<Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
 				{currentUser ?
 					<div>
-						<Chat token={token} studentId={currentUser.student_id} examID={examID}/>
+						<Chat token={token} studentId={currentUser.student_id} examID={examID} />
 						<MainContainer token={token} studentId={currentUser.student_id} />
 					</div>
 					: <div>
 						Loading.....
 					</div>}
-				{/* <Typography variant="h5">
-					Welcome to the exam room
-				</Typography>
-				<div style={{ display: 'flex', justifyContent: 'space-around', padding: 60, paddingBottom: 20 }}>
-					<IconButton>
-						<Badge badgeContent={1} color="secondary">
-							<NotificationImportantIcon color="action" fontSize="large" />
-						</Badge>
-					</IconButton>
-					<IconButton>
-						<Badge badgeContent={3} color="secondary">
-							<WarningIcon fontSize="large" style={{ color: '#ff9800' }} />
-						</Badge>
-					</IconButton>
-				</div>
-				<Typography variant="h1" align="center" style={{ padding: 50 }}>
-					120:00
-				</Typography>
-				<div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-					<Paper style={{ width: 300, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }} variant="outlined" square>
-						<Typography>
-							This will hold the video API
-						</Typography>
-					</Paper>
-					<Paper style={{ width: 300, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }} variant="outlined" square>
-						<Typography>
-							This will hold the screen record API
-						</Typography>
-					</Paper>
-				</div> */}
-
 			</Sidebar>
 		</div>
 	)

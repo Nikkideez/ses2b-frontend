@@ -68,8 +68,10 @@ export default function StudentRTC(props) {
     })
   }
   useEffect(() => {
-    if (props.screenStream)
+    if (props.screenStream){
+      console.log(props.screenStream)
       setIsScreenShare(true)
+    }
   }, [props.screenStream])
   // Call getCall() on render
   useEffect(() => {
@@ -337,7 +339,7 @@ export default function StudentRTC(props) {
             </h3>
             <button
               onClick={setupSources}
-              disabled={!start && !isScreenShare}
+              disabled={!start || !isScreenShare}
             >Start</button>
           </div>
         ) : (
