@@ -95,8 +95,6 @@ export default function MainContainer(props) {
 
   return (
     <div>
-      {/* Note from Evan: load tensorflow for video processing. */}
-      <Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
       <div>
         <Grid container component="main" spacing={1}>
           <CssBaseline />

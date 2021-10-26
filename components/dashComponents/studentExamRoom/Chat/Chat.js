@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import {
-  collection, addDoc, doc, updateDoc, getDoc, getFirestore, onSnapshot,
+  collection, addDoc, doc, updateDoc, setDoc, getDoc, getFirestore, onSnapshot,
   deleteField, query
 } from "firebase/firestore";
 import Fab from '@material-ui/core/Fab';

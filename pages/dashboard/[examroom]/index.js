@@ -13,6 +13,7 @@ import MainContainer from '../../../components/dashComponents/studentExamRoom/Ma
 import { useRouter } from "next/router";
 import { initializeApp } from "firebase/app";
 import Chat from "../../../components/dashComponents/studentExamRoom/Chat/Chat"
+import Script from 'next/dist/client/script';
 
 
 export default function Examroom({ token, firebaseConfig }) {
@@ -42,6 +43,8 @@ export default function Examroom({ token, firebaseConfig }) {
 	return (
 		<div>
 			<Sidebar>
+				{/* Note from Evan: load tensorflow for video processing. */}
+				<Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
 				{currentUser ?
 					<div>
 						<Chat token={token} studentId={currentUser.student_id} examID={examID}/>
