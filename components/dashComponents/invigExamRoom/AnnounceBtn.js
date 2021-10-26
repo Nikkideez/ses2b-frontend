@@ -42,7 +42,18 @@ export default function AnnounceBtn(props) {
 
   return (
     <div>
-      <Fab color="primary" aria-label="add" onClick={ handleClickOpen }>
+      <Fab
+        color="primary"
+        aria-label="add"
+        onClick={handleClickOpen}
+        style={{margin: 0,
+          top: 'auto',
+          right: 30,
+          bottom: 20,
+          left: 'auto',
+          position: 'fixed',
+        }}
+      >
         <AddIcon />
       </Fab>
       {/* Dialog box */}

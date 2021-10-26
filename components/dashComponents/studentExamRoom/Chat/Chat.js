@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {
   collection, addDoc, doc, updateDoc, setDoc, getDoc, getFirestore, onSnapshot,
-  deleteField, query
+  deleteField, query, where
 } from "firebase/firestore";
 import Fab from '@material-ui/core/Fab';
 import ChatIcon from '@material-ui/icons/Chat';
@@ -20,11 +20,15 @@ import { Divider } from '@material-ui/core';
 import axios from 'axios';
 import ChatContainer from './ChatContainer'
 import jwt_decode from 'jwt-decode';
+import Badge from '@material-ui/core/Badge';
+
+let initialized = false;
 
 export default function Chat(props) {
   const [open, setOpen] = useState(false);
-  const [chat, setChat] = useState(["No messages..."]);
+  const [chat, setChat] = useState([]);
   const [message, setMessage] = useState();
+  const [notifyChat, setNotifyChat] = useState(0);
 
 
   // Getting firebase
@@ -33,6 +37,14 @@ export default function Chat(props) {
   useEffect(() => {
     getChat()
   }, [])
+
+  useEffect(() => {
+    if (chat.length > 0 && !initialized) {
+      initialized = true
+    } else if (chat.length > 0 && initialized) {
+      setNotifyChat(notifyChat + 1)
+      }
+  }, [chat])
 
   async function getChat() {
     onSnapshot(doc(firestore, `students/${props.studentId}/Exam`, props.examID), async (doc) => {
@@ -66,6 +78,7 @@ export default function Chat(props) {
   };
 
   const handleClickOpen = () => {
+    setNotifyChat(0)
     setOpen(true);
   };
 
@@ -80,9 +93,22 @@ export default function Chat(props) {
 
   return (
     <div>
-      <Fab color="primary" aria-label="add" onClick={ handleClickOpen }>
-        <ChatIcon />
-      </Fab>
+        <Fab
+          color="primary"
+          aria-label="add"
+          onClick={handleClickOpen}
+          style={{margin: 0,
+            top: 'auto',
+            right: 30,
+            bottom: 20,
+            left: 'auto',
+            position: 'fixed',
+          }}
+        >
+          <Badge badgeContent={notifyChat} color="secondary">
+            <ChatIcon />
+          </Badge>
+        </Fab>
       {/* Dialog box */}
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" fullWidth={true}>
         <DialogTitle id="form-dialog-title">Chat</DialogTitle>
