@@ -71,12 +71,13 @@ export default function InvigAllStudents(props) {
           students.map((student, index) =>
             <div key={index}>
               <InvigContainer
-                  examID={props.examID}
-                  studentId={student[0]}
-                  image={profilePic[1]}
-                  subject={'MAT100'}
-                  warnings={student[1]}
-                  isMute={isMute}
+                examID={props.examID}
+                studentId={student[0]}
+                image={profilePic[1]}
+                subject={'MAT100'}
+                warnings={student[1]}
+                isMute={isMute}
+                token={ props.token }
                 />
               {/* <InvigContainer
                   studentId={student.student_id}

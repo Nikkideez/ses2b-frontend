@@ -114,6 +114,8 @@ export default function InvigTools(props) {
               name={props.name}
               studentId={props.studentId}
               image={props.image}
+              token={props.token}
+              examID={ props.examID }
             />
           </Badge>
         </div>

@@ -62,6 +62,7 @@ export default function ComponentContainer(props) {
             connectionStatus={connectionStatus}
             examID={props.examID}
             warnings={props.warnings}
+            token={ props.token }
           />
           <InvigRTC
             studentId={props.studentId}

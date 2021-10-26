@@ -60,7 +60,12 @@ export default function DraggableDialog(props) {
             will send updates occasionally.
           </DialogContentText>
           <TextField fullWidth/> */}
-          <InvigDialogContent image={props.image}/>
+          <InvigDialogContent
+            image={props.image}
+            token={props.token}
+            studentId={props.studentId}
+            examID={props.examID}
+          />
         </DialogContent>
        
         <DialogActions>

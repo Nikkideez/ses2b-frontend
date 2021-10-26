@@ -12,12 +12,15 @@ import { getUser } from '../../../components/scripts/getUser'
 import MainContainer from '../../../components/dashComponents/studentExamRoom/MainContainer';
 import { useRouter } from "next/router";
 import { initializeApp } from "firebase/app";
+import Chat from "../../../components/dashComponents/studentExamRoom/Chat/Chat"
 
 
 export default function Examroom({ token, firebaseConfig }) {
 	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
 	const router = useRouter();
+	let examID = useRouter().query.examroom
+
 	useEffect(async () => {
 		// Initialize Firebase
 		try {
@@ -40,7 +43,10 @@ export default function Examroom({ token, firebaseConfig }) {
 		<div>
 			<Sidebar>
 				{currentUser ?
-					<MainContainer token={token} studentId={currentUser.student_id} />
+					<div>
+						<Chat token={token} studentId={currentUser.student_id} examID={examID}/>
+						<MainContainer token={token} studentId={currentUser.student_id} />
+					</div>
 					: <div>
 						Loading.....
 					</div>}

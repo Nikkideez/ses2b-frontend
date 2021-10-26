@@ -69,7 +69,12 @@ export default function VerticalTabs(props) {
           </div>
           :
           <div>
-            <InvigMessageList image={props.image} />
+            <InvigMessageList
+              image={props.image}
+              token={props.token}
+              studentId={props.studentId}
+              examID={props.examID}
+            />
           </div>
         }
       </div>
