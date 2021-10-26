@@ -52,7 +52,7 @@ export default function DraggableDialog(props) {
         hideBackdrop={true}
       >
         <DialogTitle style={{ cursor: 'move', zIndex:'10' }} id="draggable-dialog-title">
-          {props.studentId} {props.name} 
+          {props.studentId} {props.name[0] + " " + props.name[1]} 
         </DialogTitle>
         <DialogContent>
           {/* <DialogContentText>

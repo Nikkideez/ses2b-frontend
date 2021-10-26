@@ -21,7 +21,7 @@ export default function ChatContainer(props) {
     const docSnap = await getDoc(props.ping.user);
 
     if (docSnap.exists()) {
-        setName(docSnap.data().first_name + " " + docSnap.data().last)
+        setName([docSnap.data().first_name, docSnap.data().last])
     } else {
         // doc.data() will be undefined in this case
         console.log("No such user!");
@@ -35,10 +35,10 @@ export default function ChatContainer(props) {
             <div>
                 <ListItem alignItems="flex-start" style={{ padding: 0 }}>
                     <ListItemAvatar>
-                        <Avatar alt="McLOVIN">INVIG</Avatar>
+                        <Avatar alt="McLOVIN">{name[0][0] + name[1][0]}</Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                        primary={name}
+                        primary={name[0] + " " + name[1]}
                         secondary={
                             <Fragment>
                             <Typography

@@ -56,7 +56,7 @@ export default function ComponentContainer(props) {
       {student ?
         <Paper className={classes.root} variant="outlined">
           <InvigOverview
-            name={student.first_name + " " + student.last}
+            name={[student.first_name, student.last]}
             studentId={props.studentId}
             image={props.image}
             connectionStatus={connectionStatus}

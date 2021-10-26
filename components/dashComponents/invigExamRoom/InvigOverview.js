@@ -95,10 +95,9 @@ export default function InvigTools(props) {
 
   return (
     <div className={classes.root}>
-      <Avatar src={props.image}
-        className={classes.picture} />
+      <Avatar className={classes.picture}>{props.name[0][0] + props.name[1][0]}</Avatar>
       <div >
-        <Typography variant='subtitle2' className={classes.studentName}>{props.name}</Typography>
+        <Typography variant='subtitle2' className={classes.studentName}>{props.name[0] + " " + props.name[1]}</Typography>
         <p className={classes.rootText}>SID: {props.studentId}</p>
         <p style={{color: themeTwo.palette.text.title, fontSize: '12px', opacity:'0.9'}}>{"Connection Status"}<br/>
         <span className={props.connectionStatus === "connected" ? classes.connectionGood : classes.connectionBad}>
