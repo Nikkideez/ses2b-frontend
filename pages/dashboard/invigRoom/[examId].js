@@ -8,6 +8,7 @@ import { useRecoilState } from 'recoil';
 import { getUser } from '../../../components/scripts/getUser'
 import { useRouter } from "next/router";
 import { initializeApp } from "firebase/app";
+import { doc, getDoc, getFirestore } from '@firebase/firestore';
 
 const InvigAllStudents = dynamic(() => import('../../../components/dashComponents/invigExamRoom/InvigAllStudents'), { ssr: false });
 
@@ -17,7 +18,8 @@ export default function InvigMain({ token, firebaseConfig }) {
   const message = "Are you sure you want to leave this page while an exam is in progress? \n";
   warnLeavePage(message);
   const [isStudent, setIsStudent] = useRecoilState(isStudentState);
-
+	const [isExam, setIsExam] = useState(false);
+	let firestore;
 
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const router = useRouter();
@@ -37,15 +39,19 @@ export default function InvigMain({ token, firebaseConfig }) {
       setCurrentUser(user);
       setIsStudent(user.user_role === 2);
     }
+
+    firestore = getFirestore()
+		const getExam = await getDoc(doc(firestore, "exams", examID))
+		setIsExam(getExam.exists())
   }, []);
-  const [isExam, setIsExam] = useState(true)
+
   return (
 
     <Sidebar>
       {isExam ?
         < InvigAllStudents examID={examID} token={ token }/>
       :
-        <div>
+        <div style={{color: 'white'}}>
           This exam does not exist
         </div>
       }

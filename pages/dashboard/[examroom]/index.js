@@ -13,14 +13,17 @@ import MainContainer from '../../../components/dashComponents/studentExamRoom/Ma
 import { useRouter } from "next/router";
 import { initializeApp } from "firebase/app";
 import Chat from "../../../components/dashComponents/studentExamRoom/Chat/Chat"
+import Script from 'next/dist/client/script';
+import { doc, getDoc, getFirestore } from '@firebase/firestore';
 
 
 export default function Examroom({ token, firebaseConfig }) {
 	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
+	const [isExam, setIsExam] = useState(false);
 	const router = useRouter();
 	let examID = useRouter().query.examroom
-
+	let firestore;
 	useEffect(async () => {
 		// Initialize Firebase
 		try {
@@ -37,50 +40,32 @@ export default function Examroom({ token, firebaseConfig }) {
 			setCurrentUser(user);
 			setStudent(user.user_role === 2);
 		}
+
+		firestore = getFirestore()
+		const getExam = await getDoc(doc(firestore, "exams", examID))
+		setIsExam(getExam.exists())
 	}, []);
+
+
 
 	return (
 		<div>
 			<Sidebar>
+				{/* Note from Evan: load tensorflow for video processing. */}
+				<Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
 				{currentUser ?
-					<div>
-						<Chat token={token} studentId={currentUser.student_id} examID={examID}/>
-						<MainContainer token={token} studentId={currentUser.student_id} />
-					</div>
+					isExam ?
+						<div>
+							<Chat token={token} studentId={currentUser.student_id} examID={examID} />
+							<MainContainer token={token} studentId={currentUser.student_id} examID={examID} />
+						</div>
+						:
+						<div>
+							No Exam Exists
+						</div>
 					: <div>
 						Loading.....
 					</div>}
-				{/* <Typography variant="h5">
-					Welcome to the exam room
-				</Typography>
-				<div style={{ display: 'flex', justifyContent: 'space-around', padding: 60, paddingBottom: 20 }}>
-					<IconButton>
-						<Badge badgeContent={1} color="secondary">
-							<NotificationImportantIcon color="action" fontSize="large" />
-						</Badge>
-					</IconButton>
-					<IconButton>
-						<Badge badgeContent={3} color="secondary">
-							<WarningIcon fontSize="large" style={{ color: '#ff9800' }} />
-						</Badge>
-					</IconButton>
-				</div>
-				<Typography variant="h1" align="center" style={{ padding: 50 }}>
-					120:00
-				</Typography>
-				<div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-					<Paper style={{ width: 300, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }} variant="outlined" square>
-						<Typography>
-							This will hold the video API
-						</Typography>
-					</Paper>
-					<Paper style={{ width: 300, height: 200, display: 'flex', justifyContent: 'center', alignItems: 'center' }} variant="outlined" square>
-						<Typography>
-							This will hold the screen record API
-						</Typography>
-					</Paper>
-				</div> */}
-
 			</Sidebar>
 		</div>
 	)

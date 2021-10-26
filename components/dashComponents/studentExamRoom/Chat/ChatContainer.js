@@ -21,12 +21,30 @@ export default function ChatContainer(props) {
     const docSnap = await getDoc(props.ping.user);
 
     if (docSnap.exists()) {
-        setName(docSnap.data().first_name + " " + docSnap.data().last)
+        setName([docSnap.data().first_name, docSnap.data().last])
     } else {
         // doc.data() will be undefined in this case
         console.log("No such user!");
     }
-  }   
+    }
+    
+    function getTimeStamp() {
+        let newDate = new Date(props.ping.date_time.seconds * 1000)
+        let date = checkZero(newDate.getDate());
+        let month = checkZero(newDate.getMonth() + 1);
+        let year = checkZero(newDate.getFullYear());
+        let hours = checkZero(newDate.getHours());
+        let minutes = checkZero(newDate.getMinutes());
+        let seconds = checkZero(newDate.getSeconds());
+
+        function checkZero(digits) {
+        if (digits < 10)
+            return `0${digits}`
+        return digits
+        }
+
+        return `${date}/${month}/${year} ${hours}:${minutes}:${seconds}`
+    }
     
   return (
     <div>
@@ -35,10 +53,10 @@ export default function ChatContainer(props) {
             <div>
                 <ListItem alignItems="flex-start" style={{ padding: 0 }}>
                     <ListItemAvatar>
-                        <Avatar alt="McLOVIN">INVIG</Avatar>
+                        <Avatar alt="McLOVIN">{name[0][0] + name[1][0]}</Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                        primary={name}
+                        primary={name[0] + " " + name[1]}
                         secondary={
                             <Fragment>
                             <Typography
@@ -48,7 +66,7 @@ export default function ChatContainer(props) {
                             >
                                 {props.ping.message}
                             </Typography>
-                                {props.ping.date_time.seconds}
+                                {` - ${getTimeStamp()}`}
                             </Fragment>
                         }
                 />
