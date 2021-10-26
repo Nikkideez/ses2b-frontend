@@ -41,7 +41,7 @@ export default function Chat(props) {
   useEffect(() => {
     if (chat.length > 0 && !initialized) {
       initialized = true
-    } else if (chat.length > 0 && initialized) {
+    } else if (chat.length > 0 && initialized && !open) {
       setNotifyChat(notifyChat + 1)
       }
   }, [chat])

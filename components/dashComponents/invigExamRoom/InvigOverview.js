@@ -108,7 +108,7 @@ export default function InvigTools(props) {
       </div>
       <div className={classes.tools}>
         <div className={classes.buttonSpacing}>
-          <Badge badgeContent={4} color="secondary" style={{ display: 'block' }}>
+          {/* <Badge badgeContent={4} color="secondary" style={{ display: 'block' }}> */}
             <InvigDialog
               name={props.name}
               studentId={props.studentId}
@@ -116,7 +116,7 @@ export default function InvigTools(props) {
               token={props.token}
               examID={ props.examID }
             />
-          </Badge>
+          {/* </Badge> */}
         </div>
         <div >
           <Button 
