@@ -84,7 +84,7 @@ export default function MainContainer(props) {
   const firestore = getFirestore();
 
   useEffect(() => {
-    getAnnouncments("7VvK5sOx3TUpmHYAkLSQ")
+    getAnnouncments(props.examID)
   }, [])
 
   async function getAnnouncments(examID) {

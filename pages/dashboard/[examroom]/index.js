@@ -14,14 +14,16 @@ import { useRouter } from "next/router";
 import { initializeApp } from "firebase/app";
 import Chat from "../../../components/dashComponents/studentExamRoom/Chat/Chat"
 import Script from 'next/dist/client/script';
+import { doc, getDoc, getFirestore } from '@firebase/firestore';
 
 
 export default function Examroom({ token, firebaseConfig }) {
 	const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
 	const [isStudent, setStudent] = useRecoilState(isStudentState);
+	const [isExam, setIsExam] = useState(false);
 	const router = useRouter();
 	let examID = useRouter().query.examroom
-
+	let firestore;
 	useEffect(async () => {
 		// Initialize Firebase
 		try {
@@ -38,7 +40,13 @@ export default function Examroom({ token, firebaseConfig }) {
 			setCurrentUser(user);
 			setStudent(user.user_role === 2);
 		}
+
+		firestore = getFirestore()
+		const getExam = await getDoc(doc(firestore, "exams", examID))
+		setIsExam(getExam.exists())
 	}, []);
+
+
 
 	return (
 		<div>
@@ -46,10 +54,15 @@ export default function Examroom({ token, firebaseConfig }) {
 				{/* Note from Evan: load tensorflow for video processing. */}
 				<Script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0"></Script>
 				{currentUser ?
-					<div>
-						<Chat token={token} studentId={currentUser.student_id} examID={examID} />
-						<MainContainer token={token} studentId={currentUser.student_id} />
-					</div>
+					isExam ?
+						<div>
+							<Chat token={token} studentId={currentUser.student_id} examID={examID} />
+							<MainContainer token={token} studentId={currentUser.student_id} examID={examID} />
+						</div>
+						:
+						<div>
+							No Exam Exists
+						</div>
 					: <div>
 						Loading.....
 					</div>}
