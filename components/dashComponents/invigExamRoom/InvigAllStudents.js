@@ -58,6 +58,19 @@ export default function InvigAllStudents(props) {
     });
   }
 
+  //enable the exam
+  const startExam = async () => {
+    await updateDoc(doc(firestore, "exams", props.examID), {
+      is_started: true
+    })
+  }
+  //finish the exam
+  const stopExam = async () => {
+    await updateDoc(doc(firestore, "exams", props.examID), {
+      is_started: false
+    })
+  }
+
   // [[studentID, Warn], [studentID, Warn] ]
 
   // Button for toggling mute
@@ -65,7 +78,9 @@ export default function InvigAllStudents(props) {
   return (
     <div>
       <AnnounceBtn examID={ props.examID }/>
-      <button onClick={() => console.log(students)}>Mute Toggle</button>
+      <button onClick={() => startExam()}>Start Exam</button>
+      <button onClick={() => stopExam()}>Stop Exam</button>
+      <button onClick={() => setMute(!isMute)}>Mute Toggle</button>
       <div style={{display: 'flex', flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'space-around'}}>
         {students.length > 0 ?
           students.map((student, index) =>
